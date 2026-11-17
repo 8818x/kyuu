@@ -217,13 +217,13 @@ function openDiary(index) {
 const STEW_PIN =
   '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
   '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-  'fill="#8b5c66" stroke="#171a20" stroke-width="2.2"/>' +
-  '<circle cx="14" cy="14" r="4" fill="#171a20"/></svg>';
+  'fill="#ff303a" stroke="#100b08" stroke-width="2.2"/>' +
+  '<circle cx="14" cy="14" r="4" fill="#100b08"/></svg>';
 
 const CRISP_PIN =
   '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
   '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#b78b64" stroke="#171a20" stroke-width="2.2"/></svg>';
+  'fill="#f4c700" stroke="#100b08" stroke-width="2.2"/></svg>';
 
 function pinIcon(type) {
   const crisp = type === "Shaorou";
@@ -347,7 +347,7 @@ function renderSummary() {
 function initMap() {
   map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
   const tiles = L.tileLayer(
-    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     {
       attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
       maxZoom: 19

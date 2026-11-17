@@ -25,7 +25,7 @@ GitHub Pages updates in about a minute.
 
 ## Basemap
 
-The map uses **Esri World Dark Gray Canvas** keyless raster tiles:
-`https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`
+The map uses **Esri World Light Gray Canvas** keyless raster tiles:
+`https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`
 
-Attribution required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The tile URL and attribution string live in `app.js` (`initMap`). If the provider ever starts requiring an API key (CARTO's dark tiles did exactly that), swap both the URL and the attribution, and confirm a real tile loads — a dead basemap shows a visible warning line above the map.
+Attribution required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The tile URL and attribution string live in `app.js` (`initMap`). If the provider ever starts requiring an API key (CARTO's tiles did exactly that), swap both the URL and the attribution, and confirm a real tile loads — a dead basemap shows a visible warning line above the map.
