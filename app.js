@@ -42,9 +42,9 @@ function makeMapsLink(link) {
   return a;
 }
 
-function makeCard(entry, index) {
+function makeCard(entry, index, featured) {
   const el = document.createElement("article");
-  el.className = "card";
+  el.className = featured ? "card card--feature" : "card";
   el.dataset.index = String(index);
   el.tabIndex = -1; // focus target for the "Open in diary" jump
 
@@ -66,7 +66,7 @@ function makeCard(entry, index) {
   body.className = "card-body";
 
   const tag = document.createElement("span");
-  tag.className = "chip";
+  tag.className = "chip" + (entry.type === "Shaorou" ? " chip--crisp" : "");
   tag.textContent = entry.type;
 
   const name = document.createElement("h2");
@@ -82,6 +82,19 @@ function makeCard(entry, index) {
   if (entry.maps) body.appendChild(makeMapsLink(entry.maps));
   el.appendChild(body);
   return el;
+}
+
+function renderHero() {
+  const img = document.getElementById("hero-image");
+  if (!img) return;
+  const latest = entries.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
+  if (latest && latest.image) {
+    img.src = latest.image;
+    img.hidden = false;
+    img.onerror = () => { img.hidden = true; };
+  } else {
+    img.hidden = true;
+  }
 }
 
 function visibleEntries() {
@@ -101,7 +114,7 @@ function announce(text) {
 
 function renderCards() {
   const list = visibleEntries();
-  cardBox.replaceChildren(...list.map(({ entry, index }) => makeCard(entry, index)));
+  cardBox.replaceChildren(...list.map(({ entry, index }, i) => makeCard(entry, index, i === 0)));
 
   if (!list.length) {
     const empty = document.createElement("div");
@@ -129,7 +142,7 @@ function renderCards() {
 
 const filterButtons = filters.map((label) => {
   const b = document.createElement("button");
-  b.className = "btn";
+  b.className = "nav-filter";
   b.textContent = label;
   b.dataset.filter = label;
   b.addEventListener("click", () => setFilter(label));
@@ -155,7 +168,7 @@ function setFilter(label) {
 
 const tabButtons = [["map", "Map"], ["diary", "Diary"]].map(([name, label]) => {
   const b = document.createElement("button");
-  b.className = "btn";
+  b.className = "nav-tab";
   b.textContent = label;
   b.dataset.tab = name;
   b.addEventListener("click", () => setTab(name));
@@ -210,7 +223,7 @@ const STEW_PIN =
 const CRISP_PIN =
   '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
   '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#878b64" stroke="#171a20" stroke-width="2.2"/></svg>';
+  'fill="#b78b64" stroke="#171a20" stroke-width="2.2"/></svg>';
 
 function pinIcon(type) {
   const crisp = type === "Shaorou";
@@ -322,7 +335,12 @@ function renderSummary() {
   });
 
   const parts = [lead];
-  keys.forEach((key) => parts.push(document.createTextNode(" · "), key));
+  keys.forEach((key) => {
+    const sep = document.createElement("span");
+    sep.className = "visually-hidden";
+    sep.textContent = ", ";
+    parts.push(sep, key);
+  });
   el.replaceChildren(...parts);
 }
 
@@ -397,6 +415,7 @@ function initMap() {
 
 tabBox.append(...tabButtons);
 filterBox.append(...filterButtons);
+renderHero();
 updateTabs();
 updateFilters();
 renderCards();

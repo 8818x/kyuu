@@ -4,36 +4,52 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Food Diary</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
-  <header>
-    <span class="mark" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none">
-        <path d="M8 25h32c0 10-7 17-16 17S8 35 8 25Z" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M5 25h38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="m17 15 6-9m3 9 6-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-    </span>
-    <h1>Food Diary</h1>
-    <p>A diary of Zhujiaofan (pork leg rice) &amp; Shaorou (crispy pork), one shop at a time.</p>
+  <header class="hero">
+    <div class="hero-media" aria-hidden="true">
+      <img id="hero-image" alt="">
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <span class="hero-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M8 25h32c0 10-7 17-16 17S8 35 8 25Z" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M5 25h38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="m17 15 6-9m3 9 6-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <h1>Food Diary</h1>
+      <p class="hero-sub">A diary of Zhujiaofan (pork leg rice) &amp; Shaorou (crispy pork), one shop at a time.</p>
+    </div>
   </header>
 
-  <nav id="tabs" aria-label="View"></nav>
+  <nav class="nav" aria-label="View">
+    <div class="nav-inner">
+      <div id="tabs" class="nav-group"></div>
+      <div id="filters" class="nav-group nav-group--filters" aria-label="Filter by dish"></div>
+    </div>
+  </nav>
 
-  <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <main class="content">
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
 
-  <section id="map-panel">
-    <p id="map-summary" class="summary"></p>
-    <p id="map-error" class="map-error" hidden>The map tiles could not load. The diary below still works.</p>
-    <div id="map" role="region" aria-label="Shop map"></div>
-  </section>
+    <section id="diary-panel" hidden>
+      <div id="cards" class="cards"></div>
+    </section>
 
-  <section id="diary-panel" hidden>
-    <div id="filters" aria-label="Filter by dish"></div>
-    <main id="cards"></main>
-  </section>
+    <section id="map-panel">
+      <p id="map-summary" class="summary"></p>
+      <p id="map-error" class="map-error" hidden>The map tiles could not load. The diary below still works.</p>
+      <div id="map" role="region" aria-label="Shop map"></div>
+    </section>
+  </main>
 
   <div id="sheet" class="sheet" role="dialog" aria-modal="false" aria-labelledby="sheet-shop" aria-hidden="true">
     <div class="sheet-inner">
@@ -52,7 +68,7 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data/entries.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="data/entries.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
