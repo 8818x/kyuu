@@ -337,9 +337,13 @@ function initMap() {
   ).addTo(map);
 
   let tileFailures = 0;
+  const mapError = document.getElementById("map-error");
   tiles.on("tileerror", () => {
     tileFailures += 1;
-    if (tileFailures === 1) announce("The map tiles could not load.");
+    if (tileFailures === 1) {
+      if (mapError) mapError.hidden = false;
+      announce("The map tiles could not load.");
+    }
   });
 
   const points = [];

@@ -149,6 +149,13 @@ header p { margin: 10px 0 0; color: var(--text-secondary); }
   border-color: var(--color-wine-deep);
 }
 
+.map-error {
+  max-width: var(--container);
+  margin: 0 auto var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+}
+
 #map-panel { max-width: var(--container); margin: 0 auto; }
 
 #map {
@@ -275,6 +282,11 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
 .link:hover { text-decoration-color: var(--text-primary); }
 
 .leaflet-popup-content .chip { margin-bottom: 6px; }
+.leaflet-popup-content .link {
+  display: block;
+  color: var(--text-primary);
+  margin: 10px 0 0;
+}
 
 .empty { color: var(--text-secondary); }
 .empty p { margin: 0 0 var(--space-2); }
@@ -386,7 +398,10 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
 
 #sheet-tag { align-self: flex-start; }
 
-.sheet-inner .link { align-self: flex-start; }
+.sheet-inner .link {
+  align-self: flex-start;
+  padding: var(--space-1) 0;
+}
 
 .sheet-open {
   margin-top: 14px;
@@ -410,4 +425,5 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
   #map { height: calc(100svh - 310px); min-height: 300px; }
   .btn { padding: var(--space-1) var(--space-3); }
   .leaflet-control-zoom { display: none; }
+  .leaflet-control-attribution { font-size: 10px; }
 }

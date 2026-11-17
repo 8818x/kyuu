@@ -145,7 +145,7 @@ A single centred column capped at 900px, with 20px page padding (12px on phones)
 
 Density is comfortable: 18px between cards, 18–20px card padding, 8px between pills, more space above a heading than below it. The masthead closes on a hairline before the controls begin. On a dark ground the column is what holds the page together — the tonal steps are subtle enough that alignment, not contrast, does the separating.
 
-The map is the tallest element and the only one that scales with the viewport: `clamp(360px, 65vh, 640px)` on desktop, a flat 50vh on phones with a 300px floor. Cards are two columns on desktop (fixed 220px image beside the text) and collapse to one column with a 180px image at the single 600px breakpoint.
+The map is the tallest element and the only one that scales with the viewport: `clamp(360px, 65vh, 640px)` on desktop, and on phones `calc(100svh - 310px)` with a 300px floor so the map reaches the fold under the masthead. Cards are two columns on desktop (fixed 220px image beside the text) and collapse to one column with a 180px image at the single 600px breakpoint. A card with no photo collapses to one full-width column (`.card--no-media`) rather than squeezing its text into the empty image slot.
 
 ## Elevation & Depth
 
@@ -200,10 +200,15 @@ Pins are outlined in Ink Ground rather than white, because on a dark basemap a d
 Tabs ("Map" / "Diary") and the dish filters share one pill vocabulary in two rows, 18px apart, inside the 900px column. Active is the Wine pill; idle pills are Slate Surface on the ground. Rows wrap on phones rather than scroll.
 
 ### Map pins (signature)
-Two silhouettes drawn as inline SVG inside Leaflet div icons: a 28×38 wine-lift teardrop anchored at its point, and a 26×26 brass diamond anchored at its centre. Both carry a 2.2px ink outline and a drop shadow. Each pin exposes shop and dish as its accessible label and opens a popup (desktop) or the bottom sheet (phone). The basemap is CARTO dark, so the map sits inside the world instead of glaring out of it.
+Two silhouettes drawn as inline SVG inside Leaflet div icons: a 28×38 wine-lift teardrop anchored at its point, and a 26×26 brass diamond anchored at its centre. Both carry a 2.2px ink outline and a drop shadow. Each pin exposes shop and dish as its accessible label and opens a popup (desktop) or the bottom sheet (phone).
+
+The basemap is Esri World Dark Gray Canvas (keyless raster tiles, "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors"), so the map sits inside the world instead of glaring out of it. Leaflet's own chrome is re-painted from tokens: popup, zoom buttons and attribution use Slate Surface and the world's text colours, and the popup close keeps its library size. If tiles fail, a visible line above the map says so — the map is the primary view, so its failure must not be silent.
+
+### Text links
+`.link` is the one link style: Candle Cream text with a 1px brass underline at 3px offset, brightening its underline on hover. Inside a Leaflet popup it is forced back to Candle Cream (`.leaflet-popup-content .link`) because Leaflet's own anchor colour would otherwise win on specificity and paint it blue. Used for "Open in Google Maps" on the card, the popup and the sheet.
 
 ### Summary line
-One line above the map: shop count in Candle Cream at semibold, then one key per dish — a small swatch silhouette beside "Zhujiaofan N" / "Shaorou N" — separated by clay middots. It doubles as the pin legend.
+One line above the map: entry count in Candle Cream at semibold, then one key per dish — a small swatch silhouette beside "Zhujiaofan N" / "Shaorou N" — separated by clay middots. It doubles as the pin legend.
 
 ### Mobile detail sheet
 A bottom sheet on Slate Surface, 14px rounded on its top edge, lifted by the sheet shadow. Dish chip, shop, date, scrolling note, and the wine primary action. Close by control, by tapping the map, or Escape; focus enters the sheet and returns to the pin.
