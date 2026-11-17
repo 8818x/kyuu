@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Food Diary</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <header>
@@ -34,8 +34,23 @@
     <main id="cards"></main>
   </section>
 
+  <div id="sheet" class="sheet" role="dialog" aria-modal="false" aria-labelledby="sheet-shop" aria-hidden="true">
+    <div class="sheet-inner">
+      <button id="sheet-close" class="sheet-close" type="button" aria-label="Close details">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span id="sheet-tag" class="tag"></span>
+      <h2 id="sheet-shop" class="sheet-shop"></h2>
+      <p id="sheet-date" class="sheet-date"></p>
+      <p id="sheet-note" class="sheet-note"></p>
+      <button id="sheet-open" class="sheet-open" type="button">Open in diary</button>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data/entries.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="data/entries.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

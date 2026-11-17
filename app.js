@@ -205,6 +205,71 @@ function pinIcon(type) {
   });
 }
 
+const sheet = document.getElementById("sheet");
+const sheetClose = document.getElementById("sheet-close");
+const sheetOpen = document.getElementById("sheet-open");
+const sheetTag = document.getElementById("sheet-tag");
+const sheetShop = document.getElementById("sheet-shop");
+const sheetDate = document.getElementById("sheet-date");
+const sheetNote = document.getElementById("sheet-note");
+let sheetIndex = -1;
+let sheetTrigger = null;
+
+function isPhone() {
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function openSheet(index, marker) {
+  const entry = entries[index];
+  if (!entry) return;
+
+  sheetIndex = index;
+  sheetTrigger = marker && marker.getElement ? marker.getElement() : null;
+
+  sheetTag.textContent = entry.type;
+  sheetTag.className = "tag " + (entry.type === "Shaorou" ? "tag--crisp" : "tag--stew");
+  sheetShop.textContent = entry.shop;
+  sheetDate.textContent = formatDate(entry.date);
+  sheetNote.textContent = entry.note || "";
+
+  sheet.dataset.open = "true";
+  sheet.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => sheetClose.focus({ preventScroll: true }));
+
+  const pos = coordsFromLink(entry.maps);
+  if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
+
+  announce(entry.shop + " details opened.");
+}
+
+function closeSheet() {
+  if (sheet.dataset.open !== "true") return;
+
+  sheet.dataset.open = "false";
+  sheet.setAttribute("aria-hidden", "true");
+
+  if (sheetTrigger && document.contains(sheetTrigger)) {
+    sheetTrigger.focus({ preventScroll: true });
+  }
+  sheetTrigger = null;
+}
+
+sheetClose.addEventListener("click", closeSheet);
+
+sheetOpen.addEventListener("click", () => {
+  const index = sheetIndex;
+  closeSheet();
+  if (index >= 0) openDiary(index);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeSheet();
+});
+
 function renderSummary() {
   const el = document.getElementById("map-summary");
   if (!el) return;
@@ -264,12 +329,23 @@ function initMap() {
     popup.append(tag, title, date, note, button);
 
     const label = entry.shop + ", " + entry.type;
-    const marker = L.marker(pos, { icon: pinIcon(entry.type), title: label })
-      .addTo(map)
-      .bindPopup(popup);
+    const marker = L.marker(pos, { icon: pinIcon(entry.type), title: label }).addTo(map);
     const el = marker.getElement();
     if (el) el.setAttribute("aria-label", label);
+
+    marker.on("click", () => {
+      if (isPhone()) {
+        openSheet(index, marker);
+        return;
+      }
+      L.popup({ offset: [0, -34] })
+        .setLatLng(pos)
+        .setContent(popup)
+        .openOn(map);
+    });
   });
+
+  map.on("click", closeSheet);
 
   if (points.length) {
     const bounds = L.latLngBounds(points);
