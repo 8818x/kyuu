@@ -1,5 +1,5 @@
 const entries = window.DIARY_ENTRIES || [];
-const filters = ["Quanbu", "Zhujiaofan", "Shaorou"];
+const filters = ["All", "Zhujiaofan", "Shaorou"];
 let activeTab = "map";
 let activeFilter = filters[0];
 
@@ -87,9 +87,20 @@ function renderDiary() {
   cardBox.replaceChildren(...list.map(({ entry, index }) => makeCard(entry, index)));
 
   if (!list.length) {
-    const empty = document.createElement("p");
+    const empty = document.createElement("div");
     empty.className = "empty";
-    empty.textContent = "No entries here yet.";
+
+    const message = document.createElement("p");
+    message.textContent = "No " + activeFilter + " entries yet.";
+
+    const reset = document.createElement("button");
+    reset.textContent = "Show all";
+    reset.addEventListener("click", () => {
+      activeFilter = filters[0];
+      renderDiary();
+    });
+
+    empty.append(message, reset);
     cardBox.appendChild(empty);
   }
 }
@@ -117,7 +128,8 @@ function openDiary(index) {
   renderDiary();
   const card = cardBox.querySelector('[data-index="' + index + '"]');
   if (!card) return;
-  card.scrollIntoView({ behavior: "smooth", block: "center" });
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  card.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
   card.classList.add("highlight");
   setTimeout(() => card.classList.remove("highlight"), 2000);
 }
@@ -147,7 +159,7 @@ function initMap() {
     button.addEventListener("click", () => openDiary(index));
     popup.append(title, date, note, button);
 
-    L.marker(pos).addTo(map).bindPopup(popup);
+    L.marker(pos, { alt: entry.shop, title: entry.shop }).addTo(map).bindPopup(popup);
   });
 
   if (points.length) {
