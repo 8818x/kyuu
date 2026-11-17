@@ -1,24 +1,34 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ไดอารี่ข้าวขาหมู</title>
+  <title>Food Diary</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>ไดอารี่ข้าวขาหมู 🥢</h1>
-    <p>บันทึกความอร่อย ขาหมู และหมูกรอบ</p>
+    <h1>Food Diary</h1>
+    <p>Khao kha mu &amp; crispy pork, one shop at a time.</p>
   </header>
 
-  <nav id="tabs" aria-label="กรองประเภท"></nav>
-  <main id="cards"></main>
+  <nav id="tabs" aria-label="View"></nav>
+
+  <section id="map-panel">
+    <div id="map" role="application" aria-label="Shop map"></div>
+  </section>
+
+  <section id="diary-panel" hidden>
+    <div id="filters" aria-label="Filter by dish"></div>
+    <main id="cards"></main>
+  </section>
 
   <footer>
-    เพิ่มร้านใหม่: แก้ไฟล์ <code>data/entries.js</code> แล้วใส่รูปในโฟลเดอร์ <code>images/</code>
+    Add a shop: edit <code>data/entries.js</code>. Put photos in <code>images/</code>.
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data/entries.js"></script>
   <script src="app.js"></script>
 </body>

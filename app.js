@@ -1,47 +1,62 @@
 const entries = window.DIARY_ENTRIES || [];
-const tabs = ["ทั้งหมด", "ขาหมู", "หมูกรอบ"];
-const tabBox = document.getElementById("tabs");
-const cardBox = document.getElementById("cards");
-let active = tabs[0];
+const filters = ["Quanbu", "Zhujiaofan", "Shaorou"];
+let activeTab = "map";
+let activeFilter = filters[0];
 
-function makeButton(label) {
-  const b = document.createElement("button");
-  b.textContent = label;
-  b.className = label === active ? "active" : "";
-  b.setAttribute("aria-pressed", String(label === active));
-  b.addEventListener("click", () => {
-    active = label;
-    render();
-  });
-  return b;
+const tabBox = document.getElementById("tabs");
+const filterBox = document.getElementById("filters");
+const cardBox = document.getElementById("cards");
+const mapPanel = document.getElementById("map-panel");
+const diaryPanel = document.getElementById("diary-panel");
+let map;
+
+function coordsFromLink(link) {
+  if (!link) return null;
+  const patterns = [
+    /@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/,
+    /[?&]q=(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/,
+    /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/
+  ];
+  for (const re of patterns) {
+    const m = link.match(re);
+    if (m) return [Number(m[1]), Number(m[2])];
+  }
+  return null;
 }
 
-function makeCard(entry) {
+function formatDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric", month: "short", year: "numeric"
+  }).format(new Date(y, m - 1, d));
+}
+
+function makeCard(entry, index) {
   const el = document.createElement("article");
   el.className = "card";
+  el.dataset.index = String(index);
 
-  const img = document.createElement("img");
-  img.src = entry.image;
-  img.alt = entry.shop;
-  img.loading = "lazy";
-  img.onerror = () => img.remove();
-  el.appendChild(img);
+  if (entry.image) {
+    const img = document.createElement("img");
+    img.src = entry.image;
+    img.alt = entry.shop;
+    img.loading = "lazy";
+    img.onerror = () => img.remove();
+    el.appendChild(img);
+  }
 
   const body = document.createElement("div");
   body.className = "card-body";
 
   const tag = document.createElement("span");
-  tag.className = "tag " + (entry.type === "หมูกรอบ" ? "crisp" : "stew");
+  tag.className = "tag";
   tag.textContent = entry.type;
 
   const name = document.createElement("h2");
   name.textContent = entry.shop;
 
   const date = document.createElement("time");
-  const [y, m, d] = entry.date.split("-").map(Number);
-  date.textContent = new Intl.DateTimeFormat("th-TH", {
-    day: "numeric", month: "short", year: "numeric"
-  }).format(new Date(y, m - 1, d));
+  date.textContent = formatDate(entry.date);
 
   const note = document.createElement("p");
   note.textContent = entry.note || "";
@@ -51,22 +66,96 @@ function makeCard(entry) {
   return el;
 }
 
-function render() {
-  tabBox.replaceChildren(...tabs.map(makeButton));
+function renderDiary() {
+  filterBox.replaceChildren(...filters.map((label) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.className = label === activeFilter ? "active" : "";
+    b.setAttribute("aria-pressed", String(label === activeFilter));
+    b.addEventListener("click", () => {
+      activeFilter = label;
+      renderDiary();
+    });
+    return b;
+  }));
 
   const list = entries
-    .filter((e) => active === "ทั้งหมด" || e.type === active)
-    .slice()
-    .sort((a, b) => b.date.localeCompare(a.date));
+    .map((entry, index) => ({ entry, index }))
+    .filter(({ entry }) => activeFilter === filters[0] || entry.type === activeFilter)
+    .sort((a, b) => b.entry.date.localeCompare(a.entry.date));
 
-  cardBox.replaceChildren(...list.map(makeCard));
+  cardBox.replaceChildren(...list.map(({ entry, index }) => makeCard(entry, index)));
 
   if (!list.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "ยังไม่มีบันทึกในหมู่นี้";
+    empty.textContent = "No entries here yet.";
     cardBox.appendChild(empty);
   }
 }
 
-render();
+function renderTabs() {
+  tabBox.replaceChildren(...["map", "diary"].map((name) => {
+    const b = document.createElement("button");
+    b.textContent = name === "map" ? "Map" : "Diary";
+    b.className = activeTab === name ? "active" : "";
+    b.setAttribute("aria-pressed", String(activeTab === name));
+    b.addEventListener("click", () => {
+      activeTab = name;
+      renderTabs();
+      if (name === "map") map.invalidateSize();
+    });
+    return b;
+  }));
+  mapPanel.hidden = activeTab !== "map";
+  diaryPanel.hidden = activeTab !== "diary";
+}
+
+function openDiary(index) {
+  activeTab = "diary";
+  renderTabs();
+  renderDiary();
+  const card = cardBox.querySelector('[data-index="' + index + '"]');
+  if (!card) return;
+  card.scrollIntoView({ behavior: "smooth", block: "center" });
+  card.classList.add("highlight");
+  setTimeout(() => card.classList.remove("highlight"), 2000);
+}
+
+function initMap() {
+  map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 19
+  }).addTo(map);
+
+  const points = [];
+  entries.forEach((entry, index) => {
+    const pos = coordsFromLink(entry.maps);
+    if (!pos) return;
+    points.push(pos);
+
+    const popup = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = entry.shop;
+    const date = document.createElement("div");
+    date.textContent = formatDate(entry.date);
+    const note = document.createElement("p");
+    note.textContent = entry.note || "";
+    const button = document.createElement("button");
+    button.textContent = "Open in diary";
+    button.addEventListener("click", () => openDiary(index));
+    popup.append(title, date, note, button);
+
+    L.marker(pos).addTo(map).bindPopup(popup);
+  });
+
+  if (points.length) {
+    const bounds = L.latLngBounds(points);
+    map.fitBounds(bounds, { padding: [48, 48], maxZoom: 15 });
+  }
+}
+
+renderTabs();
+renderDiary();
+initMap();

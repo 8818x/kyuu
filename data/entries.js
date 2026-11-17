@@ -1,11 +1,13 @@
-// แก้รายการด้านล่างเพื่อเพิ่มบันทึกใหม่
-// date: YYYY-MM-DD | type: "ขาหมู" หรือ "หมูกรอบ"
+// Add a shop: copy the block below.
+// maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
+// type: "Zhujiaofan" or "Shaorou"
 window.DIARY_ENTRIES = [
   {
     date: "2026-11-17",
-    shop: "ร้านตัวอย่าง",
-    type: "ขาหมู",
+    shop: "Sample Shop",
+    type: "Zhujiaofan",
     image: "images/sample.svg",
-    note: "น้ำซุปเข้มข้น หมูนุ่ม — เปิดไฟล์นี้แล้วแก้ข้อความได้เลย"
+    maps: "https://www.google.com/maps/@13.7406,100.5094,17z?hl=en",
+    note: "Rich broth, tender pork. Replace this with your own note."
   }
 ];
