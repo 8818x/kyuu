@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-17T09:42:00Z",
+  "title": "Design System: Food Diary",
+  "extensions": {
+    "colorMeta": {
+      "braise-brown": {
+        "role": "primary",
+        "displayName": "Braise Brown",
+        "canonical": "oklch(47% 0.09 55)",
+        "tonalRamp": ["oklch(22% 0.04 55)", "oklch(30% 0.06 55)", "oklch(38% 0.08 55)", "oklch(47% 0.09 55)", "oklch(58% 0.09 55)", "oklch(70% 0.08 55)", "oklch(82% 0.05 55)", "oklch(94% 0.02 55)"]
+      },
+      "soy-ink": {
+        "role": "neutral",
+        "displayName": "Soy Ink",
+        "canonical": "oklch(30% 0.03 60)",
+        "tonalRamp": ["oklch(18% 0.02 60)", "oklch(24% 0.03 60)", "oklch(30% 0.03 60)", "oklch(38% 0.03 60)", "oklch(50% 0.03 60)", "oklch(66% 0.02 60)", "oklch(82% 0.015 60)", "oklch(95% 0.01 60)"]
+      },
+      "clay-muted": {
+        "role": "neutral",
+        "displayName": "Clay Muted",
+        "canonical": "oklch(48% 0.05 60)",
+        "tonalRamp": ["oklch(24% 0.03 60)", "oklch(32% 0.04 60)", "oklch(40% 0.05 60)", "oklch(48% 0.05 60)", "oklch(58% 0.05 60)", "oklch(70% 0.04 60)", "oklch(84% 0.03 60)", "oklch(95% 0.015 60)"]
+      },
+      "paper-cream": {
+        "role": "neutral",
+        "displayName": "Paper Cream",
+        "canonical": "oklch(97% 0.012 80)",
+        "tonalRamp": ["oklch(22% 0.02 80)", "oklch(34% 0.025 80)", "oklch(46% 0.025 80)", "oklch(58% 0.02 80)", "oklch(70% 0.018 80)", "oklch(82% 0.015 80)", "oklch(92% 0.012 80)", "oklch(97% 0.012 80)"]
+      },
+      "card-white": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": ["oklch(22% 0 0)", "oklch(34% 0 0)", "oklch(46% 0 0)", "oklch(58% 0 0)", "oklch(70% 0 0)", "oklch(82% 0 0)", "oklch(92% 0 0)", "oklch(100% 0 0)"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(89% 0.03 80)",
+        "tonalRamp": ["oklch(24% 0.02 80)", "oklch(36% 0.025 80)", "oklch(48% 0.03 80)", "oklch(60% 0.03 80)", "oklch(72% 0.03 80)", "oklch(82% 0.03 80)", "oklch(89% 0.03 80)", "oklch(95% 0.02 80)"]
+      },
+      "control-line": {
+        "role": "neutral",
+        "displayName": "Control Line",
+        "canonical": "oklch(82% 0.04 75)",
+        "tonalRamp": ["oklch(24% 0.03 75)", "oklch(36% 0.04 75)", "oklch(48% 0.04 75)", "oklch(60% 0.04 75)", "oklch(70% 0.04 75)", "oklch(78% 0.04 75)", "oklch(82% 0.04 75)", "oklch(93% 0.02 75)"]
+      },
+      "pill-label": {
+        "role": "neutral",
+        "displayName": "Pill Label",
+        "canonical": "oklch(43% 0.05 55)",
+        "tonalRamp": ["oklch(22% 0.03 55)", "oklch(32% 0.04 55)", "oklch(43% 0.05 55)", "oklch(54% 0.05 55)", "oklch(66% 0.04 55)", "oklch(78% 0.03 55)", "oklch(88% 0.025 55)", "oklch(96% 0.015 55)"]
+      },
+      "tag-braise": {
+        "role": "neutral",
+        "displayName": "Tag Braise",
+        "canonical": "oklch(90% 0.04 70)",
+        "tonalRamp": ["oklch(24% 0.03 70)", "oklch(36% 0.04 70)", "oklch(48% 0.04 70)", "oklch(60% 0.04 70)", "oklch(72% 0.04 70)", "oklch(82% 0.04 70)", "oklch(90% 0.04 70)", "oklch(96% 0.02 70)"]
+      },
+      "tag-crisp": {
+        "role": "neutral",
+        "displayName": "Tag Crisp",
+        "canonical": "oklch(92% 0.06 90)",
+        "tonalRamp": ["oklch(26% 0.04 90)", "oklch(38% 0.06 90)", "oklch(50% 0.06 90)", "oklch(62% 0.06 90)", "oklch(74% 0.06 90)", "oklch(84% 0.06 90)", "oklch(92% 0.06 90)", "oklch(97% 0.03 90)"]
+      },
+      "tag-crisp-ink": {
+        "role": "neutral",
+        "displayName": "Tag Crisp Ink",
+        "canonical": "oklch(42% 0.09 80)",
+        "tonalRamp": ["oklch(20% 0.05 80)", "oklch(30% 0.07 80)", "oklch(42% 0.09 80)", "oklch(54% 0.09 80)", "oklch(66% 0.08 80)", "oklch(78% 0.06 80)", "oklch(88% 0.04 80)", "oklch(95% 0.02 80)"]
+      },
+      "crisp-gold": {
+        "role": "secondary",
+        "displayName": "Crisp Gold",
+        "canonical": "oklch(58% 0.12 70)",
+        "tonalRamp": ["oklch(22% 0.06 70)", "oklch(32% 0.09 70)", "oklch(45% 0.11 70)", "oklch(58% 0.12 70)", "oklch(70% 0.11 70)", "oklch(80% 0.09 70)", "oklch(88% 0.06 70)", "oklch(94% 0.03 70)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Site title only; behaves as a wordmark." },
+      "title": { "displayName": "Title", "purpose": "Shop names on diary cards." },
+      "body": { "displayName": "Body", "purpose": "Notes, popups, empty states." },
+      "label": { "displayName": "Label", "purpose": "Dish chips." }
+    },
+    "shadows": [
+      { "name": "ambient-surface", "value": "0 3px 12px rgba(90, 55, 25, 0.06)", "purpose": "Cards and the map at rest; separation, not emphasis." },
+      { "name": "highlight-lift", "value": "0 2px 10px rgba(138, 75, 42, 0.22)", "purpose": "Brief confirmation flash on a card reached from the map." },
+      { "name": "pin-drop", "value": "drop-shadow(0 2px 3px rgba(61, 43, 31, 0.35))", "purpose": "Lifts map pins above the basemap." }
+    ],
+    "motion": [
+      { "name": "state-transition", "value": "box-shadow 0.2s ease, border-color 0.2s ease", "purpose": "Card highlight and control state changes." },
+      { "name": "reduced-motion", "value": "transition: none", "purpose": "Applied under prefers-reduced-motion; scroll jumps become instantaneous." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Pill Button",
+      "kind": "button",
+      "refersTo": "button-pill",
+      "description": "Idle control for view tabs and dish filters; 44px tall.",
+      "html": "<button class=\"ds-pill\">Map</button>",
+      "css": ".ds-pill { border: 1px solid #d9c4ab; background: #fff; color: #6b4a32; padding: 8px 18px; min-height: 44px; border-radius: 999px; font-family: system-ui, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.6; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; } .ds-pill:hover { border-color: #8a4b2a; } .ds-pill:focus-visible { outline: 2px solid #8a4b2a; outline-offset: 3px; }"
+    },
+    {
+      "name": "Pill Button (Selected)",
+      "kind": "button",
+      "refersTo": "button-pill-active",
+      "description": "The single filled control on screen; marks the active view or filter.",
+      "html": "<button class=\"ds-pill ds-pill--active\" aria-pressed=\"true\">Map</button>",
+      "css": ".ds-pill--active { border: 1px solid #8a4b2a; background: #8a4b2a; color: #fff; padding: 8px 18px; min-height: 44px; border-radius: 999px; font-family: system-ui, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.6; cursor: pointer; } .ds-pill--active:hover { border-color: #8a4b2a; background: #8a4b2a; } .ds-pill--active:focus-visible { outline: 2px solid #8a4b2a; outline-offset: 3px; }"
+    },
+    {
+      "name": "Dish Chip (Zhujiaofan)",
+      "kind": "chip",
+      "refersTo": "tag-braise",
+      "description": "Informational tag marking the pork-leg-rice entry.",
+      "html": "<span class=\"ds-chip ds-chip--braise\">Zhujiaofan</span>",
+      "css": ".ds-chip { display: inline-block; border-radius: 999px; padding: 2px 10px; font-family: system-ui, \"Segoe UI\", sans-serif; font-size: 0.8rem; line-height: 1.6; } .ds-chip--braise { background: #f3e0cc; color: #8a4b2a; }"
+    },
+    {
+      "name": "Dish Chip (Shaorou)",
+      "kind": "chip",
+      "refersTo": "tag-crisp",
+      "description": "Informational tag marking the crispy-pork entry.",
+      "html": "<span class=\"ds-chip ds-chip--crisp\">Shaorou</span>",
+      "css": ".ds-chip { display: inline-block; border-radius: 999px; padding: 2px 10px; font-family: system-ui, \"Segoe UI\", sans-serif; font-size: 0.8rem; line-height: 1.6; } .ds-chip--crisp { background: #f7e9b8; color: #6b4a08; }"
+    },
+    {
+      "name": "Diary Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "One entry: image beside dish chip, shop name, date, and note.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card__media\"></div><div class=\"ds-card__body\"><span class=\"ds-chip ds-chip--braise\">Zhujiaofan</span><h2 class=\"ds-card__title\">Sample Shop</h2><time class=\"ds-card__date\">Nov 17, 2026</time><p class=\"ds-card__note\">Rich broth, tender pork.</p></div></article>",
+      "css": ".ds-card { display: grid; grid-template-columns: 220px 1fr; gap: 20px; background: #fff; border: 1px solid #ebddc8; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 12px rgba(90, 55, 25, 0.06); font-family: system-ui, \"Segoe UI\", sans-serif; color: #3d2b1f; } .ds-card__media { background: #f3e0cc; min-height: 180px; } .ds-card__body { padding: 18px 20px; } .ds-card .ds-chip { display: inline-block; border-radius: 999px; padding: 2px 10px; background: #f3e0cc; color: #8a4b2a; font-size: 0.8rem; line-height: 1.6; } .ds-card__title { margin: 10px 0 4px; font-size: 1.25rem; line-height: 1.6; } .ds-card__date { color: #7a5a42; font-size: 0.9rem; } .ds-card__note { margin: 12px 0 0; }"
+    },
+    {
+      "name": "Zhujiaofan Map Pin",
+      "kind": "custom",
+      "description": "Signature teardrop marker, anchored at its point.",
+      "html": "<span class=\"ds-pin\"><svg width=\"28\" height=\"38\" viewBox=\"0 0 28 38\" aria-label=\"Zhujiaofan\"><path d=\"M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z\" fill=\"#8a4b2a\" stroke=\"#fff\" stroke-width=\"2.2\"/><circle cx=\"14\" cy=\"14\" r=\"4\" fill=\"#fff\"/></svg></span>",
+      "css": ".ds-pin { display: inline-block; line-height: 0; filter: drop-shadow(0 2px 3px rgba(61, 43, 31, 0.35)); }"
+    },
+    {
+      "name": "Shaorou Map Pin",
+      "kind": "custom",
+      "description": "Signature diamond marker, anchored at its centre.",
+      "html": "<span class=\"ds-pin\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 26 26\" aria-label=\"Shaorou\"><rect x=\"4.5\" y=\"4.5\" width=\"17\" height=\"17\" rx=\"3\" transform=\"rotate(45 13 13)\" fill=\"#a8761a\" stroke=\"#fff\" stroke-width=\"2.2\"/></svg></span>",
+      "css": ".ds-pin { display: inline-block; line-height: 0; filter: drop-shadow(0 2px 3px rgba(61, 43, 31, 0.35)); }"
+    },
+    {
+      "name": "Bowl Mark",
+      "kind": "custom",
+      "description": "Hand-drawn stroke bowl above the wordmark; the only illustrative chrome.",
+      "html": "<span class=\"ds-mark\"><svg viewBox=\"0 0 48 48\" fill=\"none\" aria-label=\"Bowl\"><path d=\"M8 25h32c0 10-7 17-16 17S8 35 8 25Z\" stroke=\"#8a4b2a\" stroke-width=\"2.5\"/><path d=\"M5 25h38\" stroke=\"#8a4b2a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><path d=\"m17 15 6-9m3 9 6-9\" stroke=\"#8a4b2a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/></svg></span>",
+      "css": ".ds-mark { display: block; width: 52px; height: 52px; } .ds-mark svg { width: 100%; height: 100%; display: block; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Field Guide",
+    "overview": "This is a small, careful record kept by one person who went to these places and ate these things. It reads like a field guide rather than a review site: a cream page like uncoated stock, one accent the colour of a braise, and specimens laid out plainly with their details attached. Nothing competes with the record. The restraint is the point; the warmth keeps it human.\n\nSurfaces are soft and tactile — pill controls you could press with a thumb, cards with gently rounded corners, borders that are barely there. Depth is almost entirely absent: a whisper shadow separates a card from the page and nothing more. The system never dramatises itself, because the subject (a plate of pork, a shop on a street) is the thing worth looking at.\n\nTwo dishes have to be told apart instantly, so the system carries a second, quieter signal: a shape. Zhujiaofan is round and brown, Shaorou is a gold diamond. Colour and shape always travel together, never colour alone.",
+    "keyCharacteristics": [
+      "Cream ground (#faf5ec), never pure white as the page.",
+      "One accent only: braise brown (#8a4b2a).",
+      "Roundness used as a language: pills for controls, 14px corners for surfaces.",
+      "Near-flat depth; shadows are a whisper, never a statement.",
+      "Dish identity carried by shape plus colour."
+    ],
+    "rules": [
+      { "name": "The Braise Is the Accent Rule", "body": "There is exactly one accent hue. Never add a second brand colour, a gradient, or a coloured shadow; Shaorou's gold exists only as a dish marker, never as UI emphasis.", "section": "colors" },
+      { "name": "The Warm Neutral Rule", "body": "No gray text and no pure-white page. Secondary text is Clay Muted; anything that looks like chrome is tinted brown.", "section": "colors" },
+      { "name": "The One Face Rule", "body": "No second typeface is introduced. Emphasis comes from size, weight, and tracking — never a new family.", "section": "typography" },
+      { "name": "The Whisper Shadow Rule", "body": "If a shadow is visible as a shadow, it is too strong. Shadows separate; they never announce.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep exactly one accent: Braise Brown (#8a4b2a), used sparingly.",
+      "Do tint all secondary text Clay Muted (#7a5a42) and never reach for gray.",
+      "Do use pills (999px) for anything interactive and 14px corners for surfaces.",
+      "Do pair dish colour with dish shape: round brown for Zhujiaofan, gold diamond for Shaorou.",
+      "Do keep every control at 44px tall and keep the :focus-visible outline visible.",
+      "Do keep shadows at the ambient level (0 3px 12px rgba(90, 55, 25, 0.06)) or lighter.",
+      "Do hold the 900px column and the single 600px breakpoint."
+    ],
+    "donts": [
+      "Don't add a second accent hue, gradient, or coloured glow.",
+      "Don't use pure white or pure black as the page background or body text.",
+      "Don't introduce a second typeface or an icon font; icons are inline SVG strokes.",
+      "Don't differentiate the two dishes by colour alone.",
+      "Don't add hard-offset or high-opacity shadows, or nest cards inside cards.",
+      "Don't set body text below 0.8rem, and don't let the dish chips grow into buttons."
+    ]
+  }
+}
