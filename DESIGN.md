@@ -97,6 +97,8 @@ Two dishes have to be told apart instantly, so the system carries a second, quie
 - Near-flat depth; shadows are a whisper, never a statement.
 - Dish identity carried by shape plus colour.
 
+**Token layer.** The system is implemented as CSS custom properties at the top of `styles.css`: primitive `--color-*` values, then semantic aliases (`--surface-page`, `--surface-raised`, `--text-primary`, `--text-secondary`, `--accent`, `--border-subtle`, `--border-control`, `--radius-pill`, `--radius-surface`, `--space-*`, `--text-*`, `--shadow-ambient`). New work consumes the semantic aliases; primitives exist only to define them. Controls use one `.btn` pill class whose selected state is driven by `aria-pressed`, and dish labels use one `.chip` class with a `.chip--crisp` variant.
+
 ## Colors
 
 A braised-and-lacquered palette: warm off-white paper, deep soy-brown ink, and one caramel-brown accent standing in for the pork itself.

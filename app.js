@@ -51,7 +51,7 @@ function makeCard(entry, index) {
   body.className = "card-body";
 
   const tag = document.createElement("span");
-  tag.className = "tag";
+  tag.className = "chip";
   tag.textContent = entry.type;
 
   const name = document.createElement("h2");
@@ -97,6 +97,7 @@ function renderCards() {
       : "No shops yet.";
 
     const reset = document.createElement("button");
+    reset.className = "btn";
     reset.textContent = "Show all";
     reset.addEventListener("click", () => {
       setFilter(filters[0]);
@@ -111,6 +112,7 @@ function renderCards() {
 
 const filterButtons = filters.map((label) => {
   const b = document.createElement("button");
+  b.className = "btn";
   b.textContent = label;
   b.dataset.filter = label;
   b.addEventListener("click", () => setFilter(label));
@@ -119,9 +121,7 @@ const filterButtons = filters.map((label) => {
 
 function updateFilters() {
   filterButtons.forEach((b) => {
-    const on = b.dataset.filter === activeFilter;
-    b.className = on ? "active" : "";
-    b.setAttribute("aria-pressed", String(on));
+    b.setAttribute("aria-pressed", String(b.dataset.filter === activeFilter));
   });
 }
 
@@ -136,6 +136,7 @@ function setFilter(label) {
 
 const tabButtons = [["map", "Map"], ["diary", "Diary"]].map(([name, label]) => {
   const b = document.createElement("button");
+  b.className = "btn";
   b.textContent = label;
   b.dataset.tab = name;
   b.addEventListener("click", () => setTab(name));
@@ -144,9 +145,7 @@ const tabButtons = [["map", "Map"], ["diary", "Diary"]].map(([name, label]) => {
 
 function updateTabs() {
   tabButtons.forEach((b) => {
-    const on = b.dataset.tab === activeTab;
-    b.className = on ? "active" : "";
-    b.setAttribute("aria-pressed", String(on));
+    b.setAttribute("aria-pressed", String(b.dataset.tab === activeTab));
   });
   mapPanel.hidden = activeTab !== "map";
   diaryPanel.hidden = activeTab !== "diary";
@@ -231,7 +230,7 @@ function openSheet(index, marker) {
   sheetTrigger = marker && marker.getElement ? marker.getElement() : null;
 
   sheetTag.textContent = entry.type;
-  sheetTag.className = "tag " + (entry.type === "Shaorou" ? "tag--crisp" : "tag--stew");
+  sheetTag.className = "chip" + (entry.type === "Shaorou" ? " chip--crisp" : "");
   sheetShop.textContent = entry.shop;
   sheetDate.textContent = formatDate(entry.date);
   sheetNote.textContent = entry.note || "";
@@ -315,7 +314,7 @@ function initMap() {
 
     const popup = document.createElement("div");
     const tag = document.createElement("span");
-    tag.className = "tag " + (entry.type === "Shaorou" ? "tag--crisp" : "tag--stew");
+    tag.className = "chip" + (entry.type === "Shaorou" ? " chip--crisp" : "");
     tag.textContent = entry.type;
     const title = document.createElement("strong");
     title.textContent = entry.shop;
@@ -324,6 +323,7 @@ function initMap() {
     const note = document.createElement("p");
     note.textContent = entry.note || "";
     const button = document.createElement("button");
+    button.className = "btn";
     button.textContent = "Open in diary";
     button.addEventListener("click", () => openDiary(index));
     popup.append(tag, title, date, note, button);
