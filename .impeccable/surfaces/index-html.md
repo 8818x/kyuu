@@ -52,3 +52,18 @@ Sheet anchors to the bottom edge, above the safe area, spanning the viewport wid
 - The sheet must be announced to assistive tech and must not trap focus.
 - Keyboard: Escape closes it; the trigger pin remains the focused element after closing.
 - Open: whether the sheet gets a drag-to-dismiss handle. Default: no — a close control plus map-tap dismissal is enough, and a handle promises gesture physics this surface does not need.
+
+## Direction contract
+
+THESIS: The diary is a dark reading room for two dishes — an evening dining room with a candle on the table, not a bright café menu. It refuses the bright cream food-blog default entirely; the reinsurance is warmth inside darkness, never glare.
+
+OWN-WORLD: Ink ground #171A20, raised surface #292B35, warm cream text #D8CEC4, muted clay text #A09A94, wine #644047 as the one committed accent, gold #878B64 as the dish counterpoint. Pills 999px, surfaces 14px, one hairline. Dark CARTO basemap; wine teardrop and gold diamond pins outlined in the ground colour; gold focus ring and gold bowl mark.
+
+STORY: The visitor lands on a dark map of where this person ate. They tap a pin, read the entry in a sheet at thumb height, and jump into the diary for the longer note. They leave knowing this is one person's record, read at night.
+
+FIRST VIEWPORT: Gold bowl mark, display title and subtitle on a hairline masthead; then two pill tabs; then the one-line shop and dish count with its two shape keys; then the dark map filling the fold. The primary action is a pin.
+
+FORM: Code-led, Read-surface document shell with the world owning the frame. The direction was pinned by the user's palette comp, so no roll was dealt; the palette's hexes govern and nothing else was invented beyond one lifted wine used for pin fills to clear 3:1 on the dark basemap.
+seed: none (unavailable)
+
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

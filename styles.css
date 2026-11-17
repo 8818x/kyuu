@@ -1,28 +1,29 @@
-/* Design tokens — see DESIGN.md */
+/* Design tokens — dark "Midnight Bistro" world. See DESIGN.md */
 :root {
+  color-scheme: dark;
+
   /* primitives */
-  --color-braise: #8a4b2a;
-  --color-braise-deep: #7a4224;
-  --color-soy-ink: #3d2b1f;
-  --color-clay-muted: #7a5a42;
-  --color-paper-cream: #faf5ec;
-  --color-card-white: #ffffff;
-  --color-hairline: #ebddc8;
-  --color-control-line: #d9c4ab;
-  --color-pill-label: #6b4a32;
-  --color-tag-braise: #f3e0cc;
-  --color-tag-crisp: #f7e9b8;
-  --color-tag-crisp-ink: #6b4a08;
-  --color-crisp-gold: #a8761a;
+  --color-ink: #171a20;
+  --color-surface: #292b35;
+  --color-text: #d8cec4;
+  --color-text-muted: #a09a94;
+  --color-wine: #644047;
+  --color-wine-deep: #4f3238;
+  --color-wine-lift: #8b5c66;
+  --color-gold: #878b64;
+  --color-border-subtle: #383b45;
+  --color-border-control: #6e7381;
 
   /* semantic surfaces and text */
-  --surface-page: var(--color-paper-cream);
-  --surface-raised: var(--color-card-white);
-  --text-primary: var(--color-soy-ink);
-  --text-secondary: var(--color-clay-muted);
-  --accent: var(--color-braise);
-  --border-subtle: var(--color-hairline);
-  --border-control: var(--color-control-line);
+  --surface-page: var(--color-ink);
+  --surface-raised: var(--color-surface);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-muted);
+  --accent: var(--color-wine);
+  --accent-fill: var(--color-wine-lift);
+  --accent-alt: var(--color-gold);
+  --border-subtle: var(--color-border-subtle);
+  --border-control: var(--color-border-control);
 
   /* radius */
   --radius-pill: 999px;
@@ -49,10 +50,10 @@
   --tracking-display: -0.03em;
 
   /* elevation */
-  --shadow-ambient: 0 3px 12px rgba(90, 55, 25, 0.06);
-  --shadow-highlight: 0 2px 10px rgba(138, 75, 42, 0.22);
-  --shadow-sheet: 0 -2px 12px rgba(90, 55, 25, 0.08);
-  --shadow-pin: drop-shadow(0 2px 3px rgba(61, 43, 31, 0.35));
+  --shadow-ambient: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-highlight: 0 0 0 1px var(--color-gold), 0 2px 10px rgba(0, 0, 0, 0.5);
+  --shadow-sheet: 0 -8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-pin: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 
   /* motion */
   --duration-state: 0.2s;
@@ -75,6 +76,12 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: var(--leading-body);
+  caret-color: var(--color-gold);
+}
+
+::selection {
+  background: var(--color-wine);
+  color: var(--color-text);
 }
 
 header {
@@ -89,7 +96,7 @@ header {
   width: 52px;
   height: 52px;
   margin-bottom: var(--space-2);
-  color: var(--accent);
+  color: var(--color-gold);
 }
 
 .mark svg { width: 100%; height: 100%; display: block; }
@@ -115,7 +122,7 @@ header p { margin: 10px 0 0; color: var(--text-secondary); }
 .btn {
   border: 1px solid var(--border-control);
   background: var(--surface-raised);
-  color: var(--color-pill-label);
+  color: var(--text-primary);
   padding: var(--space-1) var(--space-3);
   min-height: var(--tap-target);
   border-radius: var(--radius-pill);
@@ -123,21 +130,23 @@ header p { margin: 10px 0 0; color: var(--text-secondary); }
   cursor: pointer;
 }
 
+.btn:hover { border-color: var(--color-gold); }
+
 .btn[aria-pressed="true"] {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--color-card-white);
+  color: var(--color-text);
 }
 
 .btn--primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--color-card-white);
+  color: var(--color-text);
 }
 
 .btn--primary:hover {
-  background: var(--color-braise-deep);
-  border-color: var(--color-braise-deep);
+  background: var(--color-wine-deep);
+  border-color: var(--color-wine-deep);
 }
 
 #map-panel { max-width: var(--container); margin: 0 auto; }
@@ -147,6 +156,7 @@ header p { margin: 10px 0 0; color: var(--text-secondary); }
   border-radius: var(--radius-surface);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-ambient);
+  background: var(--surface-raised);
 }
 
 #cards {
@@ -169,17 +179,21 @@ header p { margin: 10px 0 0; color: var(--text-secondary); }
 }
 
 .card.highlight {
-  border-color: var(--accent);
+  border-color: var(--color-gold);
   box-shadow: var(--shadow-highlight);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--color-gold);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
+}
+
+.card--no-media {
+  grid-template-columns: 1fr;
 }
 
 .card img {
@@ -201,13 +215,13 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
   font-size: var(--text-label);
   padding: 2px 10px;
   border-radius: var(--radius-pill);
-  background: var(--color-tag-braise);
-  color: var(--accent);
+  background: var(--color-wine);
+  color: var(--color-text);
 }
 
 .chip--crisp {
-  background: var(--color-tag-crisp);
-  color: var(--color-tag-crisp-ink);
+  background: var(--color-gold);
+  color: var(--color-ink);
 }
 
 .summary {
@@ -228,13 +242,13 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
 .swatch--stew {
   width: 10px;
   height: 12px;
-  background: var(--accent);
+  background: var(--accent-fill);
   border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
 }
 .swatch--crisp {
   width: 9px;
   height: 9px;
-  background: var(--color-crisp-gold);
+  background: var(--color-gold);
   transform: rotate(45deg);
 }
 
@@ -247,6 +261,18 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
   inset: -10px;
   border-radius: 50%;
 }
+
+.link {
+  display: inline-block;
+  margin-top: var(--space-2);
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.link:hover { text-decoration-color: var(--text-primary); }
 
 .leaflet-popup-content .chip { margin-bottom: 6px; }
 
@@ -266,6 +292,37 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
 
 .leaflet-popup-content button { margin-top: var(--space-1); }
 
+/* Leaflet chrome, in the world rather than its defaults */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-ambient);
+}
+
+.leaflet-popup-content-wrapper {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-surface);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--text-secondary);
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--surface-raised);
+}
+
+.leaflet-control-attribution,
+.leaflet-control-zoom a {
+  background: var(--surface-raised) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.leaflet-control-attribution a { color: var(--text-primary) !important; }
+
 /* Mobile detail sheet */
 .sheet {
   position: fixed;
@@ -275,12 +332,14 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
   z-index: 1200;
   transform: translateY(100%);
   visibility: hidden;
-  transition: transform var(--duration-sheet) var(--ease-out);
+  transition: transform var(--duration-sheet) var(--ease-out),
+    visibility 0s linear var(--duration-sheet);
 }
 
 .sheet[data-open="true"] {
   transform: translateY(0);
   visibility: visible;
+  transition: transform var(--duration-sheet) var(--ease-out), visibility 0s;
 }
 
 .sheet-inner {
@@ -325,6 +384,10 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
 
 .sheet-note { margin: 10px 0 0; overflow: auto; }
 
+#sheet-tag { align-self: flex-start; }
+
+.sheet-inner .link { align-self: flex-start; }
+
 .sheet-open {
   margin-top: 14px;
   align-self: flex-start;
@@ -344,7 +407,7 @@ time { color: var(--text-secondary); font-size: var(--text-small); }
   .mark { width: 40px; height: 40px; }
   .card { grid-template-columns: 1fr; }
   .card img { height: 180px; min-height: 0; }
-  #map { height: 50vh; min-height: 300px; }
+  #map { height: calc(100svh - 310px); min-height: 300px; }
   .btn { padding: var(--space-1) var(--space-3); }
   .leaflet-control-zoom { display: none; }
 }

@@ -32,6 +32,16 @@ function formatDate(iso) {
   }).format(new Date(y, m - 1, d));
 }
 
+function makeMapsLink(link) {
+  const a = document.createElement("a");
+  a.className = "link";
+  a.href = link;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.textContent = "Open in Google Maps";
+  return a;
+}
+
 function makeCard(entry, index) {
   const el = document.createElement("article");
   el.className = "card";
@@ -43,8 +53,13 @@ function makeCard(entry, index) {
     img.src = entry.image;
     img.alt = entry.shop;
     img.loading = "lazy";
-    img.onerror = () => img.remove();
+    img.onerror = () => {
+      img.remove();
+      el.classList.add("card--no-media");
+    };
     el.appendChild(img);
+  } else {
+    el.classList.add("card--no-media");
   }
 
   const body = document.createElement("div");
@@ -64,6 +79,7 @@ function makeCard(entry, index) {
   note.textContent = entry.note || "";
 
   body.append(tag, name, date, note);
+  if (entry.maps) body.appendChild(makeMapsLink(entry.maps));
   el.appendChild(body);
   return el;
 }
@@ -76,7 +92,7 @@ function visibleEntries() {
 }
 
 function countPhrase() {
-  return entries.length === 1 ? "1 shop." : entries.length + " shops.";
+  return entries.length === 1 ? "1 entry." : entries.length + " entries.";
 }
 
 function announce(text) {
@@ -105,7 +121,8 @@ function renderCards() {
       if (all) all.focus();
     });
 
-    empty.append(message, reset);
+    empty.append(message);
+    if (entries.length) empty.appendChild(reset);
     cardBox.appendChild(empty);
   }
 }
@@ -129,9 +146,11 @@ function setFilter(label) {
   activeFilter = label;
   updateFilters();
   renderCards();
+  const shown = visibleEntries().length;
+  const shownText = shown === 1 ? "1 entry." : shown + " entries.";
   announce(label === filters[0]
-    ? "Showing all shops. " + countPhrase()
-    : "Showing " + label + ". " + countPhrase());
+    ? "Showing all entries. " + shownText
+    : "Showing " + label + ". " + shownText);
 }
 
 const tabButtons = [["map", "Map"], ["diary", "Diary"]].map(([name, label]) => {
@@ -185,13 +204,13 @@ function openDiary(index) {
 const STEW_PIN =
   '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
   '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-  'fill="#8a4b2a" stroke="#fff" stroke-width="2.2"/>' +
-  '<circle cx="14" cy="14" r="4" fill="#fff"/></svg>';
+  'fill="#8b5c66" stroke="#171a20" stroke-width="2.2"/>' +
+  '<circle cx="14" cy="14" r="4" fill="#171a20"/></svg>';
 
 const CRISP_PIN =
   '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
   '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#a8761a" stroke="#fff" stroke-width="2.2"/></svg>';
+  'fill="#878b64" stroke="#171a20" stroke-width="2.2"/></svg>';
 
 function pinIcon(type) {
   const crisp = type === "Shaorou";
@@ -211,6 +230,7 @@ const sheetTag = document.getElementById("sheet-tag");
 const sheetShop = document.getElementById("sheet-shop");
 const sheetDate = document.getElementById("sheet-date");
 const sheetNote = document.getElementById("sheet-note");
+const sheetLink = document.getElementById("sheet-link");
 let sheetIndex = -1;
 let sheetTrigger = null;
 
@@ -234,6 +254,13 @@ function openSheet(index, marker) {
   sheetShop.textContent = entry.shop;
   sheetDate.textContent = formatDate(entry.date);
   sheetNote.textContent = entry.note || "";
+
+  if (entry.maps) {
+    sheetLink.href = entry.maps;
+    sheetLink.hidden = false;
+  } else {
+    sheetLink.hidden = true;
+  }
 
   sheet.dataset.open = "true";
   sheet.setAttribute("aria-hidden", "false");
@@ -280,7 +307,7 @@ function renderSummary() {
 
   const lead = document.createElement("span");
   lead.className = "summary-lead";
-  lead.textContent = entries.length === 1 ? "1 shop" : entries.length + " shops";
+  lead.textContent = entries.length === 1 ? "1 entry" : entries.length + " entries";
 
   const keys = Object.keys(counts).map((type) => {
     const key = document.createElement("span");
@@ -301,10 +328,19 @@ function renderSummary() {
 
 function initMap() {
   map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors",
-    maxZoom: 19
-  }).addTo(map);
+  const tiles = L.tileLayer(
+    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
+      maxZoom: 19
+    }
+  ).addTo(map);
+
+  let tileFailures = 0;
+  tiles.on("tileerror", () => {
+    tileFailures += 1;
+    if (tileFailures === 1) announce("The map tiles could not load.");
+  });
 
   const points = [];
   entries.forEach((entry, index) => {
@@ -323,10 +359,12 @@ function initMap() {
     const note = document.createElement("p");
     note.textContent = entry.note || "";
     const button = document.createElement("button");
-    button.className = "btn";
+    button.className = "btn btn--primary";
     button.textContent = "Open in diary";
     button.addEventListener("click", () => openDiary(index));
-    popup.append(tag, title, date, note, button);
+    popup.append(tag, title, date, note);
+    if (entry.maps) popup.appendChild(makeMapsLink(entry.maps));
+    popup.appendChild(button);
 
     const label = entry.shop + ", " + entry.type;
     const marker = L.marker(pos, { icon: pinIcon(entry.type), title: label }).addTo(map);

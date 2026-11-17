@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Food Diary</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
   <header>
@@ -17,7 +17,7 @@
       </svg>
     </span>
     <h1>Food Diary</h1>
-    <p>A diary of Zhujiaofan &amp; Shaorou, one shop at a time.</p>
+    <p>A diary of Zhujiaofan (pork leg rice) &amp; Shaorou (crispy pork), one shop at a time.</p>
   </header>
 
   <nav id="tabs" aria-label="View"></nav>
@@ -45,12 +45,13 @@
       <h2 id="sheet-shop" class="sheet-shop"></h2>
       <p id="sheet-date" class="sheet-date"></p>
       <p id="sheet-note" class="sheet-note"></p>
+      <a id="sheet-link" class="link" href="#" target="_blank" rel="noopener noreferrer" hidden>Open in Google Maps</a>
       <button id="sheet-open" class="btn btn--primary sheet-open" type="button">Open in diary</button>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data/entries.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+  <script src="data/entries.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
