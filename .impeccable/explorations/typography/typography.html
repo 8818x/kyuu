@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Five typography systems — Food Diary</title><link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Pridi:wght@400;500;600&family=Taviraj:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&family=Sarabun:wght@400;500;600&family=Prompt:wght@400;500;600&family=Krub:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0c0c10;color:#e9e9ef;font-family:Arial,sans-serif;padding:36px 28px 80px}
+.page{max-width:1280px;margin:0 auto}h1{font-size:30px;margin:0 0 8px}.lead{color:#a2a2ae;max-width:960px;line-height:1.6;margin:0 0 12px}
+.warn{border:1px solid #2b2b36;padding:10px 14px;font-size:13px;color:#c9c9d2;margin:0 0 34px}
+.direction{border-top:1px solid #2b2b36;padding:26px 0 40px}.head{display:flex;align-items:baseline;gap:14px}
+.num{font:12px Arial,sans-serif;color:#9a9aa6;border:1px solid #2b2b36;padding:4px 8px}
+h2{font-size:24px;margin:0}.tag{font-size:12px;color:#9a9aa6;margin-left:auto}
+.concept{color:#b9b9c4;font-size:13px;margin:10px 0 18px}.concept b{color:#e9e9ef;font-weight:600}
+.previews{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px}
+figure{margin:0}figcaption{font:11px Arial,sans-serif;color:#9a9aa6;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.mini{background:#f7f5ef;color:#161514;border:1px solid #d5cfc4;padding:14px;min-height:170px}
+.mini.narrow{width:340px;padding:10px}
+.mini-top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #bf2f1e;padding-bottom:8px;font-size:12px;color:#6a655e}
+.mini-top b{font-size:17px;color:#161514}
+.mini-filter{font-size:10px;color:#bf2f1e;padding:8px 0;text-transform:uppercase}
+.mini-hero{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.mini.narrow .mini-hero{grid-template-columns:1fr;gap:10px}
+.mini-photo{position:relative;background:#fff;border:1px solid #d5cfc4;padding:6px}
+.mini-photo img{display:block;width:100%;height:110px;object-fit:cover}
+.mini.narrow .mini-photo img{height:110px}
+.mini-photo span{position:absolute;top:-8px;left:-1px;background:#bf2f1e;color:#fff;font:9px Arial,sans-serif;padding:3px 6px}
+.mini-copy h3{margin:8px 0 6px;color:#161514}
+.mini-copy p{font-size:13px;color:#161514;margin:0 0 8px}
+.mini-meta{font-size:10px;color:#6a655e}
+.mini-action{font-size:10px;color:#bf2f1e;border-bottom:1px solid #bf2f1e;padding-bottom:2px}
+.mini-strip{display:flex;gap:6px;margin-top:12px}
+.mini-strip img{width:58px;height:38px;object-fit:cover;border:1px solid #d5cfc4}
+.mini-map{display:grid;grid-template-columns:38% 62%;border:1px solid #d5cfc4;height:130px}
+.mini-list{background:#ece8de;border-right:1px solid #d5cfc4;padding:8px;font-size:10px;color:#6a655e}
+.mini-list div{color:#bf2f1e;font-size:10px;margin-bottom:8px}
+.mini-list strong{display:block;font-size:12px;color:#161514;margin-top:6px}
+.mini-list small{font-size:9px;color:#6a655e}
+.mini-canvas{position:relative;background:#e4e0d6}
+.mini-canvas i{position:absolute;left:48%;top:44px;width:14px;height:14px;background:#bf2f1e;transform:rotate(45deg);border:2px solid #fff}
+.specimen{background:#fff;border:1px solid #d5cfc4;padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin-bottom:16px;color:#161514}
+.sp-label{font-size:9px;color:#bf2f1e;text-transform:uppercase}
+.sp-thai{font-size:22px}.sp-latin{font-size:13px;color:#6a655e}
+.details{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+table{width:100%;border-collapse:collapse;font-size:12px;color:#c9c9d2}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #2b2b36}th{color:#8f8f9b;font-weight:400}
+.fit p{font-size:13px;line-height:1.6;color:#b9b9c4;margin:0 0 12px}.good{color:#8fd6b4}.bad{color:#e0a5a5}
+@media(max-width:900px){.previews,.details{grid-template-columns:1fr}.mini.narrow{width:100%;max-width:340px}}
+</style></head><body><div class="page">
+<h1>Five typography systems for Food Diary</h1>
+<p class="lead">Same palette, same layout, same Diary and Map content in every preview. Only the type system changes. Desktop and phone previews use the real fonts loaded in this page.</p>
+<p class="warn">Visual exploration only. No production code changed. Thai line is a labelled font specimen, not site copy. All fonts shown have a Thai subset and a system fallback.</p>
+<section class="direction">
+ <div class="head"><span class="num">01</span><h2>Quiet Serif</h2><span class="tag">Editorial / literary</span></div>
+ <p class="concept">Heading <b>Pridi</b> · Body <b>Noto Sans Thai</b> · Labels <b>IBM Plex Sans Thai</b></p>
+ <div class="previews">
+  <figure><figcaption>Diary · desktop</figcaption><div class="mini wide dir-1">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · desktop</figcaption><div class="mini wide dir-1">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+  <figure><figcaption>Diary · mobile 390</figcaption><div class="mini narrow dir-1">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · mobile 390</figcaption><div class="mini narrow dir-1">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+ </div>
+ <div class="specimen dir-1"><span class="sp-label">THAI SPECIMEN / FONT TEST</span><span class="sp-thai">ข้าวขาหมู · หมูกรอบ · ร้านอาหาร</span><span class="sp-latin">Khao kha mu · crispy pork · restaurant</span></div>
+ <div class="details">
+  <table><tr><th>Role</th><th>Font</th><th>Size (desk / mob)</th><th>Weight</th><th>Line height</th><th>Letter spacing</th></tr>
+  <tr><td>Heading</td><td>Pridi</td><td>64 / 40px</td><td>500</td><td>1.12</td><td>-0.02em</td></tr>
+  <tr><td>Body</td><td>Noto Sans Thai</td><td>17 / 16px</td><td>400</td><td>1.75</td><td>0</td></tr>
+  <tr><td>Label</td><td>IBM Plex Sans Thai</td><td>12px</td><td>500</td><td>1.4</td><td>0.12em</td></tr></table>
+  <div class="fit"><p><b class="good">Strengths</b> A real Thai serif gives the page a printed, considered voice. Latin and Thai share the same bookish character.</p><p><b class="bad">Weaknesses</b> Pridi is the most literary option here; small Thai serif labels can look light on a phone.</p></div>
+ </div>
+ <style>
+ .dir-1 .mini h3{font-family:'Pridi',sans-serif;font-size:clamp(28px,4vw,64);font-weight:500;line-height:1.12;letter-spacing:-0.02em}
+ .dir-1 .mini p,.dir-1 .mini-list strong{font-family:'Noto Sans Thai',sans-serif;font-weight:400;line-height:1.75;letter-spacing:0}
+ .dir-1 .mini-top,.dir-1 .mini-filter,.dir-1 .mini-meta,.dir-1 .mini-action,.dir-1 .mini-list div,.dir-1 .mini-list small,.dir-1 .sp-label{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:500;letter-spacing:0.12em;line-height:1.4}
+ .dir-1 .sp-thai{font-family:'Pridi',sans-serif}.dir-1 .sp-latin{font-family:'Noto Sans Thai',sans-serif}
+ </style>
+</section><section class="direction">
+ <div class="head"><span class="num">02</span><h2>Civic Sans</h2><span class="tag">Neutral / highly legible</span></div>
+ <p class="concept">Heading <b>Sarabun</b> · Body <b>Sarabun</b> · Labels <b>IBM Plex Sans Thai</b></p>
+ <div class="previews">
+  <figure><figcaption>Diary · desktop</figcaption><div class="mini wide dir-2">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · desktop</figcaption><div class="mini wide dir-2">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+  <figure><figcaption>Diary · mobile 390</figcaption><div class="mini narrow dir-2">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · mobile 390</figcaption><div class="mini narrow dir-2">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+ </div>
+ <div class="specimen dir-2"><span class="sp-label">THAI SPECIMEN / FONT TEST</span><span class="sp-thai">ข้าวขาหมู · หมูกรอบ · ร้านอาหาร</span><span class="sp-latin">Khao kha mu · crispy pork · restaurant</span></div>
+ <div class="details">
+  <table><tr><th>Role</th><th>Font</th><th>Size (desk / mob)</th><th>Weight</th><th>Line height</th><th>Letter spacing</th></tr>
+  <tr><td>Heading</td><td>Sarabun</td><td>60 / 38px</td><td>600</td><td>1.15</td><td>-0.02em</td></tr>
+  <tr><td>Body</td><td>Sarabun</td><td>17 / 16px</td><td>400</td><td>1.75</td><td>0</td></tr>
+  <tr><td>Label</td><td>IBM Plex Sans Thai</td><td>12px</td><td>500</td><td>1.4</td><td>0.12em</td></tr></table>
+  <div class="fit"><p><b class="good">Strengths</b> Sarabun was designed for Thai government use: exceptionally clear at small sizes and on low-end phones.</p><p><b class="bad">Weaknesses</b> The least distinctive option. It reads correct and calm, but not especially personal.</p></div>
+ </div>
+ <style>
+ .dir-2 .mini h3{font-family:'Sarabun',sans-serif;font-size:clamp(28px,4vw,60);font-weight:600;line-height:1.15;letter-spacing:-0.02em}
+ .dir-2 .mini p,.dir-2 .mini-list strong{font-family:'Sarabun',sans-serif;font-weight:400;line-height:1.75;letter-spacing:0}
+ .dir-2 .mini-top,.dir-2 .mini-filter,.dir-2 .mini-meta,.dir-2 .mini-action,.dir-2 .mini-list div,.dir-2 .mini-list small,.dir-2 .sp-label{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:500;letter-spacing:0.12em;line-height:1.4}
+ .dir-2 .sp-thai{font-family:'Sarabun',sans-serif}.dir-2 .sp-latin{font-family:'Sarabun',sans-serif}
+ </style>
+</section><section class="direction">
+ <div class="head"><span class="num">03</span><h2>Modern Grotesk</h2><span class="tag">Contemporary / precise</span></div>
+ <p class="concept">Heading <b>Prompt</b> · Body <b>Prompt</b> · Labels <b>Krub</b></p>
+ <div class="previews">
+  <figure><figcaption>Diary · desktop</figcaption><div class="mini wide dir-3">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · desktop</figcaption><div class="mini wide dir-3">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+  <figure><figcaption>Diary · mobile 390</figcaption><div class="mini narrow dir-3">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · mobile 390</figcaption><div class="mini narrow dir-3">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+ </div>
+ <div class="specimen dir-3"><span class="sp-label">THAI SPECIMEN / FONT TEST</span><span class="sp-thai">ข้าวขาหมู · หมูกรอบ · ร้านอาหาร</span><span class="sp-latin">Khao kha mu · crispy pork · restaurant</span></div>
+ <div class="details">
+  <table><tr><th>Role</th><th>Font</th><th>Size (desk / mob)</th><th>Weight</th><th>Line height</th><th>Letter spacing</th></tr>
+  <tr><td>Heading</td><td>Prompt</td><td>62 / 40px</td><td>600</td><td>1.1</td><td>-0.03em</td></tr>
+  <tr><td>Body</td><td>Prompt</td><td>17 / 16px</td><td>400</td><td>1.7</td><td>0</td></tr>
+  <tr><td>Label</td><td>Krub</td><td>12px</td><td>500</td><td>1.4</td><td>0.14em</td></tr></table>
+  <div class="fit"><p><b class="good">Strengths</b> Prompt pairs Thai and Latin with the same modern geometry. Clean hierarchy, strong shop names, good mobile rhythm.</p><p><b class="bad">Weaknesses</b> Slightly app-like in tone; long Thai notes feel cooler than the personal-journal brief.</p></div>
+ </div>
+ <style>
+ .dir-3 .mini h3{font-family:'Prompt',sans-serif;font-size:clamp(28px,4vw,62);font-weight:600;line-height:1.1;letter-spacing:-0.03em}
+ .dir-3 .mini p,.dir-3 .mini-list strong{font-family:'Prompt',sans-serif;font-weight:400;line-height:1.7;letter-spacing:0}
+ .dir-3 .mini-top,.dir-3 .mini-filter,.dir-3 .mini-meta,.dir-3 .mini-action,.dir-3 .mini-list div,.dir-3 .mini-list small,.dir-3 .sp-label{font-family:'Krub',sans-serif;font-weight:500;letter-spacing:0.14em;line-height:1.4}
+ .dir-3 .sp-thai{font-family:'Prompt',sans-serif}.dir-3 .sp-latin{font-family:'Prompt',sans-serif}
+ </style>
+</section><section class="direction">
+ <div class="head"><span class="num">04</span><h2>Humanist Loop</h2><span class="tag">Soft / human</span></div>
+ <p class="concept">Heading <b>IBM Plex Sans Thai Looped</b> · Body <b>IBM Plex Sans Thai</b> · Labels <b>IBM Plex Sans Thai</b></p>
+ <div class="previews">
+  <figure><figcaption>Diary · desktop</figcaption><div class="mini wide dir-4">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · desktop</figcaption><div class="mini wide dir-4">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+  <figure><figcaption>Diary · mobile 390</figcaption><div class="mini narrow dir-4">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · mobile 390</figcaption><div class="mini narrow dir-4">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+ </div>
+ <div class="specimen dir-4"><span class="sp-label">THAI SPECIMEN / FONT TEST</span><span class="sp-thai">ข้าวขาหมู · หมูกรอบ · ร้านอาหาร</span><span class="sp-latin">Khao kha mu · crispy pork · restaurant</span></div>
+ <div class="details">
+  <table><tr><th>Role</th><th>Font</th><th>Size (desk / mob)</th><th>Weight</th><th>Line height</th><th>Letter spacing</th></tr>
+  <tr><td>Heading</td><td>IBM Plex Sans Thai Looped</td><td>60 / 38px</td><td>600</td><td>1.15</td><td>-0.02em</td></tr>
+  <tr><td>Body</td><td>IBM Plex Sans Thai</td><td>17 / 16px</td><td>400</td><td>1.75</td><td>0</td></tr>
+  <tr><td>Label</td><td>IBM Plex Sans Thai</td><td>12px</td><td>500</td><td>1.4</td><td>0.12em</td></tr></table>
+  <div class="fit"><p><b class="good">Strengths</b> The looped Thai forms are warm and forgiving on a small screen. Best pure readability of the five.</p><p><b class="bad">Weaknesses</b> Softer and more casual; gives the diary less editorial authority than the serif options.</p></div>
+ </div>
+ <style>
+ .dir-4 .mini h3{font-family:'IBM Plex Sans Thai Looped',sans-serif;font-size:clamp(28px,4vw,60);font-weight:600;line-height:1.15;letter-spacing:-0.02em}
+ .dir-4 .mini p,.dir-4 .mini-list strong{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:400;line-height:1.75;letter-spacing:0}
+ .dir-4 .mini-top,.dir-4 .mini-filter,.dir-4 .mini-meta,.dir-4 .mini-action,.dir-4 .mini-list div,.dir-4 .mini-list small,.dir-4 .sp-label{font-family:'IBM Plex Sans Thai',sans-serif;font-weight:500;letter-spacing:0.12em;line-height:1.4}
+ .dir-4 .sp-thai{font-family:'IBM Plex Sans Thai Looped',sans-serif}.dir-4 .sp-latin{font-family:'IBM Plex Sans Thai',sans-serif}
+ </style>
+</section><section class="direction">
+ <div class="head"><span class="num">05</span><h2>Book Serif</h2><span class="tag">Refined / print-led</span></div>
+ <p class="concept">Heading <b>Taviraj</b> · Body <b>Noto Sans Thai</b> · Labels <b>Noto Sans Thai</b></p>
+ <div class="previews">
+  <figure><figcaption>Diary · desktop</figcaption><div class="mini wide dir-5">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · desktop</figcaption><div class="mini wide dir-5">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+  <figure><figcaption>Diary · mobile 390</figcaption><div class="mini narrow dir-5">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-hero">
+    <div class="mini-photo"><img src="../images/dish-1.jpg" alt="Example food photograph"><span>PLATE 001</span></div>
+    <div class="mini-copy"><div class="mini-meta">17 NOV 2026 &nbsp;·&nbsp; ZHUJIAOFAN</div>
+    <h3>Sample Shop</h3><p>Rich broth, tender pork. Replace this with your own note.</p><span class="mini-action">Read entry &rarr;</span></div>
+  </div>
+  <div class="mini-strip"><img src="../images/dish-2.jpg" alt="Example food photograph"><img src="../images/dish-3.jpg" alt="Example food photograph"><img src="../images/dish-4.jpg" alt="Example food photograph"></div>
+</div></figure>
+  <figure><figcaption>Map · mobile 390</figcaption><div class="mini narrow dir-5">
+  <div class="mini-top"><b>Food Diary</b><span>Diary &nbsp; Map</span></div>
+  <div class="mini-filter">ALL &nbsp;·&nbsp; ZHUJIAOFAN &nbsp;·&nbsp; SHAOROU</div>
+  <div class="mini-map"><div class="mini-list"><div>PLACES · 001</div><strong>Sample Shop</strong><small>Zhujiaofan · 17 Nov 2026</small><strong>Second Shop</strong><small>Shaorou · 12 Nov 2026</small></div><div class="mini-canvas"><i></i></div></div>
+</div></figure>
+ </div>
+ <div class="specimen dir-5"><span class="sp-label">THAI SPECIMEN / FONT TEST</span><span class="sp-thai">ข้าวขาหมู · หมูกรอบ · ร้านอาหาร</span><span class="sp-latin">Khao kha mu · crispy pork · restaurant</span></div>
+ <div class="details">
+  <table><tr><th>Role</th><th>Font</th><th>Size (desk / mob)</th><th>Weight</th><th>Line height</th><th>Letter spacing</th></tr>
+  <tr><td>Heading</td><td>Taviraj</td><td>64 / 40px</td><td>500</td><td>1.12</td><td>-0.015em</td></tr>
+  <tr><td>Body</td><td>Noto Sans Thai</td><td>17 / 16px</td><td>400</td><td>1.8</td><td>0</td></tr>
+  <tr><td>Label</td><td>Noto Sans Thai</td><td>12px</td><td>500</td><td>1.4</td><td>0.10em</td></tr></table>
+  <div class="fit"><p><b class="good">Strengths</b> The strongest magazine character. Taviraj gives Thai headings real presence without becoming decorative.</p><p><b class="bad">Weaknesses</b> Thai serif is less crisp than sans at 12px, and the tone is more formal than a casual food log.</p></div>
+ </div>
+ <style>
+ .dir-5 .mini h3{font-family:'Taviraj',sans-serif;font-size:clamp(28px,4vw,64);font-weight:500;line-height:1.12;letter-spacing:-0.015em}
+ .dir-5 .mini p,.dir-5 .mini-list strong{font-family:'Noto Sans Thai',sans-serif;font-weight:400;line-height:1.8;letter-spacing:0}
+ .dir-5 .mini-top,.dir-5 .mini-filter,.dir-5 .mini-meta,.dir-5 .mini-action,.dir-5 .mini-list div,.dir-5 .mini-list small,.dir-5 .sp-label{font-family:'Noto Sans Thai',sans-serif;font-weight:500;letter-spacing:0.10em;line-height:1.4}
+ .dir-5 .sp-thai{font-family:'Taviraj',sans-serif}.dir-5 .sp-latin{font-family:'Noto Sans Thai',sans-serif}
+ </style>
+</section>
+</div></body></html>

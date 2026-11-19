@@ -15,22 +15,22 @@ colors:
   error: "#f3e0da"
 typography:
   display:
-    fontFamily: "'Bodoni Moda', Georgia, serif"
-    fontWeight: 400
-    fontSize: "clamp(2.6rem, 5vw, 4.4rem)"
-    lineHeight: 1.05
-    letterSpacing: "-0.03em"
+    fontFamily: "Taviraj, Georgia, serif"
+    fontWeight: 500
+    fontSize: "clamp(2.5rem, 5vw, 4rem)"
+    lineHeight: 1.12
+    letterSpacing: "-0.015em"
   body:
-    fontFamily: "Archivo, Arial, sans-serif"
+    fontFamily: "'Noto Sans Thai', Arial, sans-serif"
     fontWeight: 400
     fontSize: "1rem"
-    lineHeight: 1.7
+    lineHeight: 1.8
   label:
-    fontFamily: "'DM Mono', 'Courier New', monospace"
-    fontWeight: 400
-    fontSize: "0.72rem"
-    lineHeight: 1.5
-    letterSpacing: "0.14em"
+    fontFamily: "'Noto Sans Thai', Arial, sans-serif"
+    fontWeight: 500
+    fontSize: "0.75rem"
+    lineHeight: 1.4
+    letterSpacing: "0.10em"
 spacing:
   tight: "8px"
   base: "16px"
@@ -64,7 +64,7 @@ There are no cards, no shadows, no rounded panels, and no coloured buttons. Dept
 **Key Characteristics:**
 - Newsprint `#f7f5ef`, white mounts `#ffffff`, ink `#161514` (16.7:1), secondary `#6a655e` (5.3:1).
 - One accent: vermilion `#bf2f1e` (5.29:1 on ground, 4.71:1 on surface, 5.77:1 on white). Darkened one step from the explored `#d23b2a` to clear AA on every surface.
-- Bodoni Moda for display, Archivo for reading, DM Mono for dates, folios and labels.
+- Taviraj for display, Noto Sans Thai for reading, dates, folios and labels. Thai and Latin ship in every weight.
 - Square corners throughout. One-pixel rules. No shadows anywhere.
 
 ## Colors
@@ -92,21 +92,21 @@ A printed page: warm-neutral paper, black ink, and one signal red.
 
 ## Typography
 
-**Display:** Bodoni Moda (Georgia fallback), self-hosted in `fonts/`.
-**Body:** Archivo (Arial fallback), self-hosted in `fonts/`.
-**Label:** DM Mono (Courier New fallback), self-hosted in `fonts/`.
+**Display:** Taviraj (Georgia fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
+**Body:** Noto Sans Thai (Arial fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
+**Label:** Noto Sans Thai (Arial fallback), weight 500, same files as the body face.
 
-**Character:** Bodoni is all contrast and fine hairlines; Archivo is plain and fast to read; DM Mono makes dates look typed into a form. Three voices, three jobs.
+**Character:** Taviraj gives shop names a quiet printed authority in both scripts. Noto Sans Thai is built for long Thai reading and stays crisp on a phone; the same face at weight 500 handles dates and labels. Two voices, two jobs.
 
 ### Hierarchy
-- **Display** (400, `clamp(2.6rem, 5vw, 4.4rem)`, 1.05, -0.03em): shop name.
+- **Display** (500, `clamp(2.5rem, 5vw, 4rem)`, 1.12, -0.015em): shop name; 40px on phones.
 - **Wordmark** (400, `1.9rem`): masthead.
-- **Body** (400, `1rem`, 1.7, max 68ch): notes.
-- **Annotation** (400, `1.12rem`, 1.75, max 66ch): the newest note, set above a rule.
-- **Label** (400, `0.62–0.78rem`, 0.14–0.22em tracking, uppercase): tabs, filters, dates, plate numbers, counts.
+- **Body** (400, `1rem`, 1.8, max 68ch): notes.
+- **Annotation** (400, `1.12rem`, 1.8, max 66ch): the newest note, set above a rule.
+- **Label** (500, `0.75rem`, 1.4, 0.10em tracking, uppercase): tabs, filters, dates, plate numbers, counts. Micro labels such as plate numbers may drop to `0.62rem` but keep the same face and tracking.
 
 ### Named Rules
-**The Typed Label Rule.** Anything measured — a date, a count, a plate number — is DM Mono. Nothing measured is set in Bodoni.
+**The Two-Script Rule.** Every type role uses a face with real Thai glyphs. Latin and Thai never fall back to different families, and no role uses a system display face.
 
 ## Layout
 
@@ -125,13 +125,13 @@ Square everywhere. The plate label is a solid red rectangle overlapping the moun
 ## Components
 
 ### Buttons and links
-- **Ink link:** transparent, vermilion text, 1px red underline, DM Mono uppercase, 6px 0. Hover deepens to `#962617`.
-- **Tabs:** DM Mono uppercase, active gets a 2px red underline; 56px minimum width, 48px tall.
+- **Ink link:** transparent, vermilion text, 1px red underline, Noto Sans Thai uppercase at 500, 6px 0. Hover deepens to `#962617`.
+- **Tabs:** Noto Sans Thai uppercase at 500, active gets a 2px red underline; 56px minimum width, 48px tall.
 - **Filters:** text only, active gets red text and a 2px red underline with a tabular count.
 
 ### Photo mount
 - **Mount:** white, 1px `#d5cfc4` border, 14px padding, no shadow.
-- **Plate label:** red block, white DM Mono text, overlapping the top-left corner.
+- **Plate label:** red block, white Noto Sans Thai text at 500, overlapping the top-left corner.
 - **Detail variant:** caption under the mount carries a 1:1 control that opens a full-size lightbox.
 
 ### Print strip
@@ -156,5 +156,5 @@ Square everywhere. The plate label is a solid red rectangle overlapping the moun
 ### Don't:
 - **Don't** add cards, shadows, rounded panels, gradients, or glass.
 - **Don't** use a second accent colour; ink is a neutral mark.
-- **Don't** set measured values in Bodoni.
+- **Don't** swap in a font without Thai glyphs for any type role.
 - **Don't** invent shops, photographs, ratings, or prices.

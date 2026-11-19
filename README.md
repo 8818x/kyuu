@@ -29,7 +29,7 @@ GitHub Pages updates in about a minute.
 - `styles.css` — the whole visual system, hand-authored plain CSS
 - `app.js` — rendering, routing, map, and interactions
 - `data/entries.js` — the only file the owner edits
-- `fonts/` — self-hosted Bodoni Moda, Archivo and DM Mono
+- `fonts/` — self-hosted Taviraj and Noto Sans Thai, each with Latin and Thai subsets
 
 ## Look and behaviour
 

@@ -35,7 +35,7 @@
       "refersTo": "ink-link",
       "description": "Red underlined action, never a filled button.",
       "html": "<button class=\"ds-ink-link\">READ ENTRY</button>",
-      "css": ".ds-ink-link { background: transparent; color: #bf2f1e; border: 0; border-bottom: 1px solid #bf2f1e; padding: 6px 0; font: 400 .74rem/1.5 'DM Mono', monospace; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } .ds-ink-link:hover { color: #962617; border-bottom-color: #962617; } .ds-ink-link:focus-visible { outline: 2px solid #bf2f1e; outline-offset: 3px; }"
+      "css": ".ds-ink-link { background: transparent; color: #bf2f1e; border: 0; border-bottom: 1px solid #bf2f1e; padding: 6px 0; font: 500 .75rem/1.4 'Noto Sans Thai', sans-serif; letter-spacing: .10em; text-transform: uppercase; cursor: pointer; } .ds-ink-link:hover { color: #962617; border-bottom-color: #962617; } .ds-ink-link:focus-visible { outline: 2px solid #bf2f1e; outline-offset: 3px; }"
     },
     {
       "name": "Active tab",
@@ -43,28 +43,28 @@
       "refersTo": "tab-active",
       "description": "Uppercase tab with a red underline when active.",
       "html": "<button class=\"ds-tab\" aria-pressed=\"true\">Diary</button>",
-      "css": ".ds-tab { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-width: 56px; min-height: 48px; padding: 10px 6px; font: 400 .75rem 'DM Mono', monospace; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; } .ds-tab[aria-pressed=\"true\"] { color: #161514; border-bottom-color: #bf2f1e; }"
+      "css": ".ds-tab { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-width: 56px; min-height: 48px; padding: 10px 6px; font: 500 .75rem 'Noto Sans Thai', sans-serif; letter-spacing: .10em; text-transform: uppercase; cursor: pointer; } .ds-tab[aria-pressed=\"true\"] { color: #161514; border-bottom-color: #bf2f1e; }"
     },
     {
       "name": "Filter",
       "kind": "nav",
       "description": "Text-only dish filter with a tabular count.",
       "html": "<button class=\"ds-filter\" aria-pressed=\"true\">All <b>001</b></button>",
-      "css": ".ds-filter { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-height: 44px; padding: 8px 0; font: 400 .72rem 'DM Mono', monospace; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } .ds-filter[aria-pressed=\"true\"] { color: #bf2f1e; border-bottom-color: #bf2f1e; } .ds-filter b { font-weight: 400; margin-left: 8px; }"
+      "css": ".ds-filter { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-height: 44px; padding: 8px 0; font: 500 .75rem 'Noto Sans Thai', sans-serif; letter-spacing: .10em; text-transform: uppercase; cursor: pointer; } .ds-filter[aria-pressed=\"true\"] { color: #bf2f1e; border-bottom-color: #bf2f1e; } .ds-filter b { font-weight: 400; margin-left: 8px; }"
     },
     {
       "name": "Plate label",
       "kind": "chip",
       "description": "Red plate number overlapping a white photo mount.",
       "html": "<span class=\"ds-plate-label\">PLATE 001</span>",
-      "css": ".ds-plate-label { display: inline-block; background: #bf2f1e; color: #fff; font: 400 .62rem 'DM Mono', monospace; letter-spacing: .16em; padding: 5px 9px; }"
+      "css": ".ds-plate-label { display: inline-block; background: #bf2f1e; color: #fff; font: 500 .62rem 'Noto Sans Thai', sans-serif; letter-spacing: .10em; padding: 5px 9px; }"
     },
     {
       "name": "Dish mark",
       "kind": "chip",
       "description": "Red for Zhujiaofan, ink for Shaorou.",
       "html": "<span class=\"ds-dish-mark\">Zhujiaofan</span>",
-      "css": ".ds-dish-mark { display: inline-block; border-bottom: 2px solid #bf2f1e; color: #bf2f1e; font: 400 .7rem 'DM Mono', monospace; letter-spacing: .16em; text-transform: uppercase; padding-bottom: 3px; } .ds-dish-mark--crisp { border-bottom-color: #161514; color: #161514; }"
+      "css": ".ds-dish-mark { display: inline-block; border-bottom: 2px solid #bf2f1e; color: #bf2f1e; font: 500 .75rem 'Noto Sans Thai', sans-serif; letter-spacing: .10em; text-transform: uppercase; padding-bottom: 3px; } .ds-dish-mark--crisp { border-bottom-color: #161514; color: #161514; }"
     },
     {
       "name": "Photo mount",
@@ -79,7 +79,7 @@
       "kind": "input",
       "description": "A single ruled input on the map list.",
       "html": "<input class=\"ds-search\" type=\"search\" placeholder=\"Search places\">",
-      "css": ".ds-search { width: 100%; background: transparent; color: #161514; border: 0; border-bottom: 1px solid #bdb5a7; padding: 9px 0; font: 400 .8rem/1.5 'DM Mono', monospace; caret-color: #bf2f1e; } .ds-search::placeholder { color: #6a655e; } .ds-search:focus { outline: none; border-bottom-color: #bf2f1e; }"
+      "css": ".ds-search { width: 100%; background: transparent; color: #161514; border: 0; border-bottom: 1px solid #bdb5a7; padding: 9px 0; font: 400 .8rem/1.5 'Noto Sans Thai', sans-serif; caret-color: #bf2f1e; } .ds-search::placeholder { color: #6a655e; } .ds-search:focus { outline: none; border-bottom-color: #bf2f1e; }"
     }
   ],
   "narrative": {
@@ -87,13 +87,13 @@
     "overview": "A serious broadsheet that happens to be about dinner. Newsprint ground, white photo mounts, black ink, one red rule. The page is set, not decorated: hairlines divide, dates are tabular, and the only saturated colour is a single vermilion used for marks and actions. Food photography carries every bit of warmth the page has.",
     "keyCharacteristics": [
       "Newsprint ground, white mounts, black ink, one vermilion signal.",
-      "Bodoni Moda for display, Archivo for reading, DM Mono for measured values.",
+      "Taviraj for display, Noto Sans Thai for reading and labels, both with Thai and Latin subsets.",
       "Square corners, one-pixel rules, no shadows."
     ],
     "rules": [
       { "name": "The One Red Rule", "body": "Red marks a state or an action. It never fills a large area and never appears twice as decoration in the same component.", "section": "colors" },
       { "name": "The Paper Rule", "body": "Photographs sit on white paper. The ground is newsprint. They must never share a surface.", "section": "colors" },
-      { "name": "The Typed Label Rule", "body": "Anything measured — a date, a count, a plate number — is DM Mono. Nothing measured is set in Bodoni.", "section": "typography" }
+      { "name": "The Two-Script Rule", "body": "Every type role uses a face with real Thai glyphs. Latin and Thai never fall back to different families, and no role uses a system display face.", "section": "typography" }
     ],
     "dos": [
       "Do keep the red to marks and actions; one red per component.",
@@ -104,7 +104,7 @@
     "donts": [
       "Don't add cards, shadows, rounded panels, gradients, or glass.",
       "Don't use a second accent colour; ink is a neutral mark.",
-      "Don't set measured values in Bodoni.",
+      "Don't swap in a font without Thai glyphs for any type role.",
       "Don't invent shops, photographs, ratings, or prices."
     ]
   }
