@@ -4,6 +4,8 @@
 //       the stored key is an English identifier; the label is romanised Thai
 // maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
 //       A short share.google link will not create a map pin.
+// display: optional 1200px 3:2 derivative used on cards; the original image is kept for 1:1 view.
+// note: write a short personal line before publishing — an empty note renders as "No note recorded."
 //
 // Optional extras (leave out any you do not have):
 //   id: "my-shop-01"        // stable link for #/e/... (generated from date + shop if omitted)
@@ -17,6 +19,7 @@ window.DIARY_ENTRIES = [
     shop: "ผัดไท หอยทอด กร& เก้า",
     type: "PadThaiHoiTod",
     image: "images/1795090695048.jpg",
+    display: "images/1795090695048-display.webp",
     maps: "https://www.google.com/maps/@13.824002421411782,100.51619379335499,17z?hl=en",
     note: ""
   }

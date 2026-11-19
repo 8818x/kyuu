@@ -79,6 +79,11 @@ function photosOf(entry) {
   return entry.image ? [entry.image] : [];
 }
 
+function displaySrc(entry) {
+  if (entry.display) return entry.display;
+  return entry.image || (Array.isArray(entry.photos) && entry.photos[0]) || "";
+}
+
 function entryId(entry, index) {
   if (entry.id != null && entry.id !== "") return String(entry.id);
   const base = (entry.date || "") + "-" + (entry.shop || index + 1);
@@ -231,7 +236,7 @@ function makeFeatured(item) {
     media.setAttribute("aria-label", "View photograph at full size");
     const img = document.createElement("img");
     img.className = "plate-photo";
-    img.src = photos[0];
+    img.src = displaySrc(entry);
     img.alt = entry.shop ? "Photograph from " + entry.shop : "";
     img.loading = "eager";
     img.decoding = "async";
@@ -272,15 +277,17 @@ function makeThumb(item, isCurrent) {
   const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
-  const el = document.createElement("div");
+  const el = document.createElement("button");
   el.className = "print-thumb" + (isCurrent ? " is-current" : "");
+  el.type = "button";
   el.dataset.id = id;
+  if (photos.length) el.setAttribute("aria-label", "View photograph from " + (entry.shop || "this plate"));
 
   const mat = document.createElement("span");
   mat.className = "thumb-mat";
   if (photos.length) {
     const img = document.createElement("img");
-    img.src = photos[0];
+    img.src = displaySrc(entry);
     img.alt = "";
     img.loading = "lazy";
     img.decoding = "async";
@@ -301,6 +308,11 @@ function makeThumb(item, isCurrent) {
     flag.className = "tape-flag";
     flag.setAttribute("aria-label", "Last viewed");
     el.appendChild(flag);
+  }
+  if (photos.length) {
+    el.addEventListener("click", () => openLightbox(photos[0], entry.shop ? "Photograph from " + entry.shop : "", el));
+  } else {
+    el.disabled = true;
   }
   return el;
 }
@@ -587,7 +599,7 @@ function makePlaceRow(group) {
   if (photos.length) {
     const img = document.createElement("img");
     img.className = "place-thumb";
-    img.src = photos[0];
+    img.src = displaySrc(latest);
     img.alt = "";
     img.loading = "lazy";
     img.onerror = () => { img.hidden = true; };
