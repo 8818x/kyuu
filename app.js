@@ -338,11 +338,9 @@ function renderDiary() {
 
   const head = document.createElement("div");
   head.className = "strip-head";
-  const left = document.createElement("span");
-  left.textContent = "THE LEDGER";
   const right = document.createElement("span");
+  right.className = "strip-count";
   right.textContent = pad(list.length) + " 写真";
-  head.append(left);
 
   const inner = document.createElement("div");
   inner.className = "strip-inner";

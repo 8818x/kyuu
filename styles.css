@@ -123,6 +123,7 @@ input{caret-color:var(--accent)}
 /* print strip */
 .print-strip{margin-top:32px;border-top:1px solid var(--rule);padding-top:18px}
 .strip-head{display:flex;justify-content:space-between;align-items:center;gap:16px;font-family:var(--label);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--secondary);margin-bottom:16px}
+.strip-count{margin-left:auto}
 .strip-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
 .strip-nav-btn{display:grid;place-items:center;width:44px;height:44px;appearance:none;background:none;border:1px solid var(--rule);color:var(--secondary);cursor:pointer}
 .strip-nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
