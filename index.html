@@ -9,44 +9,60 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-media" aria-hidden="true">
-      <img id="hero-image" alt="">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="#/diary">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M8 25h32c0 10-7 17-16 17S8 35 8 25Z" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M5 25h38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="m17 15 6-9m3 9 6-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Food Diary</span>
+      </a>
+      <nav id="tabs" class="tabs" aria-label="View"></nav>
     </div>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <span class="hero-mark" aria-hidden="true">
-        <svg viewBox="0 0 48 48" fill="none">
-          <path d="M8 25h32c0 10-7 17-16 17S8 35 8 25Z" stroke="currentColor" stroke-width="2.5"/>
-          <path d="M5 25h38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="m17 15 6-9m3 9 6-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <h1>Food Diary</h1>
+    <div class="filter-bar">
+      <div id="filters" class="filters" aria-label="Filter by dish"></div>
     </div>
   </header>
 
-  <nav class="nav" aria-label="View">
-    <div class="nav-inner">
-      <div id="tabs" class="nav-group"></div>
-      <div id="filters" class="nav-group nav-group--filters" aria-label="Filter by dish"></div>
-    </div>
-  </nav>
-
-  <main class="content">
+  <main id="main" class="content">
     <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
 
-    <section id="diary-panel" hidden>
-      <div id="cards" class="cards"></div>
+    <section id="diary-panel" aria-label="Diary">
+      <div class="section-head">
+        <h1 class="section-title">Food memories</h1>
+        <p id="diary-count" class="count"></p>
+      </div>
+      <div id="featured"></div>
+      <div id="cards" class="entry-grid"></div>
     </section>
 
-    <section id="map-panel">
-      <p id="map-summary" class="summary"></p>
-      <p id="map-error" class="map-error" hidden>The map tiles could not load. The diary below still works.</p>
-      <div id="map" role="region" aria-label="Shop map"></div>
+    <section id="map-panel" hidden aria-label="Restaurant memories">
+      <div class="map-layout">
+        <aside class="shop-list" aria-label="Restaurant list">
+          <div class="shop-list-head">
+            <span>Places</span>
+            <span id="map-count" class="count"></span>
+          </div>
+          <div id="shop-items" class="shop-items"></div>
+        </aside>
+        <div class="map-area">
+          <p id="map-error" class="map-error" hidden>The map tiles could not load. The list and diary still work.</p>
+          <div id="map" role="region" aria-label="Shop map"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="entry-panel" hidden aria-label="Food memory">
+      <div id="entry-content"></div>
     </section>
   </main>
 
@@ -57,17 +73,17 @@
           <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
-      <span id="sheet-tag" class="tag"></span>
+      <span id="sheet-tag" class="chip"></span>
       <h2 id="sheet-shop" class="sheet-shop"></h2>
       <p id="sheet-date" class="sheet-date"></p>
       <p id="sheet-note" class="sheet-note"></p>
       <a id="sheet-link" class="link" href="#" target="_blank" rel="noopener noreferrer" hidden>Open in Google Maps</a>
-      <button id="sheet-open" class="btn btn--primary sheet-open" type="button">Open in diary</button>
+      <button id="sheet-open" class="btn btn--primary sheet-open" type="button">Open entry</button>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data/entries.js?v=12"></script>
-  <script src="app.js?v=12"></script>
+  <script src="data/entries.js?v=13"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>

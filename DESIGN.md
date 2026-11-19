@@ -1,194 +1,118 @@
 ---
 name: Food Diary
-description: A warm paper diary of two pork dishes, built on a market-fruit colour sheet.
+description: Night Edition — a dark editorial food journal with warm produce accents.
 colors:
-  paper: "#efe1c7"
-  bone: "#ebece7"
-  ink: "#100b08"
-  ink-muted: "#5f5340"
-  red: "#ff303a"
-  orange: "#fb642b"
-  coral: "#fe8c6a"
-  yellow: "#f4c700"
-  green: "#9cb069"
-  rule: "#d8c8ac"
+  ground: "#171a20"
+  surface: "#24272d"
+  cream: "#efe1c7"
+  muted: "#a9aaa5"
+  orange: "#ff6129"
+  olive: "#99af67"
+  salmon: "#fb8c70"
+  yellow: "#f5c500"
+  red: "#ff3237"
+  off-white: "#edeee6"
+  rule: "#363941"
 typography:
   display:
     fontFamily: "\"Fraunces\", Georgia, \"Times New Roman\", serif"
-    fontSize: "clamp(2.6rem, 7vw, 5rem)"
     fontWeight: 400
-    lineHeight: 0.98
-    letterSpacing: "-0.02em"
-  title:
-    fontFamily: "\"Fraunces\", Georgia, \"Times New Roman\", serif"
-    fontSize: "1.35rem"
-    fontWeight: 400
-    lineHeight: 1.15
+    lineHeight: 1.08
   body:
     fontFamily: "system-ui, \"Segoe UI\", sans-serif"
     fontSize: "1rem"
-    fontWeight: 400
-    lineHeight: 1.7
-  label:
-    fontFamily: "system-ui, \"Segoe UI\", sans-serif"
-    fontSize: "0.72rem"
-    fontWeight: 400
-    lineHeight: 1.7
-rounded:
-  chip: "0px"
-spacing:
-  sm: "8px"
-  md: "14px"
-  lg: "20px"
-  xl: "28px"
-  gutter: "80px"
+    lineHeight: 1.65
 components:
-  button:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.ink}"
-    padding: "10px 18px"
-  button-primary:
-    backgroundColor: "{colors.red}"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.ink}"
-    padding: "10px 18px"
   chip-braise:
-    backgroundColor: "{colors.red}"
-    textColor: "{colors.ink}"
-    padding: "3px 9px"
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.ground}"
   chip-crisp:
-    backgroundColor: "{colors.yellow}"
-    textColor: "{colors.ink}"
-    padding: "3px 9px"
-  card:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    padding: "14px 0 0"
+    backgroundColor: "{colors.olive}"
+    textColor: "{colors.ground}"
+  entry-card:
+    backgroundColor: "none"
+    borderTop: "1px solid {colors.rule}"
   map-surface:
-    backgroundColor: "{colors.bone}"
+    backgroundColor: "{colors.surface}"
 ---
 
 # Design System: Food Diary
 
 ## Overview
 
-**Creative North Star: "The Market Table"**
+**Creative North Star: "Night Edition"**
 
-The diary moved off a dark screen and onto paper. The ground is cream, the ink is the plate's black, and the only colour in the room comes from produce: the red of braised pork, the gold of crisp skin, the green of the cucumber alongside it. It reads like a page torn from a food magazine — a photograph, a rule, a name, a note.
+A personal food journal read at night: charcoal ground, warm cream light, and the colour of the food itself. The newest memory runs as an editorial spread; everything after it sits in one even photo grid. The map is a separate room with a shop list at its side.
 
-Colour here is material, not decoration. Every accent in this sheet came out of the same photograph, so they already belong together; the discipline is in what each one is allowed to do. Because the accents are vivid and the ground is mid-light, **an accent can never carry small text or a hairline** — red on paper measures 2.84:1 and yellow measures 1.25:1. Accents are fills with ink inside them (red 5.3:1, yellow 12.1:1), and anything that must be read is ink on paper (15.2:1). That single constraint shapes the whole interface.
-
-The frame stays quiet so the photography can be loud. Cards are not filled panels; they are separated by a single ink rule, the way a magazine separates a story.
+Photography carries the page. UI colour is a signpost, never the show: orange means the thing you can press, olive means the second dish, red is a single dot on the newest memory. Everything else stays quiet.
 
 **Key Characteristics:**
-- Cream paper ground (#efe1c7) and ink text (#100b08) — 15.2:1.
-- Accents as fills only: red (#ff303a) and yellow (#f4c700), always with ink on top.
-- Outlines and state in ink, never in an accent.
-- No card shadows, no rounded panels, no gradients except the cover scrim.
-- Dish identity carried by fill plus shape.
+- Ground `#171a20`, raised surface `#24272d`, text `#efe1c7` (13.5:1 on ground).
+- Orange `#ff6129` is the primary action colour; olive `#99af67` is the second dish.
+- Salmon, yellow and red are held back — red is one 8px dot.
+- Fraunces for headings, system sans for everything else.
+- No card panels inside the grid: an ink-dark rule and air separate entries.
+- Two routes only: Diary and Map. Each entry gets a shareable `#/e/<id>` link.
 
 ## Colors
 
-### Ground and text
-- **Paper** (#efe1c7): the page. Warm cream from the sheet, not white.
-- **Bone** (#ebece7): raised surfaces only — map popups and the phone sheet. The one cooler neutral, so a panel reads as a separate object.
-- **Ink** (#100b08): all text, all rules, all focus rings. The plate's black, warmed.
-- **Ink Muted** (#5f5340): dates, counts, idle controls. 5.8:1 on paper.
-- **Rule** (#d8c8ac): the hairline that separates, decorative only.
+Contrast measured against the ground: cream 13.5:1, muted 7.5:1, orange 5.8:1, olive 7.2:1. Against the surface: cream 11.6:1, muted 6.4:1, orange 5.0:1, olive 6.2:1. All pass AA for normal text.
 
-### Produce accents
-- **Red** (#ff303a): Zhujiaofan, and the primary action. A fill; ink sits on it at 5.3:1.
-- **Yellow** (#f4c700): Shaorou. A fill; ink sits on it at 12.1:1.
-- **Orange** (#fb642b): the press/hover deepen for a red control.
-- **Green** (#9cb069): the quiet secondary fill — the empty state and "Show all". Ink on green is 8.2:1.
-- **Coral** (#fe8c6a): warmth in the cover scrim only, never as a surface.
+- **Orange** (`#ff6129`): selected tab underline, primary buttons, "Read entry", links on hover, the featured rule, marker for Zhujiaofan.
+- **Olive** (`#99af67`): Shaorou chip, Shaorou marker, the rating, the selected filter underline.
+- **Red** (`#ff3237`): one dot marking the newest memory. Nothing else.
+- **Salmon** (`#fb8c70`) and **Yellow** (`#f5c500`): available for future highlights, unused in the current UI.
 
 ### Named Rules
-**The Ink-on-Accent Rule.** No accent carries text or a line directly on paper. Red and yellow are fills; ink sits inside them. Anything read directly on the page is ink or ink-muted.
+**One Accent Per Component.** Orange and olive never share an element. Red appears exactly once on the page.
 
-**The No-Fill-Card Rule.** Entries are separated by an ink rule, not by a panel. Bone is reserved for things that float over the map.
+**Photos Beat UI.** If a coloured surface competes with a food photograph, the surface loses.
 
 ## Typography
 
-**Display Font:** Fraunces (400) via Google Fonts.
-**Body Font:** the system UI stack.
+Fraunces (400) for the site name, section title, featured and detail headings, shop names in the grid and sidebar. System sans for navigation, dates, notes, chips, buttons, and metadata. Two families, clearly different jobs.
 
-**Character:** A high-contrast old-style serif does the talking; the system face does the reading. Fraunces is warm and slightly soft-edged, which suits cream paper and food photography far better than a geometric sans. The title is the largest thing on the page and carries the identity, so the rest can stay plain.
-
-### Hierarchy
-- **Display** (Fraunces 400, clamp(2.6rem, 7vw, 5rem), 0.98, -0.02em): the site title over the cover photo, in cream.
-- **Feature title** (Fraunces 400, clamp(1.8rem, 3vw, 2.6rem)): the newest shop, the lead story.
-- **Title** (Fraunces 400, 1.35rem): the remaining shops.
-- **Body** (system 400, 1rem, 1.7): notes, popups, sheet copy. Measures hold at 62ch.
-- **Meta** (system 400, 0.88rem): dates and counts, in ink-muted.
+Type scale: display `clamp(1.9rem, 3.4vw, 3rem)` on the featured title, detail `clamp(2rem, 4vw, 3.2rem)`, section `clamp(1.6rem, 3vw, 2.3rem)`, grid card `1.3rem`, body `1rem / 1.65`, meta `0.85–0.92rem`.
 
 ## Layout
 
-A 1120px column, page padding `clamp(16px, 4vw, 48px)`, 80px bottom gutter.
+A 1240px column with `clamp(16px, 4vw, 48px)` page padding.
 
-The cover is a full-bleed photograph, `clamp(380px, 72vh, 760px)` tall, with the wordmark and title set over a warm ink scrim at its base. Below it, one hairline carries the nav. Entries follow as a two-column magazine grid: the newest entry runs full width as a lead story (photo 1.25fr, text 1fr), everything after it sits in two equal columns. Photo is always 3:2 and always the tallest thing in its card.
+**Diary (default).** Section title and count, then the newest memory as a spread — photo left (`1.12fr`), text right (`0.88fr`), a 3px orange rule above. Below, one grid: 3 columns above 900px, 2 columns from 601–900px, 1 column at 600px and under. Every card is the same shape: 3:2 photo, chip, name, date. No note on the grid; notes live in the entry.
 
-On phones the lead story collapses to one column and the grid to one column, the nav's two rows stack, and the cover shortens to `clamp(300px, 52svh, 460px)`.
+**Map.** Two panes: a 310px shop list on the left and the Leaflet map on the rest. Height `clamp(500px, calc(100vh - 200px), 900px)`. Clicking a marker highlights its list row and opens a popup; clicking a row highlights its marker and pans. At phone width the list becomes a horizontal strip above the map, which still keeps `clamp(320px, 55svh, 480px)` of height.
+
+**Entry.** A single column capped at 980px. Back link, chip, Fraunces title, metadata (date, optional rating, optional price), one large photo, optional thumbnail strip, note, Google Maps link.
+
+**Phones.** Masthead compacts to 60px, the spread stacks, the grid goes single column, and a pin tap raises a bottom sheet instead of a popup.
 
 ## Elevation & Depth
 
-There is almost none, deliberately. No card shadow, no rounded panels. Depth is carried by the bone surface where something floats over the map, and by a soft dark shadow on the phone sheet only.
-
-### Shadow Vocabulary
-- **Sheet lift** (`0 -8px 24px rgba(16, 11, 8, 0.18)`): the phone detail sheet.
-- **Pin drop** (`drop-shadow(0 1px 2px rgba(16, 11, 8, 0.35))`): lifts map pins off the pale basemap.
+No card shadows, no rounded panels, no gradients. The only lift is the phone sheet (`0 -8px 24px rgba(0,0,0,0.55)`) and a small drop shadow under the two pins.
 
 ## Shapes
 
-Square. The chips and controls have no radius, and the cards have no corners to round. The only curved things are the pins:
-
-- **Bowl mark**: a stroke bowl with two steam lines, in Yellow, over the cover.
-- **Zhujiaofan pin**: a red teardrop with an ink counter and a 2.2px ink outline.
-- **Shaorou pin**: a yellow diamond with the same ink outline.
-- **Legend swatches**: the same two silhouettes at 9–12px, inside the summary line.
-
-Pins are outlined in ink, not white, because the basemap is now pale.
+Square throughout — chips, buttons, cards, sheet. The only curves are the two map pins: a red teardrop for Zhujiaofan and an olive diamond for Shaorou, both with a 2.2px ground-coloured outline so they read against the dark basemap. The bowl mark in the masthead is orange.
 
 ## Components
 
-### Navigation
-Text, not pills. Two groups on one 56px row: view tabs (Map / Diary) at the left, dish filters (All / Zhujiaofan / Shaorou) at the right. Idle is ink-muted; selected is ink plus a 2px ink underline. The row is a single hairline across the page.
+- **Tabs / filters:** text only. Active tab gets a 2px orange underline; active filter a 2px olive underline. All controls are 44px tall.
+- **Chips:** square, `3px 9px`, orange or olive fill with ground-coloured text.
+- **Buttons:** square, cream outline, transparent fill; hover inverts. Primary is orange with ground text, deepening on hover.
+- **Grid card:** 3:2 photo, chip, Fraunces name, muted date. When reached from the map it flashes a 2px orange outline.
+- **Map basemap:** Esri World Dark Gray Canvas, keyless. Leaflet popups, zoom and attribution repainted from the tokens. A failed tile load shows a warning line.
+- **Sheet:** surface panel over the map on phones; chip, name, date, note, primary action. Escape closes it and returns focus to the pin.
 
-### Dish chips
-Small square tags, `3px 9px`. Zhujiaofan is red with ink text; Shaorou is yellow with ink text. Informational only — the filter row is text, not chips.
+## Data contract
 
-### Buttons
-Square, 1px ink border, transparent fill, ink text, 44px tall. Hover inverts to ink fill and paper text. The primary (the sheet's action) is a red fill with ink text, deepening to orange on hover. Focus is a 2px ink outline at 3px offset, everywhere.
-
-### Cards
-No panel, no radius, no shadow. A 1px ink top rule, 14px of air, then an image with a 3:2 crop and the text beneath. The lead story gets a 3px rule and a side-by-side layout. Reaching a card from the map flashes a 2px ink outline at 4px offset for two seconds.
-
-### Links
-Ink text, underlined in current ink at 1px with a 4px offset; hover switches the underline to red at 2px. Inside a Leaflet popup the link is forced back to ink, because Leaflet's own anchor blue would otherwise win.
-
-### Map
-Esri World **Light** Gray Canvas, keyless raster tiles, so the map belongs to the paper rather than glaring out of it. Leaflet chrome is repainted: popups and zoom controls on Bone with ink text. If tiles fail, a line above the map says so.
-
-### Summary line
-One line above the map: entry count in ink at semibold, then one key per dish — the shape swatch beside "Zhujiaofan N" / "Shaorou N". Screen readers hear the comma separators.
-
-### Mobile detail sheet
-A Bone panel, square, over the map, lifted by the sheet shadow. Dish chip, shop, date, scrolling note, red primary action. Close by control, by tapping the map, or Escape; focus enters the sheet and returns to the pin.
+`data/entries.js` stays hand-edited. Required fields: `date`, `shop`, `type`, `image`, `maps`, `note`. Optional: `id` (stable `#/e/` link), `photos` (multiple images, replaces `image` on the detail page), `rating`, `price`. Old entries with only `image` render exactly as before. No build step, no backend, no new dependencies.
 
 ## Do's and Don'ts
 
-### Do:
-- **Do** keep the ground cream and the reading colour ink.
-- **Do** let accents be fills, with ink text inside them.
-- **Do** carry dish identity with fill plus shape: red teardrop, yellow diamond.
-- **Do** outline pins in ink.
-- **Do** keep every control 44px tall with a visible 2px ink focus ring.
-- **Do** hold the 1120px column and the single 600px breakpoint.
-
-### Don't:
-- **Don't** set red, yellow, orange, coral or green as small text or as a hairline on paper.
-- **Don't** put paper/cream text inside a red or yellow fill.
-- **Don't** add a shadow or a rounded corner to a card.
-- **Don't** introduce a gradient outside the cover scrim.
-- **Don't** fill a card panel; separate entries with a rule.
+- **Do** keep dark surfaces dominant and photos larger than any UI colour.
+- **Do** keep one accent per component.
+- **Do** keep 44px controls and a visible 2px orange focus ring.
+- **Do** keep the single 600px and 900px breakpoints.
+- **Don't** add glow, glass, gradients, nested cards, or panel shadows.
+- **Don't** use red outside its single dot, or put cream text on an accent fill.
+- **Don't** invent shops, photos, ratings or prices — the owner supplies them.
