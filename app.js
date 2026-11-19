@@ -8,6 +8,7 @@ let activeFilter = filters[0];
 let searchTerm = "";
 let map = null;
 let markers = new Map();
+let selectedShopKey = null;
 let sheetTrigger = null;
 let popupTrigger = null;
 let zoomTrigger = null;
@@ -137,6 +138,41 @@ function searchMatches(entry) {
   if (!searchTerm) return true;
   const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
   return haystack.indexOf(searchTerm) !== -1;
+}
+
+function shopKey(entry, index) {
+  return String(entry.shop || "").trim().toLowerCase() || entryId(entry, index);
+}
+
+function shopGroups() {
+  const groups = new Map();
+  entries.forEach((entry, index) => {
+    const key = shopKey(entry, index);
+    if (!groups.has(key)) groups.set(key, { key, shop: entry.shop || "Untitled", visits: [] });
+    groups.get(key).visits.push({ entry, index });
+  });
+  groups.forEach((group) => {
+    group.visits.sort((a, b) => (b.entry.date || "").localeCompare(a.entry.date || ""));
+  });
+  return groups;
+}
+
+function groupPosition(group) {
+  for (const visit of group.visits) {
+    const pos = coordsFromLink(visit.entry.maps);
+    if (pos) return pos;
+  }
+  return null;
+}
+
+function visibleMapGroups() {
+  const result = [];
+  shopGroups().forEach((group) => {
+    const visits = group.visits.filter(({ entry }) =>
+      (activeFilter === filters[0] || entry.type === activeFilter) && searchMatches(entry));
+    if (visits.length) result.push({ ...group, visits });
+  });
+  return result;
 }
 
 function emptyState(message, actionLabel, onAction) {
@@ -518,14 +554,13 @@ function pinIcon(entry) {
   });
 }
 
-function makePlaceRow(item) {
-  const { entry, index } = item;
-  const id = entryId(entry, index);
-  const photos = photosOf(entry);
+function makePlaceRow(group) {
+  const latest = group.visits[0].entry;
+  const photos = photosOf(latest);
   const btn = document.createElement("button");
   btn.className = "place-row";
   btn.type = "button";
-  btn.dataset.id = id;
+  btn.dataset.id = group.key;
 
   if (photos.length) {
     const img = document.createElement("img");
@@ -543,24 +578,25 @@ function makePlaceRow(item) {
   const text = document.createElement("span");
   text.className = "place-text";
   const name = document.createElement("strong");
-  name.textContent = entry.shop || "Untitled";
+  name.textContent = group.shop;
   const sub = document.createElement("small");
-  sub.textContent = dishLabel(entry.type) + " · " + formatDate(entry.date);
+  const count = group.visits.length;
+  sub.textContent = dishLabel(latest.type) + " · " + pad(count) + (count === 1 ? " VISIT" : " VISITS") + " · " + formatDate(latest.date);
   text.append(name, sub);
-  if (!coordsFromLink(entry.maps)) {
+  if (!groupPosition(group)) {
     const note = document.createElement("small");
     note.className = "place-note";
-    note.textContent = "No pin · opens the entry";
+    note.textContent = "No pin for this place";
     text.appendChild(note);
   }
   btn.appendChild(text);
-  if (id === getLast()) {
+  if (group.visits.some(({ entry, index }) => entryId(entry, index) === getLast())) {
     const flag = document.createElement("span");
     flag.className = "tape-flag";
     flag.setAttribute("aria-label", "Last viewed");
     btn.appendChild(flag);
   }
-  btn.addEventListener("click", () => activateShop(id, btn));
+  btn.addEventListener("click", () => activateShop(group.key, btn));
   return btn;
 }
 
@@ -574,59 +610,72 @@ function highlightShop(id) {
   });
 }
 
-function popupFor(entry, index, trigger) {
+function visitBlocks(group, className) {
+  const holder = document.createElement("div");
+  group.visits.forEach(({ entry }) => {
+    const block = document.createElement("div");
+    block.className = className;
+    const meta = document.createElement("div");
+    meta.className = "visit-meta";
+    meta.append(makeDateStamp(entry.date), makeStamp(entry));
+    block.appendChild(meta);
+    if (entry.note) {
+      const note = document.createElement("p");
+      note.className = "visit-note";
+      note.textContent = entry.note;
+      block.appendChild(note);
+    }
+    holder.appendChild(block);
+  });
+  return holder;
+}
+
+function popupFor(group) {
   const box = document.createElement("div");
-  box.appendChild(makeStamp(entry));
   const title = document.createElement("strong");
-  title.textContent = entry.shop || "Untitled";
+  title.textContent = group.shop;
   box.appendChild(title);
-  const date = document.createElement("div");
-  date.textContent = formatDate(entry.date);
-  box.appendChild(date);
-  if (entry.note) {
-    const note = document.createElement("p");
-    note.textContent = entry.note;
-    box.appendChild(note);
-  }
-  if (entry.maps) box.appendChild(makeMapsLink(entry.maps));
+  const count = document.createElement("div");
+  count.className = "visit-count";
+  count.textContent = pad(group.visits.length) + (group.visits.length === 1 ? " VISIT" : " VISITS");
+  box.appendChild(count);
+  box.appendChild(visitBlocks(group, "visit-block"));
+  const withMaps = group.visits.find(({ entry }) => entry.maps);
+  if (withMaps) box.appendChild(makeMapsLink(withMaps.entry.maps));
   return box;
 }
 
 function activateShop(id, trigger) {
-  const index = findById(id);
-  if (index < 0) return;
-  const entry = entries[index];
+  const group = visibleMapGroups().find((g) => g.key === id) || shopGroups().get(id);
+  if (!group) return;
   const marker = markers.get(id);
+  const pos = groupPosition(group);
+  selectedShopKey = id;
   highlightShop(id);
 
-  const pos = coordsFromLink(entry.maps);
   if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
   if (!marker || !pos) {
-    announce(entry.shop + " has no map pin.");
-    if (isPhone()) openSheet(index, trigger || null);
+    announce(group.shop + " has no map pin.");
+    if (isPhone()) openSheet(group, trigger || null);
     return;
   }
 
   if (isPhone()) {
-    openSheet(index, trigger || marker.getElement());
+    openSheet(group, trigger || marker.getElement());
   } else {
     popupTrigger = trigger || marker.getElement();
     L.popup({ offset: [0, -34] })
       .setLatLng(marker.getLatLng())
-      .setContent(popupFor(entry, index, popupTrigger))
+      .setContent(popupFor(group))
       .openOn(map);
     const primary = document.querySelector(".leaflet-popup-content .ink-link");
     if (primary) primary.focus({ preventScroll: true });
   }
-  announce(entry.shop + " selected on the map.");
-}
-
-function visibleMapItems() {
-  return visibleEntries().filter(({ entry }) => searchMatches(entry));
+  announce(group.shop + ", " + group.visits.length + (group.visits.length === 1 ? " visit" : " visits") + " selected on the map.");
 }
 
 function renderShopList() {
-  const list = visibleMapItems();
+  const list = visibleMapGroups();
   mapCount.textContent = pad(list.length) + (list.length === 1 ? " PLACE" : " PLACES");
   if (!list.length) {
     shopItemsBox.replaceChildren(emptyState(
@@ -642,12 +691,11 @@ function renderShopList() {
 
 function updateMapMarkers() {
   if (!map) return;
-  const allowed = new Set(visibleMapItems().map(({ entry, index }) => entryId(entry, index)));
+  const allowed = new Set(visibleMapGroups().map((group) => group.key));
   const points = [];
   markers.forEach((marker, id) => {
-    const index = findById(id);
-    const entry = entries[index];
-    const pos = entry ? coordsFromLink(entry.maps) : null;
+    const group = shopGroups().get(id);
+    const pos = group ? groupPosition(group) : null;
     if (allowed.has(id) && pos) {
       if (!map.hasLayer(marker)) marker.addTo(map);
       points.push(pos);
@@ -687,22 +735,24 @@ function ensureMap() {
     }
   });
 
-  entries.forEach((entry, index) => {
-    const pos = coordsFromLink(entry.maps);
+  shopGroups().forEach((group) => {
+    const pos = groupPosition(group);
     if (!pos) return;
-    const id = entryId(entry, index);
-    const label = (entry.shop || "Untitled") + ", " + dishLabel(entry.type);
-    const marker = L.marker(pos, { icon: pinIcon(entry), title: label, keyboard: true });
+    const latest = group.visits[0].entry;
+    const count = group.visits.length;
+    const label = group.shop + ", " + dishLabel(latest.type)
+      + (count > 1 ? ", " + count + " visits" : "");
+    const marker = L.marker(pos, { icon: pinIcon(latest), title: label, keyboard: true });
     marker.on("add", () => {
       const node = marker.getElement();
       if (node) {
         node.setAttribute("aria-label", label);
         node.setAttribute("role", "button");
-        node.classList.toggle("is-active", id === getLast());
+        node.classList.toggle("is-active", group.key === selectedShopKey);
       }
     });
-    marker.on("click", () => activateShop(id, marker.getElement()));
-    markers.set(id, marker);
+    marker.on("click", () => activateShop(group.key, marker.getElement()));
+    markers.set(group.key, marker);
   });
 
   map.on("popupclose", () => {
@@ -713,8 +763,9 @@ function ensureMap() {
   updateMapMarkers();
   requestAnimationFrame(() => map.invalidateSize());
 
-  const missing = entries.filter((entry) => entry.maps && !coordsFromLink(entry.maps));
-  if (missing.length) announce("Some links could not be read as map pins.");
+  let missing = 0;
+  shopGroups().forEach((group) => { if (!groupPosition(group)) missing += 1; });
+  if (missing) announce("Some places have no map pin.");
 }
 
 /* keyboard activation for leaflet pins */
@@ -738,17 +789,20 @@ document.addEventListener("keydown", (event) => {
 const sheetClose = $("sheet-close");
 const sheetGrip = $("sheet-grip");
 
-function openSheet(index, trigger) {
-  const entry = entries[index];
-  if (!entry) return;
+function openSheet(group, trigger) {
+  if (!group) return;
+  const latest = group.visits[0].entry;
+  const count = group.visits.length;
   sheetTrigger = trigger || null;
-  $("sheet-tag").className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
-  $("sheet-tag").textContent = dishLabel(entry.type);
-  $("sheet-shop").textContent = entry.shop || "Untitled";
-  $("sheet-date").textContent = formatDate(entry.date);
-  $("sheet-note").textContent = entry.note || "";
+  $("sheet-tag").className = "dish-stamp" + (isCrisp(latest) ? " dish-stamp--crisp" : "");
+  $("sheet-tag").textContent = dishLabel(latest.type);
+  $("sheet-shop").textContent = group.shop;
+  $("sheet-date").textContent = pad(count) + (count === 1 ? " VISIT" : " VISITS");
+  const noteBox = $("sheet-note");
+  noteBox.replaceChildren(visitBlocks(group, "sheet-visit"));
+  const withMaps = group.visits.find(({ entry }) => entry.maps);
   const link = $("sheet-link");
-  if (entry.maps) { link.href = entry.maps; link.hidden = false; }
+  if (withMaps) { link.href = withMaps.entry.maps; link.hidden = false; }
   else link.hidden = true;
   sheet.dataset.open = "true";
   sheet.dataset.collapsed = "false";
@@ -756,7 +810,7 @@ function openSheet(index, trigger) {
   sheetGrip.setAttribute("aria-expanded", "true");
   sheet.setAttribute("aria-hidden", "false");
   requestAnimationFrame(() => sheetClose.focus({ preventScroll: true }));
-  announce(entry.shop + " details opened.");
+  announce(group.shop + ", " + count + (count === 1 ? " visit" : " visits") + " opened.");
 }
 
 function closeSheet() {
