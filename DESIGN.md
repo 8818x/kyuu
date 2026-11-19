@@ -1,175 +1,160 @@
 ---
 name: Food Diary
-description: The Night Ledger — a private record of two dishes, kept as tipped-in prints.
+description: Paper Editorial — a white broadsheet with black ink and one red rule.
 colors:
-  ground: "#111316"
-  binding: "#0b0c0e"
-  surface: "#191c1f"
-  mat: "#d8d2c4"
-  mat-ink: "#36342e"
-  ink: "#ded8cc"
-  muted: "#9a968b"
-  brass: "#9a8768"
-  stew: "#7a4a46"
-  stew-text: "#d9a49b"
-  crisp: "#6f7a5c"
-  crisp-text: "#bcc9a7"
-  rule: "#2a2d30"
-  photo-well: "#292e2a"
-  error: "#4a2a26"
+  ground: "#f7f5ef"
+  paper: "#ffffff"
+  surface: "#ece8de"
+  ink: "#161514"
+  secondary: "#6a655e"
+  accent: "#bf2f1e"
+  accent-deep: "#962617"
+  rule: "#d5cfc4"
+  rule-strong: "#bdb5a7"
+  photo-well: "#e4e0d6"
+  error: "#f3e0da"
 typography:
   display:
-    fontFamily: "Spectral, Georgia, serif"
+    fontFamily: "'Bodoni Moda', Georgia, serif"
     fontWeight: 400
-    fontSize: "clamp(2.8rem, 5vw, 4.6rem)"
-    lineHeight: 1.04
+    fontSize: "clamp(2.6rem, 5vw, 4.4rem)"
+    lineHeight: 1.05
     letterSpacing: "-0.03em"
   body:
-    fontFamily: "Spectral, Georgia, serif"
+    fontFamily: "Archivo, Arial, sans-serif"
     fontWeight: 400
     fontSize: "1rem"
     lineHeight: 1.7
   label:
-    fontFamily: "Courier Prime, Courier New, monospace"
+    fontFamily: "'DM Mono', 'Courier New', monospace"
     fontWeight: 400
-    fontSize: "0.78rem"
+    fontSize: "0.72rem"
     lineHeight: 1.5
-    letterSpacing: "0.16em"
-rounded:
-  none: "0px"
+    letterSpacing: "0.14em"
 spacing:
   tight: "8px"
   base: "16px"
-  section: "40px"
-  wide: "72px"
+  section: "32px"
+  wide: "64px"
 components:
   ink-link:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.accent}"
     padding: "6px 0"
-  filter-stamp:
+  photo-mount:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.accent}"
+    padding: "14px"
+  tab-active:
     backgroundColor: "transparent"
-    textColor: "{colors.muted}"
-    padding: "8px 14px"
-  photo-mat:
-    backgroundColor: "{colors.mat}"
-    textColor: "{colors.mat-ink}"
-    padding: "16px"
+    textColor: "{colors.ink}"
+    padding: "10px 6px"
 ---
 
 # Design System: Food Diary
 
 ## Overview
 
-**Creative North Star: "The Night Ledger"**
+**Creative North Star: "Paper Editorial"**
 
-A private record of real visits, kept like a bound book and shown as tipped-in prints. The visitor arrives on a dark page and meets one large photograph on a warm paper mat, an ink date stamp, a dish stamp, and the owner's line beside it. The interface behaves like bookbinding: a rail down the left edge, folio numbers, a strip of numbered prints, a tape flag marking the last entry opened. Nothing here is a dashboard.
+A serious broadsheet that happens to be about dinner. Newsprint ground, white photo mounts, black ink, one red rule. The page is set, not decorated: hairlines divide, dates are tabular, and the only saturated colour is a single vermilion used for marks and actions. Food photography carries every bit of warmth the page has.
 
-Colour belongs to the food. The UI holds a near-black cloth ground, one warm paper mat, and a single brass accent; oxblood and sage exist only as the two dish stamps. There are no filled buttons, no cards, no gradients, no glow, no glass. Depth comes from a paper mat and one soft, offset shadow, not from stacked panels.
+There are no cards, no shadows, no rounded panels, and no coloured buttons. Depth comes from paper against newsprint and from the rule that sits under the active thing. The red is deliberately scarce — it is the reader's pointer, not a landscape.
 
 **Key Characteristics:**
-- Ground `#111316`, surface `#191c1f`, ink `#ded8cc` (13.1:1 on ground), muted `#9a968b` (6.3:1), brass `#9a8768` (5.35:1).
-- Paper mat `#d8d2c4` with `#36342e` ink (8.26:1) is the only light field; every photograph sits on it.
-- Two dish stamps: oxblood `#7a4a46` for Zhujiaofan, sage `#6f7a5c` for Shaorou. Each has a lighter text tint for dark ground.
-- Spectral for display and reading, Courier Prime for stamps, dates, folios, and labels.
-- Square throughout. 44px minimum controls, 2px brass focus ring.
+- Newsprint `#f7f5ef`, white mounts `#ffffff`, ink `#161514` (16.7:1), secondary `#6a655e` (5.3:1).
+- One accent: vermilion `#bf2f1e` (5.29:1 on ground, 4.71:1 on surface, 5.77:1 on white). Darkened one step from the explored `#d23b2a` to clear AA on every surface.
+- Bodoni Moda for display, Archivo for reading, DM Mono for dates, folios and labels.
+- Square corners throughout. One-pixel rules. No shadows anywhere.
 
 ## Colors
 
-A dark, quiet palette where one paper field carries the images and one metal accent carries the few actions.
+A printed page: warm-neutral paper, black ink, and one signal red.
 
 ### Primary
-- **Brass** (`#9a8768`): the only UI accent. Active tab, selected filter, faint rules, folio numbers, the tape flag, the focus ring. Never a large fill.
+- **Vermilion** (`#bf2f1e`): the only accent. Active tab and filter, plate label, tape flag, underlined actions, focus ring, map pin for Zhujiaofan. Never a background fill.
 
 ### Secondary
-- **Oxblood** (`#7a4a46`) and **Sage** (`#6f7a5c`): the two dish stamps and their map pins. They identify the dish; they are not decoration and never appear on navigation.
+- **Ink** (`#161514`): the dish mark for Shaorou and the neutral map pin. It is a mark, not a second accent.
 
 ### Neutral
-- **Cloth Ground** (`#111316`): the page.
-- **Binding** (`#0b0c0e`): the left rail.
-- **Raised Surface** (`#191c1f`): the map list and phone sheet.
-- **Paper Mat** (`#d8d2c4`): every photograph's mount, with `#36342e` ink.
-- **Ink** (`#ded8cc`) and **Muted** (`#9a968b`): text and secondary text.
-- **Rule** (`#2a2d30`): one-pixel separators.
+- **Newsprint** (`#f7f5ef`): the page ground.
+- **Paper** (`#ffffff`): photograph mounts, masthead, popup, sheet, lightbox caption.
+- **Surface** (`#ece8de`): map list and binding rail.
+- **Secondary** (`#6a655e`): dates, metadata, captions.
+- **Rule** (`#d5cfc4`) and **Rule Strong** (`#bdb5a7`): one-pixel separators and input underlines.
+- **Photo Well** (`#e4e0d6`): the fill behind a photograph before it loads.
+- **Error Wash** (`#f3e0da`): map tile failure notice, with a red bottom rule.
 
 ### Named Rules
-**The Mat Rule.** Every photograph sits on paper. No photo is placed directly on the dark ground.
-**The Two-Stamp Rule.** Oxblood and sage belong to dishes only. Brass belongs to actions only. They never swap jobs.
+**The One Red Rule.** Red marks a state or an action. It never fills a large area and never appears twice as decoration in the same component.
+**The Paper Rule.** Photographs sit on white paper. The ground is newsprint. They must never share a surface.
 
 ## Typography
 
-**Display and Body Font:** Spectral (Georgia fallback). Self-hosted as `fonts/spectral-400.woff2` and `fonts/spectral-600.woff2`.
-**Label Font:** Courier Prime (Courier New fallback). Self-hosted as `fonts/courier-prime-400.woff2` and `fonts/courier-prime-700.woff2`.
+**Display:** Bodoni Moda (Georgia fallback), self-hosted in `fonts/`.
+**Body:** Archivo (Arial fallback), self-hosted in `fonts/`.
+**Label:** DM Mono (Courier New fallback), self-hosted in `fonts/`.
 
-**Character:** Spectral gives the record a calm, printed voice; Courier Prime reads as a typed mark on a ledger page. The two never blur together.
+**Character:** Bodoni is all contrast and fine hairlines; Archivo is plain and fast to read; DM Mono makes dates look typed into a form. Three voices, three jobs.
 
 ### Hierarchy
-- **Display** (400, `clamp(2.8rem, 5vw, 4.6rem)`, 1.04, -0.03em): shop names on Diary and Entry.
-- **Section** (400, `1.6rem`, 1.1): wordmark and major labels.
-- **Body** (400, `1rem`, 1.7, max 68ch): notes and running text.
-- **Annotation** (400, `1.12rem`, 1.75, max 62ch): the owner's note beside the newest print.
-- **Label** (400, `0.62–0.82rem`, 0.14–0.22em tracking, uppercase): stamps, folios, tabs, filters, plate labels.
+- **Display** (400, `clamp(2.6rem, 5vw, 4.4rem)`, 1.05, -0.03em): shop name.
+- **Wordmark** (400, `1.9rem`): masthead.
+- **Body** (400, `1rem`, 1.7, max 68ch): notes.
+- **Annotation** (400, `1.12rem`, 1.75, max 66ch): the newest note, set above a rule.
+- **Label** (400, `0.62–0.78rem`, 0.14–0.22em tracking, uppercase): tabs, filters, dates, plate numbers, counts.
 
 ### Named Rules
-**The Two-Voice Rule.** Courier Prime is for measurement and labels only; running text is always Spectral.
+**The Typed Label Rule.** Anything measured — a date, a count, a plate number — is DM Mono. Nothing measured is set in Bodoni.
 
 ## Layout
 
-A 44–66px binding rail runs down the left edge; the page sits to its right with a `clamp(20px, 4vw, 56px)` gutter and a 1560px cap. The Diary opens with the newest visit as a two-column spread (photo mat left, stamped record right), then a horizontal, scroll-snapping print strip of every entry. The Map is a 320px searchable list beside the map; on phones the list collapses to a strip and the sheet rises from the bottom. An Entry is a single 960px column.
+A 66px rail down the left edge (44px on phones), a masthead on white, and a newsprint reading area with a `clamp(20px, 4vw, 56px)` gutter and a 1560px cap. The Diary opens with one large mounted photograph beside a text column, followed by a ruled strip of numbered prints. The Map is a 320px searchable list beside the map; on phones it collapses to a strip above the map and a white sheet rises from the bottom. An Entry is one 960px column.
 
-Breakpoints at 900px and 600px only. Under 600px the rail narrows to 44px, the spread stacks, the map list collapses, and Leaflet zoom controls hide. Spacing rhythm: 8px inside groups, 16px base, 40px between related blocks, 72px between sections. More space above a heading than below it.
+Breakpoints only at 900px and 600px. Rhythm: 8px inside groups, 16px base, 32px between related blocks, 64px between sections. More space above a heading than below it. The first print strip sits inside the first viewport at 1440×900.
 
 ## Elevation & Depth
 
-Depth is physical, not atmospheric: a paper mat, a one-pixel rule, and one soft offset shadow under a mounted print. No shadows on controls, no glow, no halo.
-
-### Shadow Vocabulary
-- **Mounted print** (`8px 12px 28px rgba(0,0,0,.35)`): only under a paper mat.
-- **Phone sheet** (`0 -10px 30px rgba(0,0,0,.55)`): only when the sheet is open.
-- **Leaflet popup** (`6px 10px 22px rgba(0,0,0,.45)`): the third-party slip.
+Flat. No shadows on mounts, controls, sheets, or popups. Depth is made from white paper on newsprint and from the red rule that marks the active element. The lightbox uses a dark surround, but that is a viewing surface, not a page surface.
 
 ## Shapes
 
-Square everywhere: filters, tabs, list rows, sheet, inputs. No rounded cards. The only cuts are the folded tape flag and the two pin silhouettes: an oxblood teardrop and a sage diamond, each outlined in ground colour so they read on the dark basemap. Plate labels sit half-outside the mat edge.
+Square everywhere. The plate label is a solid red rectangle overlapping the mount corner; the tape flag is a small folded notch. Map pins keep their two silhouettes — a red teardrop and an ink diamond — outlined in white so they read on light tiles.
 
 ## Components
 
-### Buttons
-- **Shape:** square, no radius; an ink rule under the label rather than a filled block.
-- **Ink link:** transparent, `#ded8cc` text, 1px brass underline, `0.78rem` Courier Prime, 6px 0 padding.
-- **Filters:** 1px `#2a2d30` border, muted label with a brass count; active gets a brass border. 44px tall.
-- **Hover / Focus:** brass text or border; 2px brass focus ring with 3px offset.
+### Buttons and links
+- **Ink link:** transparent, vermilion text, 1px red underline, DM Mono uppercase, 6px 0. Hover deepens to `#962617`.
+- **Tabs:** DM Mono uppercase, active gets a 2px red underline; 56px minimum width, 48px tall.
+- **Filters:** text only, active gets red text and a 2px red underline with a tabular count.
 
-### Stamps
-- **Date stamp:** double brass rule, rotated -1deg, Courier Prime, tabular numerals.
-- **Dish stamp:** two-pixel oxblood or sage rule with a lighter text tint, rotated -2deg or +2deg. Entries only.
-
-### Photo mat
-- **Mat:** `#d8d2c4`, 16px padding, 8px 12px 28px offset shadow.
-- **Label:** brass-bordered Courier plate number overlapping the top-left corner.
-- **Detail variant:** 1:1 control sits in the caption below the image and opens a full-size lightbox.
+### Photo mount
+- **Mount:** white, 1px `#d5cfc4` border, 14px padding, no shadow.
+- **Plate label:** red block, white DM Mono text, overlapping the top-left corner.
+- **Detail variant:** caption under the mount carries a 1:1 control that opens a full-size lightbox.
 
 ### Print strip
-- Horizontally scrollable, snap-aligned paper thumbnails, 168px on desktop and 140px on phones.
-- Current entry carries a 2px brass ring; last-viewed entry carries the folded tape flag.
+- Ruled top edge, numbered white thumbnails, current one marked by a 2px red bottom rule, last-viewed one by the tape flag.
 
-### Map list and sheet
-- **List:** muted surface, one-pixel separators, 52px thumbnails, brass underline on the selected row.
-- **Sheet:** paper-toned surface with a grip that collapses details; Escape closes and returns focus to the pin.
+### Map and sheet
+- **List:** surface ground, hairline separators, active row on white with a 2px red bottom rule.
+- **Popup:** white paper slip, ink text, one-pixel border, no shadow.
+- **Sheet:** white paper, red grip, same content as the popup, collapsible by the grip.
 
 ### Navigation
-- Wordmark and two page tabs in the masthead. Active tab gets a 2px brass underline. Tabs are 56px wide minimum.
+- Wordmark and two tabs in the masthead. Focus ring is 2px vermilion with 3px offset.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** mount every photograph on the paper mat with a plate number.
-- **Do** keep brass under 10% of any screen; its rarity is the point.
-- **Do** keep all controls at least 44px with a 2px brass focus ring.
-- **Do** let the print strip carry scale from one entry to a hundred.
+- **Do** keep the red to marks and actions; one red per component.
+- **Do** mount every photograph on white paper with a plate number.
+- **Do** keep the print strip inside the first desktop viewport.
+- **Do** keep all controls at least 44px with a visible red focus ring.
 
 ### Don't:
-- **Don't** use bright orange, neon accents, gradients, glass, or glow.
-- **Don't** put dish stamps on navigation or UI chrome.
-- **Don't** add cards, nested panels, or decorative section numbers.
+- **Don't** add cards, shadows, rounded panels, gradients, or glass.
+- **Don't** use a second accent colour; ink is a neutral mark.
+- **Don't** set measured values in Bodoni.
 - **Don't** invent shops, photographs, ratings, or prices.

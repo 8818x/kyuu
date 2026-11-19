@@ -215,12 +215,12 @@ function makeFeatured(item) {
   return el;
 }
 
-function makeThumb(item) {
+function makeThumb(item, isCurrent) {
   const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
   const btn = document.createElement("button");
-  btn.className = "print-thumb" + (id === getLast() ? " is-current" : "");
+  btn.className = "print-thumb" + (isCurrent ? " is-current" : "");
   btn.type = "button";
   btn.dataset.id = id;
 
@@ -284,7 +284,8 @@ function renderDiary() {
   head.append(left, right);
   const inner = document.createElement("div");
   inner.className = "strip-inner";
-  inner.append(...list.map(makeThumb));
+  const currentId = entryId(list[0].entry, list[0].index);
+  inner.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
   stripBox.append(head, inner);
 
   const tape = $("binding-tape");
@@ -451,12 +452,12 @@ function renderEntry(id) {
 const STEW_PIN =
   '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
   '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-  'fill="#7a4a46" stroke="#111316" stroke-width="2.2"/>' +
-  '<circle cx="14" cy="14" r="4" fill="#111316"/></svg>';
+  'fill="#bf2f1e" stroke="#ffffff" stroke-width="2.2"/>' +
+  '<circle cx="14" cy="14" r="4" fill="#ffffff"/></svg>';
 const CRISP_PIN =
   '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
   '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#6f7a5c" stroke="#111316" stroke-width="2.2"/></svg>';
+  'fill="#161514" stroke="#ffffff" stroke-width="2.2"/></svg>';
 
 function pinIcon(entry) {
   const crisp = isCrisp(entry);
@@ -618,7 +619,7 @@ function ensureMap() {
   }
   map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
   const tiles = L.tileLayer(
-    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     {
       attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
       maxZoom: 19

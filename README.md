@@ -1,6 +1,6 @@
 # Food Diary
 
-A private ledger of two dishes: Zhujiaofan and Shaorou. Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
+A personal food diary of two dishes: Zhujiaofan and Shaorou. Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
 
 ## Add a plate
 
@@ -29,14 +29,14 @@ GitHub Pages updates in about a minute.
 - `styles.css` — the whole visual system, hand-authored plain CSS
 - `app.js` — rendering, routing, map, and interactions
 - `data/entries.js` — the only file the owner edits
-- `fonts/` — self-hosted Spectral and Courier Prime
+- `fonts/` — self-hosted Bodoni Moda, Archivo and DM Mono
 
 ## Look and behaviour
 
-Dark cloth ground, warm paper photo mats, one brass accent, and two ink stamps for the dishes. Diary is the front door; Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a tape flag.
+Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door; Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a red tape flag.
 
-Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a brass focus ring. Reduced-motion is respected.
+Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a red focus ring. Reduced-motion is respected.
 
 ## Basemap
 
-Esri World Dark Gray Canvas keyless raster tiles. Attribution is required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The URL and attribution live in `app.js`. If the provider starts requiring an API key, swap both and confirm a real tile loads — a dead basemap shows a visible warning line.
+Esri World Light Gray Canvas keyless raster tiles. Attribution is required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The URL and attribution live in `app.js`. If the provider starts requiring an API key, swap both and confirm a real tile loads — a dead basemap shows a visible warning line.

@@ -1,29 +1,23 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-19T15:25:00+07:00",
+  "generatedAt": "2026-11-19T16:40:00+07:00",
   "title": "Design System: Food Diary",
   "extensions": {
     "colorMeta": {
-      "ground": { "role": "neutral", "displayName": "Cloth Ground", "canonical": "#111316", "tonalRamp": ["#08090a", "#0b0c0e", "#111316", "#171a1e", "#1d2125", "#25292e", "#2f3439", "#3b4147"] },
-      "surface": { "role": "neutral", "displayName": "Raised Surface", "canonical": "#191c1f", "tonalRamp": ["#0c0e10", "#111416", "#191c1f", "#202427", "#282c30", "#32373c", "#3d4348", "#4a5157"] },
-      "mat": { "role": "neutral", "displayName": "Paper Mat", "canonical": "#d8d2c4", "tonalRamp": ["#4a463e", "#6b6559", "#8e8778", "#ada697", "#c5bfb1", "#d8d2c4", "#e6e1d7", "#f2efe9"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#ded8cc", "tonalRamp": ["#4c4943", "#6d6961", "#8f8a80", "#aba69b", "#c5c0b4", "#ded8cc", "#eae5db", "#f5f2ec"] },
-      "muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "#9a968b", "tonalRamp": ["#33312d", "#4b4842", "#655f57", "#7d786e", "#9a968b", "#b1aca1", "#c6c1b7", "#d9d5cd"] },
-      "brass": { "role": "primary", "displayName": "Brass", "canonical": "#9a8768", "tonalRamp": ["#393226", "#544a38", "#6d6049", "#84745a", "#9a8768", "#b09e80", "#c5b69c", "#d9ceb9"] },
-      "stew": { "role": "secondary", "displayName": "Oxblood", "canonical": "#7a4a46", "tonalRamp": ["#2c1b1a", "#422824", "#593531", "#6e403c", "#7a4a46", "#94635d", "#b0837b", "#cba79f"] },
-      "crisp": { "role": "secondary", "displayName": "Sage", "canonical": "#6f7a5c", "tonalRamp": ["#262b21", "#3a4030", "#4e563f", "#606a4e", "#6f7a5c", "#879173", "#a3ac8f", "#bec6b0"] },
-      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#2a2d30", "tonalRamp": ["#111315", "#191c1e", "#222528", "#2a2d30", "#34383c", "#41464a", "#50565b", "#62696f"] }
+      "ground": { "role": "neutral", "displayName": "Newsprint", "canonical": "#f7f5ef", "tonalRamp": ["#2b2a27", "#45433e", "#605d55", "#7b776d", "#969186", "#b3aea3", "#d5cfc4", "#f7f5ef"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#ffffff", "tonalRamp": ["#3b3a38", "#575652", "#73716b", "#908d86", "#adaaa2", "#cac7bf", "#e6e4de", "#ffffff"] },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "#ece8de", "tonalRamp": ["#3a3833", "#57544c", "#757065", "#938d81", "#b1aa9c", "#cfc8ba", "#e2ddd2", "#f5f2eb"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#161514", "tonalRamp": ["#0a0909", "#161514", "#292725", "#3d3936", "#534e49", "#6a655e", "#88827a", "#a9a39a"] },
+      "secondary": { "role": "neutral", "displayName": "Secondary", "canonical": "#6a655e", "tonalRamp": ["#201e1c", "#35322e", "#4a4641", "#5d5851", "#6a655e", "#8a847a", "#a9a39a", "#cbc5ba"] },
+      "accent": { "role": "primary", "displayName": "Vermilion", "canonical": "#bf2f1e", "tonalRamp": ["#2f0f0a", "#4d170f", "#6c1f14", "#8b271a", "#bf2f1e", "#d35543", "#e28a7c", "#f3c5bd"] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#d5cfc4", "tonalRamp": ["#4e4a44", "#6b665e", "#8c867b", "#aaa399", "#c6bfb3", "#d5cfc4", "#e6e1d8", "#f5f3ee"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Shop names on Diary and Entry." },
+      "display": { "displayName": "Display", "purpose": "Shop names only." },
       "body": { "displayName": "Body", "purpose": "Notes and running text, max 68ch." },
-      "label": { "displayName": "Label", "purpose": "Stamps, folios, tabs, filters, plate numbers." }
+      "label": { "displayName": "Label", "purpose": "Dates, folios, counts, tabs and filters." }
     },
-    "shadows": [
-      { "name": "mounted-print", "value": "8px 12px 28px rgba(0,0,0,.35)", "purpose": "Depth under a paper mat only." },
-      { "name": "phone-sheet", "value": "0 -10px 30px rgba(0,0,0,.55)", "purpose": "Open bottom sheet on phones." },
-      { "name": "leaflet-popup", "value": "6px 10px 22px rgba(0,0,0,.45)", "purpose": "Third-party map slip." }
-    ],
+    "shadows": [],
     "motion": [
       { "name": "settle", "value": "0.5s cubic-bezier(.2,.8,.2,1)", "purpose": "One authored entrance for the newest print." },
       { "name": "sheet", "value": "0.3s cubic-bezier(.2,.8,.2,1)", "purpose": "Phone sheet slide and collapse." }
@@ -39,78 +33,78 @@
       "name": "Ink link",
       "kind": "button",
       "refersTo": "ink-link",
-      "description": "Square action drawn as a brass rule under the label.",
+      "description": "Red underlined action, never a filled button.",
       "html": "<button class=\"ds-ink-link\">READ ENTRY</button>",
-      "css": ".ds-ink-link { background: transparent; color: #ded8cc; border: 0; border-bottom: 1px solid #9a8768; padding: 6px 0; font: 400 .78rem/1.5 'Courier Prime', monospace; letter-spacing: .16em; cursor: pointer; } .ds-ink-link:hover { color: #9a8768; } .ds-ink-link:focus-visible { outline: 2px solid #9a8768; outline-offset: 3px; }"
+      "css": ".ds-ink-link { background: transparent; color: #bf2f1e; border: 0; border-bottom: 1px solid #bf2f1e; padding: 6px 0; font: 400 .74rem/1.5 'DM Mono', monospace; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } .ds-ink-link:hover { color: #962617; border-bottom-color: #962617; } .ds-ink-link:focus-visible { outline: 2px solid #bf2f1e; outline-offset: 3px; }"
     },
     {
-      "name": "Filter stamp",
+      "name": "Active tab",
       "kind": "nav",
-      "refersTo": "filter-stamp",
-      "description": "Dish filter with a tabular count; selected gets a brass rule.",
-      "html": "<button class=\"ds-filter\" aria-pressed=\"true\">ZhuJiaofan <b>002</b></button>",
-      "css": ".ds-filter { background: transparent; color: #9a968b; border: 1px solid #2a2d30; min-height: 44px; padding: 8px 14px; font: 400 .76rem 'Courier Prime', monospace; letter-spacing: .14em; cursor: pointer; } .ds-filter[aria-pressed=\"true\"] { color: #ded8cc; border-color: #9a8768; } .ds-filter b { color: #9a8768; font-weight: 400; margin-left: 10px; font-variant-numeric: tabular-nums; }"
+      "refersTo": "tab-active",
+      "description": "Uppercase tab with a red underline when active.",
+      "html": "<button class=\"ds-tab\" aria-pressed=\"true\">Diary</button>",
+      "css": ".ds-tab { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-width: 56px; min-height: 48px; padding: 10px 6px; font: 400 .75rem 'DM Mono', monospace; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; } .ds-tab[aria-pressed=\"true\"] { color: #161514; border-bottom-color: #bf2f1e; }"
     },
     {
-      "name": "Date stamp",
+      "name": "Filter",
+      "kind": "nav",
+      "description": "Text-only dish filter with a tabular count.",
+      "html": "<button class=\"ds-filter\" aria-pressed=\"true\">All <b>001</b></button>",
+      "css": ".ds-filter { background: transparent; color: #6a655e; border: 0; border-bottom: 2px solid transparent; min-height: 44px; padding: 8px 0; font: 400 .72rem 'DM Mono', monospace; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } .ds-filter[aria-pressed=\"true\"] { color: #bf2f1e; border-bottom-color: #bf2f1e; } .ds-filter b { font-weight: 400; margin-left: 8px; }"
+    },
+    {
+      "name": "Plate label",
       "kind": "chip",
-      "description": "Double-ruled ink date on an entry.",
-      "html": "<span class=\"ds-date-stamp\"><time datetime=\"2026-11-17\">17 Nov 2026</time></span>",
-      "css": ".ds-date-stamp { display: inline-block; border: 2px double #9a8768; color: #9a8768; font: 400 .7rem 'Courier Prime', monospace; letter-spacing: .2em; padding: 6px 12px; transform: rotate(-1deg); }"
+      "description": "Red plate number overlapping a white photo mount.",
+      "html": "<span class=\"ds-plate-label\">PLATE 001</span>",
+      "css": ".ds-plate-label { display: inline-block; background: #bf2f1e; color: #fff; font: 400 .62rem 'DM Mono', monospace; letter-spacing: .16em; padding: 5px 9px; }"
     },
     {
-      "name": "Dish stamp",
+      "name": "Dish mark",
       "kind": "chip",
-      "description": "Oxblood for Zhujiaofan, sage for Shaorou.",
-      "html": "<span class=\"ds-dish-stamp\">Zhujiaofan</span>",
-      "css": ".ds-dish-stamp { display: inline-block; border: 2px solid #7a4a46; color: #d9a49b; font: 400 .7rem 'Courier Prime', monospace; letter-spacing: .18em; padding: 5px 11px; transform: rotate(-2deg); } .ds-dish-stamp--crisp { border-color: #6f7a5c; color: #bcc9a7; transform: rotate(2deg); }"
+      "description": "Red for Zhujiaofan, ink for Shaorou.",
+      "html": "<span class=\"ds-dish-mark\">Zhujiaofan</span>",
+      "css": ".ds-dish-mark { display: inline-block; border-bottom: 2px solid #bf2f1e; color: #bf2f1e; font: 400 .7rem 'DM Mono', monospace; letter-spacing: .16em; text-transform: uppercase; padding-bottom: 3px; } .ds-dish-mark--crisp { border-bottom-color: #161514; color: #161514; }"
     },
     {
-      "name": "Photo mat",
+      "name": "Photo mount",
       "kind": "card",
-      "refersTo": "photo-mat",
-      "description": "Paper mount for every photograph, with an overlapping plate label.",
-      "html": "<a class=\"ds-mat\" href=\"#\"><img src=\"images/sample.svg\" alt=\"\"><span class=\"ds-plate-label\">PLATE 001</span></a>",
-      "css": ".ds-mat { position: relative; display: block; background: #d8d2c4; padding: 16px; box-shadow: 8px 12px 28px rgba(0,0,0,.35); } .ds-mat img { display: block; width: 100%; height: 300px; object-fit: cover; background: #292e2a; } .ds-plate-label { position: absolute; top: -9px; left: -9px; background: #111316; border: 1px solid #9a8768; color: #9a8768; font: 400 .62rem 'Courier Prime', monospace; letter-spacing: .16em; padding: 5px 9px; }"
+      "refersTo": "photo-mount",
+      "description": "White paper around every photograph, no shadow.",
+      "html": "<a class=\"ds-mount\" href=\"#\"><img src=\"images/sample.svg\" alt=\"\"><span class=\"ds-plate-label\">PLATE 001</span></a>",
+      "css": ".ds-mount { position: relative; display: block; background: #fff; border: 1px solid #d5cfc4; padding: 14px; } .ds-mount img { display: block; width: 100%; height: 300px; object-fit: cover; background: #e4e0d6; }"
     },
     {
       "name": "Search field",
       "kind": "input",
-      "description": "Single-rule search on the map list.",
+      "description": "A single ruled input on the map list.",
       "html": "<input class=\"ds-search\" type=\"search\" placeholder=\"Search places\">",
-      "css": ".ds-search { width: 100%; background: transparent; color: #ded8cc; border: 0; border-bottom: 1px solid #2a2d30; padding: 9px 0; font: 400 .8rem/1.5 'Courier Prime', monospace; letter-spacing: .04em; caret-color: #9a8768; } .ds-search::placeholder { color: #9a968b; } .ds-search:focus { border-bottom-color: #9a8768; outline: none; }"
-    },
-    {
-      "name": "Print thumbnail",
-      "kind": "card",
-      "description": "Numbered print in the ledger strip; brass ring marks the current one.",
-      "html": "<button class=\"ds-print\"><span class=\"ds-print-mat\"><img src=\"images/sample.svg\" alt=\"\"></span><span class=\"ds-print-meta\"><b>001</b><span>Sample Shop</span></span></button>",
-      "css": ".ds-print { flex: 0 0 168px; background: transparent; border: 0; padding: 0; text-align: left; cursor: pointer; color: #9a968b; } .ds-print-mat { display: block; background: #d8d2c4; padding: 6px; } .ds-print-mat img { width: 100%; height: 86px; object-fit: cover; } .ds-print.is-current .ds-print-mat { box-shadow: 0 0 0 2px #9a8768; } .ds-print-meta { display: flex; justify-content: space-between; font: 400 .62rem 'Courier Prime', monospace; padding-top: 7px; } .ds-print-meta b { color: #9a8768; font-weight: 400; }"
+      "css": ".ds-search { width: 100%; background: transparent; color: #161514; border: 0; border-bottom: 1px solid #bdb5a7; padding: 9px 0; font: 400 .8rem/1.5 'DM Mono', monospace; caret-color: #bf2f1e; } .ds-search::placeholder { color: #6a655e; } .ds-search:focus { outline: none; border-bottom-color: #bf2f1e; }"
     }
   ],
   "narrative": {
-    "northStar": "The Night Ledger",
-    "overview": "A private record of real visits, kept like a bound book and shown as tipped-in prints. The visitor arrives on a dark page and meets one large photograph on a warm paper mat, an ink date stamp, a dish stamp, and the owner's line beside it. Colour belongs to the food; the UI holds one brass accent and two dish stamps. There are no cards, gradients, glow, or glass.",
+    "northStar": "Paper Editorial",
+    "overview": "A serious broadsheet that happens to be about dinner. Newsprint ground, white photo mounts, black ink, one red rule. The page is set, not decorated: hairlines divide, dates are tabular, and the only saturated colour is a single vermilion used for marks and actions. Food photography carries every bit of warmth the page has.",
     "keyCharacteristics": [
-      "Ground #111316, paper mat #d8d2c4, brass #9a8768, oxblood and sage dish stamps.",
-      "Spectral for display and reading, Courier Prime for stamps, folios and labels.",
-      "One soft offset shadow under a mounted print; no shadows on controls."
+      "Newsprint ground, white mounts, black ink, one vermilion signal.",
+      "Bodoni Moda for display, Archivo for reading, DM Mono for measured values.",
+      "Square corners, one-pixel rules, no shadows."
     ],
     "rules": [
-      { "name": "The Mat Rule", "body": "Every photograph sits on paper. No photo is placed directly on the dark ground.", "section": "colors" },
-      { "name": "The Two-Stamp Rule", "body": "Oxblood and sage belong to dishes only. Brass belongs to actions only. They never swap jobs.", "section": "colors" },
-      { "name": "The Two-Voice Rule", "body": "Courier Prime is for measurement and labels only; running text is always Spectral.", "section": "typography" }
+      { "name": "The One Red Rule", "body": "Red marks a state or an action. It never fills a large area and never appears twice as decoration in the same component.", "section": "colors" },
+      { "name": "The Paper Rule", "body": "Photographs sit on white paper. The ground is newsprint. They must never share a surface.", "section": "colors" },
+      { "name": "The Typed Label Rule", "body": "Anything measured — a date, a count, a plate number — is DM Mono. Nothing measured is set in Bodoni.", "section": "typography" }
     ],
     "dos": [
-      "Do mount every photograph on the paper mat with a plate number.",
-      "Do keep brass under 10% of any screen; its rarity is the point.",
-      "Do keep all controls at least 44px with a 2px brass focus ring.",
-      "Do let the print strip carry scale from one entry to a hundred."
+      "Do keep the red to marks and actions; one red per component.",
+      "Do mount every photograph on white paper with a plate number.",
+      "Do keep the print strip inside the first desktop viewport.",
+      "Do keep all controls at least 44px with a visible red focus ring."
     ],
     "donts": [
-      "Don't use bright orange, neon accents, gradients, glass, or glow.",
-      "Don't put dish stamps on navigation or UI chrome.",
-      "Don't add cards, nested panels, or decorative section numbers.",
+      "Don't add cards, shadows, rounded panels, gradients, or glass.",
+      "Don't use a second accent colour; ink is a neutral mark.",
+      "Don't set measured values in Bodoni.",
       "Don't invent shops, photographs, ratings, or prices."
     ]
   }
