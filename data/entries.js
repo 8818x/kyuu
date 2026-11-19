@@ -16,7 +16,7 @@ window.DIARY_ENTRIES = [
     date: "2025-11-26",
     shop: "ผัดไท หอยทอด กร& เก้า",
     type: ["PadThai", "HoiThod"],
-    image: "images/sample-food.jpg",
+    image: "images/1795090695048.jpg",
     maps: "https://share.google/X9DNMraTA3ZSJJkiS",
     note: ""
   }
