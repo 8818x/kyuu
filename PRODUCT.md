@@ -32,7 +32,7 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Capabilities and Constraints
 
-- Two views: **Map** (default) and **Diary**, switched by tabs.
+- Two views: **Diary** (default) and **Map**, switched by tabs.
 - Diary filters: `All`, `Zhujiaofan`, `Shaorou`.
 - Map pins distinguish the two dishes by shape and colour, and a summary line gives the shop and per-dish counts.
 - A pin opens a popup with the shop, date, dish, note, and an "Open in diary" action that switches views and lands on that card.

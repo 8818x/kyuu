@@ -25,7 +25,7 @@ Answer "where did this person eat, and what was it like" within seconds. Proof: 
 
 THESIS: A white broadsheet with black ink and one red rule. It refuses the dark gallery, the card grid, and the coloured dashboard; the page is set like a serious newspaper and the photograph is the only luxuriance.
 
-OWN-WORLD: Newsprint #f7f5ef ground, #ece8de surface, white photo mount, ink #161514, secondary #6a655e, one vermilion #d23b2a signal, hairline #d5cfc4 rules. Bodoni Moda for display, Archivo for running text, DM Mono for dates, folios and labels. Square corners, no cards, no shadows, one red rule under the active tab. The red appears on controls and marks only, never as a background fill.
+OWN-WORLD: Newsprint #f7f5ef ground, #ece8de surface, white photo mount, ink #161514, secondary #6a655e, one vermilion #bf2f1e signal, hairline #d5cfc4 rules. Bodoni Moda for display, Archivo for running text, DM Mono for dates, folios and labels. Square corners, no cards, no shadows, one red rule under the active tab. The red appears on controls and marks only, never as a background fill.
 
 STORY: The visitor lands on a light page where a single large food photograph dominates the first fold. They read the shop name and the typed note, follow the ruled print strip or a filter to another visit, and open the map to find the place. They leave knowing this is one person's considered record, printed rather than posted.
 

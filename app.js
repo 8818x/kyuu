@@ -4,6 +4,7 @@ const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
 let searchTerm = "";
+let diaryTerm = "";
 let map = null;
 let markers = new Map();
 let sheetIndex = -1;
@@ -26,6 +27,8 @@ const mapCount = $("map-count");
 const statusEl = $("status");
 const sheet = $("sheet");
 const searchInput = $("shop-search");
+const diarySearch = $("diary-search");
+const diaryResult = $("diary-result");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
 const lightbox = $("lightbox");
@@ -137,6 +140,12 @@ function searchMatches(entry) {
   return haystack.indexOf(searchTerm) !== -1;
 }
 
+function diaryMatches(entry) {
+  if (!diaryTerm) return true;
+  const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
+  return haystack.indexOf(diaryTerm) !== -1;
+}
+
 function emptyState(message, actionLabel, onAction) {
   const box = document.createElement("div");
   box.className = "empty-state";
@@ -179,8 +188,9 @@ function makeFeatured(item) {
     label.className = "plate-label";
     label.textContent = "PLATE " + pad(index + 1);
     img.onerror = () => {
-      img.hidden = true;
-      label.textContent = "PLATE " + pad(index + 1) + " / PHOTOGRAPH UNAVAILABLE";
+      media.classList.add("is-missing");
+      img.style.visibility = "hidden";
+      label.textContent = "PLATE " + pad(index + 1) + " / PHOTO UNAVAILABLE";
     };
     media.append(img, label);
     el.appendChild(media);
@@ -255,21 +265,26 @@ function makeThumb(item, isCurrent) {
 }
 
 function renderDiary() {
-  const list = visibleEntries();
+  const list = visibleEntries().filter(({ entry }) => diaryMatches(entry));
+  const shown = list.length;
+  const filtered = shown !== entries.length;
+
   ledgerCount.innerHTML = "";
   const no = document.createElement("span");
   no.textContent = pad(entries.length);
   const unit = document.createElement("small");
   unit.textContent = entries.length === 1 ? "PLATE" : "PLATES";
   ledgerCount.append(no, unit);
+  ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
+  diaryResult.textContent = filtered ? "SHOWING " + pad(shown) + " / " + pad(entries.length) : "";
 
   featuredBox.replaceChildren();
   stripBox.replaceChildren();
   if (!list.length) {
     featuredBox.appendChild(emptyState(
-      entries.length ? "No " + activeFilter + " plates yet." : "The ledger is empty.",
-      entries.length ? "Show all plates" : null,
-      () => setFilter(filters[0])
+      filtered ? "No plates match this search or filter." : "The ledger is empty.",
+      filtered ? "Show all plates" : null,
+      () => { diaryTerm = ""; diarySearch.value = ""; setFilter(filters[0]); }
     ));
     return;
   }
@@ -387,18 +402,23 @@ function renderEntry(id) {
     main.src = photos[0];
     main.alt = entry.shop ? "Photograph from " + entry.shop : "";
     main.decoding = "async";
-    main.onerror = () => { main.hidden = true; };
     const cap = document.createElement("figcaption");
     const label = document.createElement("span");
     label.className = "plate-label";
     label.style.position = "static";
-    label.textContent = "PLATE " + pad(index + 1) + " / " + pad(photos.length)
-      + (main.hidden ? " / PHOTOGRAPH UNAVAILABLE" : "");
+    const labelFor = (i) => "PLATE " + pad(index + 1) + " / PHOTO " + pad(i + 1) + " OF " + pad(photos.length);
+    label.textContent = labelFor(0);
+    main.onerror = () => {
+      figure.classList.add("is-missing");
+      main.style.visibility = "hidden";
+      label.textContent = "PLATE " + pad(index + 1) + " / PHOTO UNAVAILABLE";
+      zoom.hidden = true;
+    };
     const zoom = document.createElement("button");
     zoom.className = "ink-link";
     zoom.type = "button";
     zoom.textContent = "View at 1:1";
-    zoom.addEventListener("click", () => openLightbox(photos[0], main.alt, zoom));
+    zoom.addEventListener("click", () => openLightbox(main.src, main.alt, zoom));
     cap.append(label, zoom);
     figure.append(main, cap);
     wrap.appendChild(figure);
@@ -416,10 +436,15 @@ function renderEntry(id) {
         img.src = src;
         img.alt = "";
         img.loading = "lazy";
+        img.onerror = () => { img.hidden = true; };
         btn.appendChild(img);
         btn.addEventListener("click", () => {
           main.src = src;
           main.alt = (entry.shop || "Entry") + ", photo " + (i + 1);
+          main.style.visibility = "visible";
+          figure.classList.remove("is-missing");
+          label.textContent = labelFor(i);
+          zoom.hidden = false;
           thumbs.querySelectorAll(".thumb-btn").forEach((b) => b.setAttribute("aria-pressed", "false"));
           btn.setAttribute("aria-pressed", "true");
         });
@@ -499,6 +524,12 @@ function makePlaceRow(item) {
   const sub = document.createElement("small");
   sub.textContent = (entry.type || "") + " · " + formatDate(entry.date);
   text.append(name, sub);
+  if (!coordsFromLink(entry.maps)) {
+    const note = document.createElement("small");
+    note.className = "place-note";
+    note.textContent = "No pin · opens the entry";
+    text.appendChild(note);
+  }
   btn.appendChild(text);
   if (id === getLast()) {
     const flag = document.createElement("span");
@@ -553,7 +584,11 @@ function activateShop(id, trigger) {
 
   const pos = coordsFromLink(entry.maps);
   if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
-  if (!marker) return;
+  if (!marker || !pos) {
+    announce(entry.shop + " has no map pin. Opening the entry.");
+    location.hash = "#/e/" + encodeURIComponent(id);
+    return;
+  }
 
   if (isPhone()) {
     openSheet(index, trigger || marker.getElement());
@@ -794,10 +829,25 @@ function parseRoute() {
   return { view: "diary" };
 }
 
+function syncLayout() {
+  const masthead = document.querySelector(".masthead");
+  const content = document.querySelector(".content");
+  if (masthead && content) {
+    const top = parseFloat(getComputedStyle(content).paddingTop) || 0;
+    const offset = Math.round(masthead.offsetHeight + top + 24);
+    document.documentElement.style.setProperty("--map-offset", offset + "px");
+  }
+  listToggle.disabled = !isPhone();
+  listToggle.setAttribute("aria-expanded", String(
+    isPhone() ? ledgerList.dataset.expanded === "true" : true
+  ));
+}
+
 function renderRoute() {
   const route = parseRoute();
   closeSheet();
   closeLightbox();
+  syncLayout();
   updateFilters();
   tabButtons.forEach((b) => {
     b.setAttribute("aria-pressed", String(b.dataset.tab === route.view || (route.view === "entry" && b.dataset.tab === "diary")));
@@ -818,7 +868,7 @@ function renderRoute() {
     const last = getLast();
     if (last) {
       const link = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(last) + '"]');
-      if (link) link.focus({ preventScroll: true });
+      if (link) link.focus();
     }
   }
   window.scrollTo(0, 0);
@@ -829,6 +879,12 @@ searchInput.addEventListener("input", () => {
   renderShopList();
 });
 
+diarySearch.addEventListener("input", () => {
+  diaryTerm = diarySearch.value.trim().toLowerCase();
+  renderDiary();
+  announce(diaryTerm ? "Diary search updated." : "Diary search cleared.");
+});
+
 listToggle.addEventListener("click", () => {
   const open = ledgerList.dataset.expanded !== "true";
   ledgerList.dataset.expanded = String(open);
@@ -836,6 +892,10 @@ listToggle.addEventListener("click", () => {
 });
 
 window.addEventListener("hashchange", renderRoute);
+window.addEventListener("resize", () => {
+  syncLayout();
+  if (map) requestAnimationFrame(() => map.invalidateSize());
+});
 
 /* ---------- boot ---------- */
 
