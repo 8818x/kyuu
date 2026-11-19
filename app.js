@@ -22,7 +22,6 @@ const filters = ["All", ...baseTypes.filter((t) => recordTypes.includes(t)),
 const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
-let searchTerm = "";
 let map = null;
 let markers = new Map();
 let selectedShopKey = null;
@@ -45,7 +44,6 @@ const ledgerCount = $("ledger-count");
 const mapCount = $("map-count");
 const statusEl = $("status");
 const sheet = $("sheet");
-const searchInput = $("shop-search");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
 const lightbox = $("lightbox");
@@ -161,12 +159,6 @@ function visibleEntries() {
     .sort((a, b) => (b.entry.date || "").localeCompare(a.entry.date || ""));
 }
 
-function searchMatches(entry) {
-  if (!searchTerm) return true;
-  const haystack = [entry.shop, typesOf(entry).join(" "), entry.note].join(" ").toLowerCase();
-  return haystack.indexOf(searchTerm) !== -1;
-}
-
 function shopKey(entry, index) {
   return String(entry.shop || "").trim().toLowerCase() || entryId(entry, index);
 }
@@ -196,7 +188,7 @@ function visibleMapGroups() {
   const result = [];
   shopGroups().forEach((group) => {
     const visits = group.visits.filter(({ entry }) =>
-      (activeFilter === filters[0] || typesOf(entry).includes(activeFilter)) && searchMatches(entry));
+      activeFilter === filters[0] || typesOf(entry).includes(activeFilter));
     if (visits.length) result.push({ ...group, visits });
   });
   return result;
@@ -734,13 +726,13 @@ function renderPinLegend(groups) {
 
 function renderShopList() {
   const list = visibleMapGroups();
-  mapCount.textContent = pad(list.length) + (list.length === 1 ? " PLACE" : " PLACES");
+  mapCount.textContent = pad(list.length) + " 場所";
   renderPinLegend(list);
   if (!list.length) {
     shopItemsBox.replaceChildren(emptyState(
-      entries.length ? "No places match this search." : "No places yet.",
-      searchTerm || activeFilter !== filters[0] ? "Clear search and filter" : null,
-      () => { searchTerm = ""; searchInput.value = ""; setFilter(filters[0]); }
+      entries.length ? "No places for this dish." : "No places yet.",
+      activeFilter !== filters[0] ? "Show all dishes" : null,
+      () => setFilter(filters[0])
     ));
   } else {
     shopItemsBox.replaceChildren(...list.map(makePlaceRow));
@@ -1007,11 +999,6 @@ function renderRoute() {
   }
   window.scrollTo(0, 0);
 }
-
-searchInput.addEventListener("input", () => {
-  searchTerm = searchInput.value.trim().toLowerCase();
-  renderShopList();
-});
 
 listToggle.addEventListener("click", () => {
   const open = ledgerList.dataset.expanded !== "true";

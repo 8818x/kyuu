@@ -32,7 +32,7 @@ typography:
     lineHeight: 1.4
     letterSpacing: "0.10em"
   cjk:
-    fontFamily: "'Noto Sans SC', sans-serif"
+    fontFamily: "'Noto Sans JP', sans-serif"
     fontWeight: 500
     fontSize: "0.75rem"
     lineHeight: 1.4
@@ -69,7 +69,7 @@ There are no cards, no shadows, no rounded panels, and no coloured buttons. Dept
 **Key Characteristics:**
 - Newsprint `#f7f5ef`, white mounts `#ffffff`, ink `#161514` (16.7:1), secondary `#6a655e` (5.3:1).
 - One accent: vermilion `#bf2f1e` (5.29:1 on ground, 4.71:1 on surface, 5.77:1 on white). Darkened one step from the explored `#d23b2a` to clear AA on every surface.
-- Taviraj for display, Noto Sans Thai for reading, dates, folios and labels. Thai and Latin ship in every weight.
+- Taviraj for display, Noto Sans Thai for reading, dates, folios and labels. Thai and Latin ship in every weight; a tiny Noto Sans JP subset supplies the Japanese marks 写真, 頁, 場所 and 九.
 - Square corners throughout. One-pixel rules. No shadows anywhere.
 
 ## Colors
@@ -100,7 +100,7 @@ A printed page: warm-neutral paper, black ink, and one signal red.
 **Display:** Taviraj (Georgia fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
 **Body:** Noto Sans Thai (Arial fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
 **Label:** Noto Sans Thai (Arial fallback), weight 500, same files as the body face.
-**CJK glyphs:** Noto Sans SC (system CJK fallback), a tiny self-hosted subset covering 写真 plus the earlier dish characters. It supplies only those glyphs; Latin still renders in the role's primary face.
+**CJK glyphs:** Noto Sans JP, a tiny self-hosted subset covering 写真, 頁, 場所 and 九. It supplies only those glyphs; Latin still renders in the role's primary face.
 
 **Character:** Taviraj gives shop names a quiet printed authority in both scripts. Noto Sans Thai is built for long Thai reading and stays crisp on a phone; the same face at weight 500 handles dates and labels. Two voices, two jobs.
 
