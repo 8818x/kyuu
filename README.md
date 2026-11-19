@@ -33,7 +33,7 @@ GitHub Pages updates in about a minute.
 
 ## Look and behaviour
 
-Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with its own search field for large archives; Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a red tape flag.
+Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with its own search field and a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a red tape flag.
 
 Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a red focus ring. Reduced-motion is respected.
 

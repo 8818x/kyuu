@@ -11,6 +11,7 @@ let sheetIndex = -1;
 let sheetTrigger = null;
 let popupTrigger = null;
 let zoomTrigger = null;
+let stripUpdater = null;
 
 const $ = (id) => document.getElementById(id);
 const tabsBox = $("tabs");
@@ -290,17 +291,60 @@ function renderDiary() {
   }
   featuredBox.appendChild(makeFeatured(list[0]));
 
+  document.body.classList.toggle("diary-few", list.length > 0 && list.length <= 3);
+
   const head = document.createElement("div");
   head.className = "strip-head";
   const left = document.createElement("span");
   left.textContent = "THE LEDGER";
   const right = document.createElement("span");
   right.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
-  head.append(left, right);
+  head.append(left);
+
   const inner = document.createElement("div");
   inner.className = "strip-inner";
   const currentId = entryId(list[0].entry, list[0].index);
   inner.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
+
+  if (list.length > 4) {
+    const nav = document.createElement("div");
+    nav.className = "strip-nav";
+    const prev = document.createElement("button");
+    prev.type = "button";
+    prev.className = "strip-nav-btn";
+    prev.setAttribute("aria-label", "Earlier plates");
+    prev.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "strip-nav-btn";
+    next.setAttribute("aria-label", "Later plates");
+    next.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const range = document.createElement("span");
+    range.className = "strip-range";
+    const updateRange = () => {
+      const first = inner.firstElementChild;
+      const step = first ? first.getBoundingClientRect().width + 12 : 1;
+      const start = Math.min(list.length, Math.floor(inner.scrollLeft / step) + 1);
+      const visible = Math.max(1, Math.ceil(inner.clientWidth / step));
+      const end = Math.min(list.length, start + visible - 1);
+      range.textContent = pad(start) + "–" + pad(end) + " / " + pad(list.length);
+      prev.disabled = inner.scrollLeft <= 2;
+      next.disabled = inner.scrollLeft + inner.clientWidth >= inner.scrollWidth - 2;
+    };
+    const jump = (dir) => {
+      inner.scrollBy({ left: dir * inner.clientWidth * 0.9, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    };
+    prev.addEventListener("click", () => jump(-1));
+    next.addEventListener("click", () => jump(1));
+    inner.addEventListener("scroll", updateRange, { passive: true });
+    stripUpdater = updateRange;
+    nav.append(prev, range, next);
+    head.append(nav);
+    requestAnimationFrame(updateRange);
+  } else {
+    stripUpdater = null;
+  }
+  head.append(right);
   stripBox.append(head, inner);
 
   const tape = $("binding-tape");
@@ -784,6 +828,7 @@ function updateFilters() {
     Zhujiaofan: entries.filter((e) => e.type === "Zhujiaofan").length,
     Shaorou: entries.filter((e) => e.type === "Shaorou").length
   };
+  if (counts[activeFilter] === 0 && activeFilter !== filters[0]) activeFilter = filters[0];
   filterButtons.forEach((b) => {
     const label = filters.find((f) => f === b.dataset.filter);
     b.innerHTML = "";
@@ -791,6 +836,7 @@ function updateFilters() {
     const n = document.createElement("b");
     n.textContent = pad(counts[label]);
     b.appendChild(n);
+    b.hidden = counts[label] === 0 && label !== filters[0];
     b.setAttribute("aria-pressed", String(b.dataset.filter === activeFilter));
     b.setAttribute("aria-label", label + ", " + counts[label] + (counts[label] === 1 ? " entry" : " entries"));
   });
@@ -855,6 +901,7 @@ function renderRoute() {
   diaryPanel.hidden = route.view !== "diary";
   mapPanel.hidden = route.view !== "map";
   entryPanel.hidden = route.view !== "entry";
+  if (route.view !== "diary") document.body.classList.remove("diary-few");
 
   if (route.view === "map") {
     renderShopList();
@@ -894,6 +941,7 @@ listToggle.addEventListener("click", () => {
 window.addEventListener("hashchange", renderRoute);
 window.addEventListener("resize", () => {
   syncLayout();
+  if (stripUpdater) stripUpdater();
   if (map) requestAnimationFrame(() => map.invalidateSize());
 });
 
