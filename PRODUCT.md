@@ -47,8 +47,8 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Brand Commitments
 
-- Interface language is English. The only non-English words are the two dish names, kept in pinyin: **Zhujiaofan** and **Shaorou**. Nothing else in the interface is written in Chinese or Thai.
-- The site title is still the placeholder `Food Diary`. The owner will supply the real name later; do not treat the placeholder as chosen brand.
+- Interface language is English. The only non-English words are the two dish names, kept in pinyin: **Zhujiaofan** and **Shaorou**. The single exception is the brand mark 九 (nine) in the binding rail; it is a logo, not interface copy.
+- The site is named **Kyuu**, read from the mark 九. The wordmark in the masthead and the page title both use "Kyuu".
 
 ## Evidence on Hand
 

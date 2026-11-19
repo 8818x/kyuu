@@ -1,6 +1,6 @@
-# Food Diary
+# Kyuu
 
-A personal food diary of two dishes: Zhujiaofan and Shaorou. Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
+A personal food diary of two dishes: Zhujiaofan and Shaorou. The mark is 九 (nine), read "Kyuu". Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
 
 ## Add a plate
 

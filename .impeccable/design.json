@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-11-19T16:40:00+07:00",
-  "title": "Design System: Food Diary",
+  "title": "Design System: Kyuu",
   "extensions": {
     "colorMeta": {
       "ground": { "role": "neutral", "displayName": "Newsprint", "canonical": "#f7f5ef", "tonalRamp": ["#2b2a27", "#45433e", "#605d55", "#7b776d", "#969186", "#b3aea3", "#d5cfc4", "#f7f5ef"] },

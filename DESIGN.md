@@ -1,5 +1,5 @@
 ---
-name: Food Diary
+name: Kyuu
 description: Paper Editorial — a white broadsheet with black ink and one red rule.
 colors:
   ground: "#f7f5ef"
@@ -51,7 +51,7 @@ components:
     padding: "10px 6px"
 ---
 
-# Design System: Food Diary
+# Design System: Kyuu
 
 ## Overview
 

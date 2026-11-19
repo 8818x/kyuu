@@ -55,7 +55,8 @@ input{caret-color:var(--accent)}
 
 /* left rail */
 .binding{position:fixed;inset:0 auto 0 0;width:var(--rail);background:var(--surface);border-right:1px solid var(--rule);z-index:60;display:flex;flex-direction:column;align-items:center;padding:26px 0 20px;gap:8px}
-.binding-mark{display:block;width:34px;height:34px;color:var(--accent)}
+.binding-mark{display:block;width:38px;height:38px;color:var(--accent);border:1px solid var(--accent);padding:3px;transform:rotate(-6deg);transition:transform .25s ease}
+.binding:hover .binding-mark{transform:rotate(0)}
 .binding-mark svg{width:100%;height:100%;display:block}
 .binding-folio{margin-top:auto;font-family:var(--label);font-size:.62rem;letter-spacing:.24em;color:var(--secondary);writing-mode:vertical-rl;transform:rotate(180deg)}
 .binding-number{font-family:var(--label);font-size:.9rem;letter-spacing:.1em;color:var(--accent);font-variant-numeric:tabular-nums}
@@ -229,7 +230,7 @@ input{caret-color:var(--accent)}
   :root{--rail:44px}
   body{padding-left:var(--rail)}
   .binding{background:var(--surface);padding:18px 0 14px}
-  .binding-mark{width:26px;height:26px}
+  .binding-mark{width:30px;height:30px}
   .binding-number{font-size:.72rem}
   .masthead{padding-top:20px}
   .masthead-row{align-items:center;gap:12px}
