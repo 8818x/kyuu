@@ -154,9 +154,10 @@ input{caret-color:var(--accent)}
 .list-toggle{display:flex;align-items:baseline;justify-content:space-between;gap:12px;appearance:none;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:default;padding:16px 18px;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;color:var(--ink)}
 .list-toggle:disabled{opacity:1}
 .pin-legend{display:flex;flex-direction:column;gap:8px;padding:10px 18px;border-bottom:1px solid var(--rule);font-family:var(--label);font-size:.75rem;letter-spacing:.04em;color:var(--secondary)}
-.pin-key{display:flex;align-items:center;gap:8px;color:var(--accent)}
+.pin-key{display:flex;align-items:center;gap:8px;color:var(--ink)}
+.pin-key svg{flex:none;color:var(--accent)}
 .pin-key--crisp{color:var(--ink)}
-.pin-key svg{flex:none}
+.pin-key--crisp svg{color:var(--ink)}
 .map-count{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;color:var(--accent);font-variant-numeric:tabular-nums}
 .list-body{display:flex;flex-direction:column;min-height:0;flex:1}
 .search-field{display:block;padding:12px 18px;border-bottom:1px solid var(--rule)}

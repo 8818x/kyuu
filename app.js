@@ -709,9 +709,33 @@ function activateShop(id, trigger) {
   announce(group.shop + ", " + group.visits.length + (group.visits.length === 1 ? " visit" : " visits") + " selected on the map.");
 }
 
+const PIN_MARK = {
+  stew: '<svg viewBox="0 0 28 38" width="14" height="19" aria-hidden="true"><path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" fill="currentColor" stroke="var(--paper)" stroke-width="2"/></svg>',
+  crisp: '<svg viewBox="0 0 26 26" width="15" height="15" aria-hidden="true"><rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" fill="currentColor" stroke="var(--paper)" stroke-width="2"/></svg>'
+};
+
+function renderPinLegend(groups) {
+  const legend = $("pin-legend");
+  const types = [];
+  groups.forEach((group) => group.visits.forEach(({ entry }) => {
+    typesOf(entry).forEach((type) => { if (!types.includes(type)) types.push(type); });
+  }));
+  legend.hidden = !types.length;
+  legend.replaceChildren(...types.map((type) => {
+    const row = document.createElement("span");
+    row.className = "pin-key" + (type === "Shaorou" ? " pin-key--crisp" : "");
+    row.innerHTML = type === "Shaorou" ? PIN_MARK.crisp : PIN_MARK.stew;
+    const label = document.createElement("span");
+    label.textContent = dishLabel(type);
+    row.appendChild(label);
+    return row;
+  }));
+}
+
 function renderShopList() {
   const list = visibleMapGroups();
   mapCount.textContent = pad(list.length) + (list.length === 1 ? " PLACE" : " PLACES");
+  renderPinLegend(list);
   if (!list.length) {
     shopItemsBox.replaceChildren(emptyState(
       entries.length ? "No places match this search." : "No places yet.",
