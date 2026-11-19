@@ -1,120 +1,175 @@
 ---
 name: Food Diary
-description: Night Edition — a dark editorial food journal with warm produce accents.
+description: The Night Ledger — a private record of two dishes, kept as tipped-in prints.
 colors:
-  ground: "#171a20"
-  surface: "#24272d"
-  cream: "#efe1c7"
-  muted: "#a9aaa5"
-  orange: "#ff6129"
-  olive: "#99af67"
-  salmon: "#fb8c70"
-  yellow: "#f5c500"
-  red: "#ff3237"
-  off-white: "#edeee6"
-  rule: "#363941"
+  ground: "#111316"
+  binding: "#0b0c0e"
+  surface: "#191c1f"
+  mat: "#d8d2c4"
+  mat-ink: "#36342e"
+  ink: "#ded8cc"
+  muted: "#9a968b"
+  brass: "#9a8768"
+  stew: "#7a4a46"
+  stew-text: "#d9a49b"
+  crisp: "#6f7a5c"
+  crisp-text: "#bcc9a7"
+  rule: "#2a2d30"
+  photo-well: "#292e2a"
+  error: "#4a2a26"
 typography:
   display:
-    fontFamily: "\"Fraunces\", Georgia, \"Times New Roman\", serif"
+    fontFamily: "Spectral, Georgia, serif"
     fontWeight: 400
-    lineHeight: 1.08
+    fontSize: "clamp(2.8rem, 5vw, 4.6rem)"
+    lineHeight: 1.04
+    letterSpacing: "-0.03em"
   body:
-    fontFamily: "system-ui, \"Segoe UI\", sans-serif"
+    fontFamily: "Spectral, Georgia, serif"
+    fontWeight: 400
     fontSize: "1rem"
-    lineHeight: 1.65
+    lineHeight: 1.7
+  label:
+    fontFamily: "Courier Prime, Courier New, monospace"
+    fontWeight: 400
+    fontSize: "0.78rem"
+    lineHeight: 1.5
+    letterSpacing: "0.16em"
+rounded:
+  none: "0px"
+spacing:
+  tight: "8px"
+  base: "16px"
+  section: "40px"
+  wide: "72px"
 components:
-  chip-braise:
-    backgroundColor: "{colors.orange}"
-    textColor: "{colors.ground}"
-  chip-crisp:
-    backgroundColor: "{colors.olive}"
-    textColor: "{colors.ground}"
-  entry-card:
-    backgroundColor: "none"
-    borderTop: "1px solid {colors.rule}"
-  map-surface:
-    backgroundColor: "{colors.surface}"
+  ink-link:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    padding: "6px 0"
+  filter-stamp:
+    backgroundColor: "transparent"
+    textColor: "{colors.muted}"
+    padding: "8px 14px"
+  photo-mat:
+    backgroundColor: "{colors.mat}"
+    textColor: "{colors.mat-ink}"
+    padding: "16px"
 ---
 
 # Design System: Food Diary
 
 ## Overview
 
-**Creative North Star: "Night Edition"**
+**Creative North Star: "The Night Ledger"**
 
-A personal food journal read at night: charcoal ground, warm cream light, and the colour of the food itself. The newest memory runs as an editorial spread; everything after it sits in one even photo grid. The map is a separate room with a shop list at its side.
+A private record of real visits, kept like a bound book and shown as tipped-in prints. The visitor arrives on a dark page and meets one large photograph on a warm paper mat, an ink date stamp, a dish stamp, and the owner's line beside it. The interface behaves like bookbinding: a rail down the left edge, folio numbers, a strip of numbered prints, a tape flag marking the last entry opened. Nothing here is a dashboard.
 
-Photography carries the page. UI colour is a signpost, never the show: orange means the thing you can press, olive means the second dish, red is a single dot on the newest memory. Everything else stays quiet.
+Colour belongs to the food. The UI holds a near-black cloth ground, one warm paper mat, and a single brass accent; oxblood and sage exist only as the two dish stamps. There are no filled buttons, no cards, no gradients, no glow, no glass. Depth comes from a paper mat and one soft, offset shadow, not from stacked panels.
 
 **Key Characteristics:**
-- Ground `#171a20`, raised surface `#24272d`, text `#efe1c7` (13.5:1 on ground).
-- Orange `#ff6129` is the primary action colour; olive `#99af67` is the second dish.
-- Salmon, yellow and red are held back — red is one 8px dot.
-- Fraunces for headings, system sans for everything else.
-- No card panels inside the grid: an ink-dark rule and air separate entries.
-- Two routes only: Diary and Map. Each entry gets a shareable `#/e/<id>` link.
+- Ground `#111316`, surface `#191c1f`, ink `#ded8cc` (13.1:1 on ground), muted `#9a968b` (6.3:1), brass `#9a8768` (5.35:1).
+- Paper mat `#d8d2c4` with `#36342e` ink (8.26:1) is the only light field; every photograph sits on it.
+- Two dish stamps: oxblood `#7a4a46` for Zhujiaofan, sage `#6f7a5c` for Shaorou. Each has a lighter text tint for dark ground.
+- Spectral for display and reading, Courier Prime for stamps, dates, folios, and labels.
+- Square throughout. 44px minimum controls, 2px brass focus ring.
 
 ## Colors
 
-Contrast measured against the ground: cream 13.5:1, muted 7.5:1, orange 5.8:1, olive 7.2:1. Against the surface: cream 11.6:1, muted 6.4:1, orange 5.0:1, olive 6.2:1. All pass AA for normal text.
+A dark, quiet palette where one paper field carries the images and one metal accent carries the few actions.
 
-- **Orange** (`#ff6129`): selected tab underline, primary buttons, "Read entry", links on hover, the featured rule, marker for Zhujiaofan.
-- **Olive** (`#99af67`): Shaorou chip, Shaorou marker, the rating, the selected filter underline.
-- **Red** (`#ff3237`): one dot marking the newest memory. Nothing else.
-- **Salmon** (`#fb8c70`) and **Yellow** (`#f5c500`): available for future highlights, unused in the current UI.
+### Primary
+- **Brass** (`#9a8768`): the only UI accent. Active tab, selected filter, faint rules, folio numbers, the tape flag, the focus ring. Never a large fill.
+
+### Secondary
+- **Oxblood** (`#7a4a46`) and **Sage** (`#6f7a5c`): the two dish stamps and their map pins. They identify the dish; they are not decoration and never appear on navigation.
+
+### Neutral
+- **Cloth Ground** (`#111316`): the page.
+- **Binding** (`#0b0c0e`): the left rail.
+- **Raised Surface** (`#191c1f`): the map list and phone sheet.
+- **Paper Mat** (`#d8d2c4`): every photograph's mount, with `#36342e` ink.
+- **Ink** (`#ded8cc`) and **Muted** (`#9a968b`): text and secondary text.
+- **Rule** (`#2a2d30`): one-pixel separators.
 
 ### Named Rules
-**One Accent Per Component.** Orange and olive never share an element. Red appears exactly once on the page.
-
-**Photos Beat UI.** If a coloured surface competes with a food photograph, the surface loses.
+**The Mat Rule.** Every photograph sits on paper. No photo is placed directly on the dark ground.
+**The Two-Stamp Rule.** Oxblood and sage belong to dishes only. Brass belongs to actions only. They never swap jobs.
 
 ## Typography
 
-Fraunces (400) for the site name, section title, featured and detail headings, shop names in the grid and sidebar. System sans for navigation, dates, notes, chips, buttons, and metadata. Two families, clearly different jobs.
+**Display and Body Font:** Spectral (Georgia fallback). Self-hosted as `fonts/spectral-400.woff2` and `fonts/spectral-600.woff2`.
+**Label Font:** Courier Prime (Courier New fallback). Self-hosted as `fonts/courier-prime-400.woff2` and `fonts/courier-prime-700.woff2`.
 
-Type scale: display `clamp(1.9rem, 3.4vw, 3rem)` on the featured title, detail `clamp(2rem, 4vw, 3.2rem)`, section `clamp(1.6rem, 3vw, 2.3rem)`, grid card `1.3rem`, body `1rem / 1.65`, meta `0.85–0.92rem`.
+**Character:** Spectral gives the record a calm, printed voice; Courier Prime reads as a typed mark on a ledger page. The two never blur together.
+
+### Hierarchy
+- **Display** (400, `clamp(2.8rem, 5vw, 4.6rem)`, 1.04, -0.03em): shop names on Diary and Entry.
+- **Section** (400, `1.6rem`, 1.1): wordmark and major labels.
+- **Body** (400, `1rem`, 1.7, max 68ch): notes and running text.
+- **Annotation** (400, `1.12rem`, 1.75, max 62ch): the owner's note beside the newest print.
+- **Label** (400, `0.62–0.82rem`, 0.14–0.22em tracking, uppercase): stamps, folios, tabs, filters, plate labels.
+
+### Named Rules
+**The Two-Voice Rule.** Courier Prime is for measurement and labels only; running text is always Spectral.
 
 ## Layout
 
-A 1240px column with `clamp(16px, 4vw, 48px)` page padding.
+A 44–66px binding rail runs down the left edge; the page sits to its right with a `clamp(20px, 4vw, 56px)` gutter and a 1560px cap. The Diary opens with the newest visit as a two-column spread (photo mat left, stamped record right), then a horizontal, scroll-snapping print strip of every entry. The Map is a 320px searchable list beside the map; on phones the list collapses to a strip and the sheet rises from the bottom. An Entry is a single 960px column.
 
-**Diary (default).** Section title and count, then the newest memory as a spread — photo left (`1.12fr`), text right (`0.88fr`), a 3px orange rule above. Below, one grid: 3 columns above 900px, 2 columns from 601–900px, 1 column at 600px and under. Every card is the same shape: 3:2 photo, chip, name, date. No note on the grid; notes live in the entry.
-
-**Map.** Two panes: a 310px shop list on the left and the Leaflet map on the rest. Height `clamp(500px, calc(100vh - 200px), 900px)`. Clicking a marker highlights its list row and opens a popup; clicking a row highlights its marker and pans. At phone width the list becomes a horizontal strip above the map, which still keeps `clamp(320px, 55svh, 480px)` of height.
-
-**Entry.** A single column capped at 980px. Back link, chip, Fraunces title, metadata (date, optional rating, optional price), one large photo, optional thumbnail strip, note, Google Maps link.
-
-**Phones.** Masthead compacts to 60px, the spread stacks, the grid goes single column, and a pin tap raises a bottom sheet instead of a popup.
+Breakpoints at 900px and 600px only. Under 600px the rail narrows to 44px, the spread stacks, the map list collapses, and Leaflet zoom controls hide. Spacing rhythm: 8px inside groups, 16px base, 40px between related blocks, 72px between sections. More space above a heading than below it.
 
 ## Elevation & Depth
 
-No card shadows, no rounded panels, no gradients. The only lift is the phone sheet (`0 -8px 24px rgba(0,0,0,0.55)`) and a small drop shadow under the two pins.
+Depth is physical, not atmospheric: a paper mat, a one-pixel rule, and one soft offset shadow under a mounted print. No shadows on controls, no glow, no halo.
+
+### Shadow Vocabulary
+- **Mounted print** (`8px 12px 28px rgba(0,0,0,.35)`): only under a paper mat.
+- **Phone sheet** (`0 -10px 30px rgba(0,0,0,.55)`): only when the sheet is open.
+- **Leaflet popup** (`6px 10px 22px rgba(0,0,0,.45)`): the third-party slip.
 
 ## Shapes
 
-Square throughout — chips, buttons, cards, sheet. The only curves are the two map pins: a red teardrop for Zhujiaofan and an olive diamond for Shaorou, both with a 2.2px ground-coloured outline so they read against the dark basemap. The bowl mark in the masthead is orange.
+Square everywhere: filters, tabs, list rows, sheet, inputs. No rounded cards. The only cuts are the folded tape flag and the two pin silhouettes: an oxblood teardrop and a sage diamond, each outlined in ground colour so they read on the dark basemap. Plate labels sit half-outside the mat edge.
 
 ## Components
 
-- **Tabs / filters:** text only. Active tab gets a 2px orange underline; active filter a 2px olive underline. All controls are 44px tall.
-- **Chips:** square, `3px 9px`, orange or olive fill with ground-coloured text.
-- **Buttons:** square, cream outline, transparent fill; hover inverts. Primary is orange with ground text, deepening on hover.
-- **Grid card:** 3:2 photo, chip, Fraunces name, muted date. When reached from the map it flashes a 2px orange outline.
-- **Map basemap:** Esri World Dark Gray Canvas, keyless. Leaflet popups, zoom and attribution repainted from the tokens. A failed tile load shows a warning line.
-- **Sheet:** surface panel over the map on phones; chip, name, date, note, primary action. Escape closes it and returns focus to the pin.
+### Buttons
+- **Shape:** square, no radius; an ink rule under the label rather than a filled block.
+- **Ink link:** transparent, `#ded8cc` text, 1px brass underline, `0.78rem` Courier Prime, 6px 0 padding.
+- **Filters:** 1px `#2a2d30` border, muted label with a brass count; active gets a brass border. 44px tall.
+- **Hover / Focus:** brass text or border; 2px brass focus ring with 3px offset.
 
-## Data contract
+### Stamps
+- **Date stamp:** double brass rule, rotated -1deg, Courier Prime, tabular numerals.
+- **Dish stamp:** two-pixel oxblood or sage rule with a lighter text tint, rotated -2deg or +2deg. Entries only.
 
-`data/entries.js` stays hand-edited. Required fields: `date`, `shop`, `type`, `image`, `maps`, `note`. Optional: `id` (stable `#/e/` link), `photos` (multiple images, replaces `image` on the detail page), `rating`, `price`. Old entries with only `image` render exactly as before. No backend, no framework.
+### Photo mat
+- **Mat:** `#d8d2c4`, 16px padding, 8px 12px 28px offset shadow.
+- **Label:** brass-bordered Courier plate number overlapping the top-left corner.
+- **Detail variant:** 1:1 control sits in the caption below the image and opens a full-size lightbox.
 
-Styles are authored as Tailwind utilities in `src/input.css`; the colour and font tokens live in `tailwind.config.js`. `npm run build` compiles them into the committed `styles.css`, so adding a diary entry still needs no build step. Third-party Leaflet chrome keeps a few plain rules because it cannot be expressed as component utilities.
+### Print strip
+- Horizontally scrollable, snap-aligned paper thumbnails, 168px on desktop and 140px on phones.
+- Current entry carries a 2px brass ring; last-viewed entry carries the folded tape flag.
+
+### Map list and sheet
+- **List:** muted surface, one-pixel separators, 52px thumbnails, brass underline on the selected row.
+- **Sheet:** paper-toned surface with a grip that collapses details; Escape closes and returns focus to the pin.
+
+### Navigation
+- Wordmark and two page tabs in the masthead. Active tab gets a 2px brass underline. Tabs are 56px wide minimum.
 
 ## Do's and Don'ts
 
-- **Do** keep dark surfaces dominant and photos larger than any UI colour.
-- **Do** keep one accent per component.
-- **Do** keep 44px controls and a visible 2px orange focus ring.
-- **Do** keep the single 600px and 900px breakpoints.
-- **Don't** add glow, glass, gradients, nested cards, or panel shadows.
-- **Don't** use red outside its single dot, or put cream text on an accent fill.
-- **Don't** invent shops, photos, ratings or prices — the owner supplies them.
+### Do:
+- **Do** mount every photograph on the paper mat with a plate number.
+- **Do** keep brass under 10% of any screen; its rarity is the point.
+- **Do** keep all controls at least 44px with a 2px brass focus ring.
+- **Do** let the print strip carry scale from one entry to a hundred.
+
+### Don't:
+- **Don't** use bright orange, neon accents, gradients, glass, or glow.
+- **Don't** put dish stamps on navigation or UI chrome.
+- **Don't** add cards, nested panels, or decorative section numbers.
+- **Don't** invent shops, photographs, ratings, or prices.

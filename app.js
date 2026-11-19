@@ -1,27 +1,34 @@
 const entries = window.DIARY_ENTRIES || [];
 const filters = ["All", "Zhujiaofan", "Shaorou"];
+const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
+let searchTerm = "";
 let map = null;
 let markers = new Map();
-let selectedId = null;
-let lastOpenedId = null;
 let sheetIndex = -1;
 let sheetTrigger = null;
+let popupTrigger = null;
+let zoomTrigger = null;
 
-const tabsBox = document.getElementById("tabs");
-const filterBox = document.getElementById("filters");
-const diaryPanel = document.getElementById("diary-panel");
-const mapPanel = document.getElementById("map-panel");
-const entryPanel = document.getElementById("entry-panel");
-const featuredBox = document.getElementById("featured");
-const cardsBox = document.getElementById("cards");
-const shopItemsBox = document.getElementById("shop-items");
-const entryContent = document.getElementById("entry-content");
-const diaryCount = document.getElementById("diary-count");
-const mapCount = document.getElementById("map-count");
-const statusEl = document.getElementById("status");
-const sheet = document.getElementById("sheet");
+const $ = (id) => document.getElementById(id);
+const tabsBox = $("tabs");
+const filterBox = $("filters");
+const diaryPanel = $("diary-panel");
+const mapPanel = $("map-panel");
+const entryPanel = $("entry-panel");
+const featuredBox = $("featured");
+const stripBox = $("strip");
+const shopItemsBox = $("shop-items");
+const entryContent = $("entry-content");
+const ledgerCount = $("ledger-count");
+const mapCount = $("map-count");
+const statusEl = $("status");
+const sheet = $("sheet");
+const searchInput = $("shop-search");
+const listToggle = $("list-toggle");
+const ledgerList = document.querySelector(".ledger-list");
+const lightbox = $("lightbox");
 
 /* ---------- helpers ---------- */
 
@@ -43,9 +50,8 @@ function formatDate(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return iso;
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric", month: "short", year: "numeric"
-  }).format(new Date(y, m - 1, d));
+  return new Intl.DateTimeFormat("en-US", { day: "numeric", month: "short", year: "numeric" })
+    .format(new Date(y, m - 1, d));
 }
 
 function photosOf(entry) {
@@ -67,47 +73,55 @@ function isCrisp(entry) {
   return entry.type === "Shaorou";
 }
 
-function makeChip(entry) {
-  const chip = document.createElement("span");
-  chip.className = "chip" + (isCrisp(entry) ? " chip--olive" : "");
-  chip.textContent = entry.type || "";
-  return chip;
+function pad(n) {
+  return String(n).padStart(3, "0");
+}
+
+function getLast() {
+  try { return localStorage.getItem(LAST_KEY); } catch (e) { return null; }
+}
+
+function setLast(id) {
+  try { localStorage.setItem(LAST_KEY, id); } catch (e) { /* storage unavailable */ }
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function isPhone() {
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+function announce(text) {
+  statusEl.textContent = text;
+}
+
+function makeStamp(entry) {
+  const stamp = document.createElement("span");
+  stamp.className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
+  stamp.textContent = entry.type || "";
+  return stamp;
+}
+
+function makeDateStamp(iso) {
+  const wrap = document.createElement("span");
+  wrap.className = "date-stamp";
+  const time = document.createElement("time");
+  time.dateTime = iso || "";
+  time.textContent = formatDate(iso);
+  wrap.appendChild(time);
+  return wrap;
 }
 
 function makeMapsLink(link) {
   const a = document.createElement("a");
-  a.className = "link";
+  a.className = "ink-link";
   a.href = link;
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   a.textContent = "Open in Google Maps";
   return a;
-}
-
-function makeMeta(entry) {
-  const meta = document.createElement("p");
-  meta.className = "detail-meta";
-  const date = document.createElement("time");
-  date.textContent = formatDate(entry.date);
-  meta.appendChild(date);
-  const sep = () => {
-    const s = document.createElement("span");
-    s.className = "visually-hidden";
-    s.textContent = ", ";
-    return s;
-  };
-  if (typeof entry.rating === "number") {
-    const rating = document.createElement("span");
-    rating.className = "rating";
-    rating.textContent = "★ " + entry.rating + " / 5";
-    meta.append(sep(), rating);
-  }
-  if (entry.price != null && entry.price !== "") {
-    const price = document.createElement("span");
-    price.textContent = "฿" + entry.price;
-    meta.append(sep(), price);
-  }
-  return meta;
 }
 
 function visibleEntries() {
@@ -117,37 +131,33 @@ function visibleEntries() {
     .sort((a, b) => (b.entry.date || "").localeCompare(a.entry.date || ""));
 }
 
-function countPhrase() {
-  return entries.length === 1 ? "1 entry." : entries.length + " entries.";
+function searchMatches(entry) {
+  if (!searchTerm) return true;
+  const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
+  return haystack.indexOf(searchTerm) !== -1;
 }
 
-function announce(text) {
-  statusEl.textContent = text;
-}
-
-function emptyState(message) {
+function emptyState(message, actionLabel, onAction) {
   const box = document.createElement("div");
-  box.className = "empty";
+  box.className = "empty-state";
   const p = document.createElement("p");
   p.textContent = message;
   box.appendChild(p);
-  if (entries.length) {
-    const reset = document.createElement("button");
-    reset.className = "btn";
-    reset.textContent = "Show all";
-    reset.addEventListener("click", () => {
-      setFilter(filters[0]);
-      const all = filterButtons.find((b) => b.dataset.filter === filters[0]);
-      if (all) all.focus();
-    });
-    box.appendChild(reset);
+  if (actionLabel) {
+    const b = document.createElement("button");
+    b.className = "ink-link";
+    b.type = "button";
+    b.textContent = actionLabel;
+    b.addEventListener("click", onAction);
+    box.appendChild(b);
   }
   return box;
 }
 
 /* ---------- Diary ---------- */
 
-function makeFeatured({ entry, index }) {
+function makeFeatured(item) {
+  const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
   const el = document.createElement("article");
@@ -156,112 +166,189 @@ function makeFeatured({ entry, index }) {
 
   if (photos.length) {
     const media = document.createElement("a");
-    media.className = "feature-media";
+    media.className = "plate";
     media.href = "#/e/" + encodeURIComponent(id);
-    media.setAttribute("aria-label", "Open " + entry.shop);
+    media.setAttribute("aria-label", "Open " + (entry.shop || "entry"));
     const img = document.createElement("img");
+    img.className = "plate-photo";
     img.src = photos[0];
-    img.alt = entry.shop;
+    img.alt = entry.shop ? "Photograph from " + entry.shop : "";
     img.loading = "eager";
     img.decoding = "async";
-    img.onerror = () => { media.hidden = true; };
-    media.appendChild(img);
+    const label = document.createElement("span");
+    label.className = "plate-label";
+    label.textContent = "PLATE " + pad(index + 1);
+    img.onerror = () => {
+      img.hidden = true;
+      label.textContent = "PLATE " + pad(index + 1) + " / PHOTOGRAPH UNAVAILABLE";
+    };
+    media.append(img, label);
     el.appendChild(media);
   }
 
   const body = document.createElement("div");
   body.className = "feature-body";
-  const tagLine = document.createElement("div");
-  tagLine.className = "feature-tag";
-  const dot = document.createElement("span");
-  dot.className = "feature-dot";
-  dot.setAttribute("aria-hidden", "true");
-  tagLine.append(dot, makeChip(entry));
+  const marks = document.createElement("div");
+  marks.className = "marks";
+  marks.append(makeDateStamp(entry.date), makeStamp(entry));
 
-  const title = document.createElement("h2");
+  const title = document.createElement("h1");
+  title.className = "shop-name";
   const link = document.createElement("a");
   link.href = "#/e/" + encodeURIComponent(id);
   link.textContent = entry.shop || "Untitled";
   title.appendChild(link);
 
-  const date = document.createElement("time");
-  date.textContent = formatDate(entry.date);
-
-  body.append(tagLine, title, date);
+  body.append(marks, title);
   if (entry.note) {
-    const excerpt = document.createElement("p");
-    excerpt.className = "excerpt";
-    excerpt.textContent = entry.note;
-    body.appendChild(excerpt);
+    const note = document.createElement("p");
+    note.className = "inscription";
+    note.textContent = entry.note;
+    body.appendChild(note);
   }
   const read = document.createElement("a");
-  read.className = "read-link";
+  read.className = "ink-link";
   read.href = "#/e/" + encodeURIComponent(id);
-  read.textContent = "Read entry";
+  read.textContent = "Read entry  →";
   body.appendChild(read);
-
   el.appendChild(body);
   return el;
 }
 
-function makeCard({ entry, index }) {
+function makeThumb(item) {
+  const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
-  const el = document.createElement("article");
-  el.className = "entry-card";
-  el.dataset.id = id;
+  const btn = document.createElement("button");
+  btn.className = "print-thumb" + (id === getLast() ? " is-current" : "");
+  btn.type = "button";
+  btn.dataset.id = id;
 
+  const mat = document.createElement("span");
+  mat.className = "thumb-mat";
   if (photos.length) {
-    const media = document.createElement("a");
-    media.className = "entry-card-media";
-    media.href = "#/e/" + encodeURIComponent(id);
-    media.setAttribute("aria-label", "Open " + entry.shop);
     const img = document.createElement("img");
     img.src = photos[0];
-    img.alt = entry.shop;
+    img.alt = "";
     img.loading = "lazy";
     img.decoding = "async";
-    img.onerror = () => { media.hidden = true; };
-    media.appendChild(img);
-    el.appendChild(media);
+    img.onerror = () => { img.hidden = true; };
+    mat.appendChild(img);
   }
+  const meta = document.createElement("span");
+  meta.className = "thumb-meta";
+  const no = document.createElement("b");
+  no.textContent = pad(index + 1);
+  const name = document.createElement("span");
+  name.textContent = entry.shop || "Untitled";
+  meta.append(no, name);
+  btn.append(mat, meta);
 
-  const body = document.createElement("div");
-  body.className = "entry-card-body";
-  const title = document.createElement("h3");
-  const link = document.createElement("a");
-  link.href = "#/e/" + encodeURIComponent(id);
-  link.textContent = entry.shop || "Untitled";
-  title.appendChild(link);
-  const date = document.createElement("time");
-  date.textContent = formatDate(entry.date);
-  body.append(makeChip(entry), title, date);
-  el.appendChild(body);
-  return el;
+  if (id === getLast()) {
+    const flag = document.createElement("span");
+    flag.className = "tape-flag";
+    flag.setAttribute("aria-label", "Last viewed");
+    btn.appendChild(flag);
+  }
+  btn.addEventListener("click", () => { location.hash = "#/e/" + encodeURIComponent(id); });
+  return btn;
 }
 
 function renderDiary() {
   const list = visibleEntries();
-  diaryCount.textContent = list.length === 1 ? "1 entry" : list.length + " entries";
+  ledgerCount.innerHTML = "";
+  const no = document.createElement("span");
+  no.textContent = pad(entries.length);
+  const unit = document.createElement("small");
+  unit.textContent = entries.length === 1 ? "PLATE" : "PLATES";
+  ledgerCount.append(no, unit);
+
   featuredBox.replaceChildren();
-  if (list.length) featuredBox.appendChild(makeFeatured(list[0]));
-  cardsBox.replaceChildren(
-    ...(list.length > 1 ? list.slice(1).map(makeCard) : []),
-    ...(list.length === 0 ? [emptyState(entries.length ? "No " + activeFilter + " entries yet." : "No shops yet.")] : [])
-  );
+  stripBox.replaceChildren();
+  if (!list.length) {
+    featuredBox.appendChild(emptyState(
+      entries.length ? "No " + activeFilter + " plates yet." : "The ledger is empty.",
+      entries.length ? "Show all plates" : null,
+      () => setFilter(filters[0])
+    ));
+    return;
+  }
+  featuredBox.appendChild(makeFeatured(list[0]));
+
+  const head = document.createElement("div");
+  head.className = "strip-head";
+  const left = document.createElement("span");
+  left.textContent = "THE LEDGER";
+  const right = document.createElement("span");
+  right.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
+  head.append(left, right);
+  const inner = document.createElement("div");
+  inner.className = "strip-inner";
+  inner.append(...list.map(makeThumb));
+  stripBox.append(head, inner);
+
+  const tape = $("binding-tape");
+  if (tape) tape.hidden = !getLast();
 }
 
 /* ---------- Entry detail ---------- */
+
+function makeMeta(entry) {
+  const meta = document.createElement("p");
+  meta.className = "detail-meta";
+  const date = document.createElement("time");
+  date.dateTime = entry.date || "";
+  date.textContent = formatDate(entry.date);
+  meta.appendChild(date);
+  if (typeof entry.rating === "number") {
+    const rating = document.createElement("span");
+    rating.className = "rating";
+    rating.textContent = "★ " + entry.rating + " / 5";
+    meta.appendChild(rating);
+  }
+  if (entry.price != null && entry.price !== "") {
+    const price = document.createElement("span");
+    price.textContent = "฿" + entry.price;
+    meta.appendChild(price);
+  }
+  return meta;
+}
+
+function openLightbox(src, alt, trigger) {
+  const holder = $("lightbox-image");
+  holder.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt;
+  holder.appendChild(img);
+  zoomTrigger = trigger || null;
+  lightbox.hidden = false;
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  $("lightbox-close").focus({ preventScroll: true });
+}
+
+function closeLightbox() {
+  if (lightbox.hidden) return;
+  lightbox.hidden = true;
+  lightbox.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  if (zoomTrigger && document.contains(zoomTrigger)) zoomTrigger.focus({ preventScroll: true });
+  zoomTrigger = null;
+}
+
+$("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
 
 function renderEntry(id) {
   const index = findById(id);
   if (index < 0) {
     const back = document.createElement("a");
-    back.className = "back";
+    back.className = "back-link";
     back.href = "#/diary";
-    back.textContent = "All entries";
+    back.textContent = "← All entries";
     const msg = document.createElement("p");
-    msg.className = "empty";
+    msg.className = "empty-state";
     msg.textContent = "That entry was not found.";
     entryContent.replaceChildren(back, msg);
     announce("Entry not found.");
@@ -270,43 +357,57 @@ function renderEntry(id) {
 
   const entry = entries[index];
   const photos = photosOf(entry);
-  lastOpenedId = id;
+  setLast(id);
 
   const wrap = document.createElement("article");
   wrap.className = "detail";
-
   const back = document.createElement("a");
-  back.className = "back";
+  back.className = "back-link";
   back.href = "#/diary";
-  back.textContent = "All entries";
+  back.textContent = "← All entries";
 
   const head = document.createElement("div");
   head.className = "detail-head";
+  const marks = document.createElement("div");
+  marks.className = "marks";
+  marks.append(makeDateStamp(entry.date), makeStamp(entry));
   const title = document.createElement("h1");
   title.className = "detail-title";
   title.tabIndex = -1;
   title.textContent = entry.shop || "Untitled";
-  head.append(makeChip(entry), title, makeMeta(entry));
-
-  wrap.appendChild(back);
-  wrap.appendChild(head);
+  head.append(marks, title, makeMeta(entry));
+  wrap.append(back, head);
 
   if (photos.length) {
     const figure = document.createElement("figure");
-    figure.className = "detail-photos";
+    figure.className = "detail-plate";
     const main = document.createElement("img");
-    main.className = "detail-main";
+    main.className = "detail-photo";
     main.src = photos[0];
-    main.alt = entry.shop;
+    main.alt = entry.shop ? "Photograph from " + entry.shop : "";
     main.decoding = "async";
     main.onerror = () => { main.hidden = true; };
-    figure.appendChild(main);
+    const cap = document.createElement("figcaption");
+    const label = document.createElement("span");
+    label.className = "plate-label";
+    label.style.position = "static";
+    label.textContent = "PLATE " + pad(index + 1) + " / " + pad(photos.length)
+      + (main.hidden ? " / PHOTOGRAPH UNAVAILABLE" : "");
+    const zoom = document.createElement("button");
+    zoom.className = "ink-link";
+    zoom.type = "button";
+    zoom.textContent = "View at 1:1";
+    zoom.addEventListener("click", () => openLightbox(photos[0], main.alt, zoom));
+    cap.append(label, zoom);
+    figure.append(main, cap);
+    wrap.appendChild(figure);
+
     if (photos.length > 1) {
       const thumbs = document.createElement("div");
-      thumbs.className = "thumbs";
+      thumbs.className = "detail-thumbs";
       photos.forEach((src, i) => {
         const btn = document.createElement("button");
-        btn.className = "thumb";
+        btn.className = "thumb-btn";
         btn.type = "button";
         btn.setAttribute("aria-label", "Show photo " + (i + 1));
         btn.setAttribute("aria-pressed", String(i === 0));
@@ -317,24 +418,22 @@ function renderEntry(id) {
         btn.appendChild(img);
         btn.addEventListener("click", () => {
           main.src = src;
-          main.alt = entry.shop + ", photo " + (i + 1);
-          thumbs.querySelectorAll(".thumb").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          main.alt = (entry.shop || "Entry") + ", photo " + (i + 1);
+          thumbs.querySelectorAll(".thumb-btn").forEach((b) => b.setAttribute("aria-pressed", "false"));
           btn.setAttribute("aria-pressed", "true");
         });
         thumbs.appendChild(btn);
       });
-      figure.appendChild(thumbs);
+      wrap.appendChild(thumbs);
     }
-    wrap.appendChild(figure);
   }
 
   if (entry.note) {
     const note = document.createElement("p");
-    note.className = "detail-note";
+    note.className = "detail-note inscription";
     note.textContent = entry.note;
     wrap.appendChild(note);
   }
-
   if (entry.maps) {
     const actions = document.createElement("div");
     actions.className = "detail-actions";
@@ -352,13 +451,12 @@ function renderEntry(id) {
 const STEW_PIN =
   '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
   '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-  'fill="#ff6129" stroke="#171a20" stroke-width="2.2"/>' +
-  '<circle cx="14" cy="14" r="4" fill="#171a20"/></svg>';
-
+  'fill="#7a4a46" stroke="#111316" stroke-width="2.2"/>' +
+  '<circle cx="14" cy="14" r="4" fill="#111316"/></svg>';
 const CRISP_PIN =
   '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
   '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#99af67" stroke="#171a20" stroke-width="2.2"/></svg>';
+  'fill="#6f7a5c" stroke="#111316" stroke-width="2.2"/></svg>';
 
 function pinIcon(entry) {
   const crisp = isCrisp(entry);
@@ -371,17 +469,18 @@ function pinIcon(entry) {
   });
 }
 
-function makeShopItem({ entry, index }) {
+function makePlaceRow(item) {
+  const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
   const btn = document.createElement("button");
-  btn.className = "shop-item";
+  btn.className = "place-row";
   btn.type = "button";
   btn.dataset.id = id;
 
   if (photos.length) {
     const img = document.createElement("img");
-    img.className = "shop-thumb";
+    img.className = "place-thumb";
     img.src = photos[0];
     img.alt = "";
     img.loading = "lazy";
@@ -389,48 +488,40 @@ function makeShopItem({ entry, index }) {
     btn.appendChild(img);
   } else {
     const blank = document.createElement("span");
-    blank.className = "shop-no-photo";
+    blank.className = "place-blank";
     btn.appendChild(blank);
   }
   const text = document.createElement("span");
-  text.className = "shop-text";
+  text.className = "place-text";
   const name = document.createElement("strong");
   name.textContent = entry.shop || "Untitled";
   const sub = document.createElement("small");
   sub.textContent = (entry.type || "") + " · " + formatDate(entry.date);
   text.append(name, sub);
   btn.appendChild(text);
-  btn.addEventListener("click", () => activateShop(id, true));
+  if (id === getLast()) {
+    const flag = document.createElement("span");
+    flag.className = "tape-flag";
+    flag.setAttribute("aria-label", "Last viewed");
+    btn.appendChild(flag);
+  }
+  btn.addEventListener("click", () => activateShop(id, btn));
   return btn;
 }
 
-function renderShopList() {
-  const list = visibleEntries();
-  mapCount.textContent = list.length === 1 ? "1 place" : list.length + " places";
-  shopItemsBox.replaceChildren(
-    ...(list.length ? list.map(makeShopItem) : [emptyState("No places to show.")])
-  );
-  updateMapMarkers();
-}
-
-function highlightShop(id, scroll) {
-  selectedId = id;
-  shopItemsBox.querySelectorAll(".shop-item").forEach((el) => {
+function highlightShop(id) {
+  shopItemsBox.querySelectorAll(".place-row").forEach((el) => {
     el.classList.toggle("is-active", el.dataset.id === id);
   });
   markers.forEach((marker, markerId) => {
     const el = marker.getElement();
     if (el) el.classList.toggle("is-active", markerId === id);
   });
-  if (scroll) {
-    const item = shopItemsBox.querySelector('.shop-item[data-id="' + CSS.escape(id) + '"]');
-    if (item) item.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }
 }
 
-function popupFor(entry, index) {
+function popupFor(entry, index, trigger) {
   const box = document.createElement("div");
-  box.appendChild(makeChip(entry));
+  box.appendChild(makeStamp(entry));
   const title = document.createElement("strong");
   title.textContent = entry.shop || "Untitled";
   box.appendChild(title);
@@ -444,41 +535,61 @@ function popupFor(entry, index) {
   }
   if (entry.maps) box.appendChild(makeMapsLink(entry.maps));
   const open = document.createElement("button");
-  open.className = "btn btn--primary";
+  open.className = "ink-link";
   open.type = "button";
   open.textContent = "Open entry";
-  open.addEventListener("click", () => {
-    location.hash = "#/e/" + encodeURIComponent(entryId(entry, index));
-  });
+  open.addEventListener("click", () => { location.hash = "#/e/" + encodeURIComponent(entryId(entry, index)); });
   box.appendChild(open);
   return box;
 }
 
-function activateShop(id, fromList) {
+function activateShop(id, trigger) {
   const index = findById(id);
   if (index < 0) return;
   const entry = entries[index];
   const marker = markers.get(id);
-  highlightShop(id, true);
+  highlightShop(id);
 
   const pos = coordsFromLink(entry.maps);
   if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
-
   if (!marker) return;
+
   if (isPhone()) {
-    openSheet(index, marker);
+    openSheet(index, trigger || marker.getElement());
   } else {
+    popupTrigger = trigger || marker.getElement();
     L.popup({ offset: [0, -34] })
       .setLatLng(marker.getLatLng())
-      .setContent(popupFor(entry, index))
+      .setContent(popupFor(entry, index, popupTrigger))
       .openOn(map);
+    const primary = document.querySelector(".leaflet-popup-content .ink-link");
+    if (primary) primary.focus({ preventScroll: true });
   }
-  if (fromList) announce(entry.shop + " selected on the map.");
+  announce(entry.shop + " selected on the map.");
+}
+
+function visibleMapItems() {
+  return visibleEntries().filter(({ entry }) => searchMatches(entry));
+}
+
+function renderShopList() {
+  const list = visibleMapItems();
+  mapCount.textContent = pad(list.length) + (list.length === 1 ? " PLACE" : " PLACES");
+  if (!list.length) {
+    shopItemsBox.replaceChildren(emptyState(
+      entries.length ? "No places match this search." : "No places yet.",
+      searchTerm || activeFilter !== filters[0] ? "Clear search and filter" : null,
+      () => { searchTerm = ""; searchInput.value = ""; setFilter(filters[0]); }
+    ));
+  } else {
+    shopItemsBox.replaceChildren(...list.map(makePlaceRow));
+  }
+  updateMapMarkers();
 }
 
 function updateMapMarkers() {
   if (!map) return;
-  const allowed = new Set(visibleEntries().map(({ entry, index }) => entryId(entry, index)));
+  const allowed = new Set(visibleMapItems().map(({ entry, index }) => entryId(entry, index)));
   const points = [];
   markers.forEach((marker, id) => {
     const index = findById(id);
@@ -492,7 +603,7 @@ function updateMapMarkers() {
     }
   });
   if (points.length) {
-    map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
+    map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15, animate: !prefersReducedMotion() });
   }
 }
 
@@ -502,11 +613,9 @@ function ensureMap() {
     return;
   }
   if (typeof L === "undefined") {
-    const err = document.getElementById("map-error");
-    if (err) err.hidden = false;
+    $("map-error").hidden = false;
     return;
   }
-
   map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
   const tiles = L.tileLayer(
     "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
@@ -517,11 +626,10 @@ function ensureMap() {
   ).addTo(map);
 
   let tileFailures = 0;
-  const mapError = document.getElementById("map-error");
   tiles.on("tileerror", () => {
     tileFailures += 1;
     if (tileFailures === 1) {
-      if (mapError) mapError.hidden = false;
+      $("map-error").hidden = false;
       announce("The map tiles could not load.");
     }
   });
@@ -531,60 +639,70 @@ function ensureMap() {
     if (!pos) return;
     const id = entryId(entry, index);
     const label = (entry.shop || "Untitled") + ", " + (entry.type || "");
-    const marker = L.marker(pos, { icon: pinIcon(entry), title: label });
-    const el = marker.getElement ? marker.getElement() : null;
-    if (el) el.setAttribute("aria-label", label);
+    const marker = L.marker(pos, { icon: pinIcon(entry), title: label, keyboard: true });
     marker.on("add", () => {
       const node = marker.getElement();
       if (node) {
         node.setAttribute("aria-label", label);
-        node.classList.toggle("is-active", id === selectedId);
+        node.setAttribute("role", "button");
+        node.classList.toggle("is-active", id === getLast());
       }
     });
-    marker.on("click", () => activateShop(id, false));
+    marker.on("click", () => activateShop(id, marker.getElement()));
     markers.set(id, marker);
   });
 
+  map.on("popupclose", () => {
+    if (popupTrigger && document.contains(popupTrigger)) popupTrigger.focus({ preventScroll: true });
+    popupTrigger = null;
+  });
   map.on("click", closeSheet);
   updateMapMarkers();
   requestAnimationFrame(() => map.invalidateSize());
+
+  const missing = entries.filter((entry) => entry.maps && !coordsFromLink(entry.maps));
+  if (missing.length) announce("Some links could not be read as map pins.");
 }
+
+/* keyboard activation for leaflet pins */
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeLightbox();
+    closeSheet();
+    if (map) map.closePopup();
+    return;
+  }
+  const el = event.target;
+  if (!el || !el.classList || !el.classList.contains("leaflet-marker-icon")) return;
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    el.click();
+  }
+});
 
 /* ---------- Phone sheet ---------- */
 
-const sheetClose = document.getElementById("sheet-close");
-const sheetOpen = document.getElementById("sheet-open");
-const sheetTag = document.getElementById("sheet-tag");
-const sheetShop = document.getElementById("sheet-shop");
-const sheetDate = document.getElementById("sheet-date");
-const sheetNote = document.getElementById("sheet-note");
-const sheetLink = document.getElementById("sheet-link");
+const sheetClose = $("sheet-close");
+const sheetOpen = $("sheet-open");
+const sheetGrip = $("sheet-grip");
 
-function isPhone() {
-  return window.matchMedia("(max-width: 600px)").matches;
-}
-
-function prefersReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function openSheet(index, marker) {
+function openSheet(index, trigger) {
   const entry = entries[index];
   if (!entry) return;
   sheetIndex = index;
-  sheetTrigger = marker && marker.getElement ? marker.getElement() : null;
-  sheetTag.textContent = entry.type || "";
-  sheetTag.className = "chip" + (isCrisp(entry) ? " chip--olive" : "");
-  sheetShop.textContent = entry.shop || "Untitled";
-  sheetDate.textContent = formatDate(entry.date);
-  sheetNote.textContent = entry.note || "";
-  if (entry.maps) {
-    sheetLink.href = entry.maps;
-    sheetLink.hidden = false;
-  } else {
-    sheetLink.hidden = true;
-  }
+  sheetTrigger = trigger || null;
+  $("sheet-tag").className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
+  $("sheet-tag").textContent = entry.type || "";
+  $("sheet-shop").textContent = entry.shop || "Untitled";
+  $("sheet-date").textContent = formatDate(entry.date);
+  $("sheet-note").textContent = entry.note || "";
+  const link = $("sheet-link");
+  if (entry.maps) { link.href = entry.maps; link.hidden = false; }
+  else link.hidden = true;
   sheet.dataset.open = "true";
+  sheet.dataset.collapsed = "false";
+  sheetGrip.setAttribute("aria-label", "Collapse details");
+  sheetGrip.setAttribute("aria-expanded", "true");
   sheet.setAttribute("aria-hidden", "false");
   requestAnimationFrame(() => sheetClose.focus({ preventScroll: true }));
   announce(entry.shop + " details opened.");
@@ -594,20 +712,23 @@ function closeSheet() {
   if (sheet.dataset.open !== "true") return;
   sheet.dataset.open = "false";
   sheet.setAttribute("aria-hidden", "true");
-  if (sheetTrigger && document.contains(sheetTrigger)) {
-    sheetTrigger.focus({ preventScroll: true });
-  }
+  if (sheetTrigger && document.contains(sheetTrigger)) sheetTrigger.focus({ preventScroll: true });
   sheetTrigger = null;
 }
 
+function toggleSheet() {
+  const collapsed = sheet.dataset.collapsed === "true";
+  sheet.dataset.collapsed = String(!collapsed);
+  sheetGrip.setAttribute("aria-label", collapsed ? "Collapse details" : "Expand details");
+  sheetGrip.setAttribute("aria-expanded", String(collapsed));
+}
+
 sheetClose.addEventListener("click", closeSheet);
+sheetGrip.addEventListener("click", toggleSheet);
 sheetOpen.addEventListener("click", () => {
   const index = sheetIndex;
   closeSheet();
   if (index >= 0) location.hash = "#/e/" + encodeURIComponent(entryId(entries[index], index));
-});
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeSheet();
 });
 
 /* ---------- Filters and routing ---------- */
@@ -616,21 +737,34 @@ const filterButtons = filters.map((label) => {
   const b = document.createElement("button");
   b.className = "filter";
   b.type = "button";
-  b.textContent = label;
   b.dataset.filter = label;
   b.addEventListener("click", () => setFilter(label));
   return b;
 });
 
 function updateFilters() {
+  const counts = {
+    All: entries.length,
+    Zhujiaofan: entries.filter((e) => e.type === "Zhujiaofan").length,
+    Shaorou: entries.filter((e) => e.type === "Shaorou").length
+  };
   filterButtons.forEach((b) => {
+    const label = filters.find((f) => f === b.dataset.filter);
+    b.innerHTML = "";
+    b.appendChild(document.createTextNode(label));
+    const n = document.createElement("b");
+    n.textContent = pad(counts[label]);
+    b.appendChild(n);
     b.setAttribute("aria-pressed", String(b.dataset.filter === activeFilter));
+    b.setAttribute("aria-label", label + ", " + counts[label] + (counts[label] === 1 ? " entry" : " entries"));
   });
+  ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 }
 
-function setFilter(label) {
+function setFilter(label, rerender = true) {
   activeFilter = label;
   updateFilters();
+  if (!rerender) return;
   renderDiary();
   renderShopList();
   const shown = visibleEntries().length;
@@ -662,6 +796,8 @@ function parseRoute() {
 function renderRoute() {
   const route = parseRoute();
   closeSheet();
+  closeLightbox();
+  updateFilters();
   tabButtons.forEach((b) => {
     b.setAttribute("aria-pressed", String(b.dataset.tab === route.view || (route.view === "entry" && b.dataset.tab === "diary")));
   });
@@ -672,20 +808,31 @@ function renderRoute() {
   if (route.view === "map") {
     renderShopList();
     ensureMap();
-    announce("Map view. " + countPhrase());
+    announce("Map view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
   } else if (route.view === "entry") {
     renderEntry(route.id);
   } else {
     renderDiary();
-    announce("Diary view. " + countPhrase());
-    if (lastOpenedId) {
-      const link = cardsBox.querySelector('.entry-card[data-id="' + CSS.escape(lastOpenedId) + '"] a')
-        || featuredBox.querySelector('.feature[data-id="' + CSS.escape(lastOpenedId) + '"] h2 a');
+    announce("Diary view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
+    const last = getLast();
+    if (last) {
+      const link = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(last) + '"]');
       if (link) link.focus({ preventScroll: true });
     }
   }
   window.scrollTo(0, 0);
 }
+
+searchInput.addEventListener("input", () => {
+  searchTerm = searchInput.value.trim().toLowerCase();
+  renderShopList();
+});
+
+listToggle.addEventListener("click", () => {
+  const open = ledgerList.dataset.expanded !== "true";
+  ledgerList.dataset.expanded = String(open);
+  listToggle.setAttribute("aria-expanded", String(open));
+});
 
 window.addEventListener("hashchange", renderRoute);
 
@@ -693,6 +840,7 @@ window.addEventListener("hashchange", renderRoute);
 
 tabsBox.append(...tabButtons);
 filterBox.append(...filterButtons);
+ledgerList.dataset.expanded = "true";
 updateFilters();
 if (!location.hash) history.replaceState(null, "", "#/diary");
 renderRoute();

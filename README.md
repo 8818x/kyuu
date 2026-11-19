@@ -1,17 +1,18 @@
 # Food Diary
 
-A small map-and-diary site for recording where the good pork is.
+A private ledger of two dishes: Zhujiaofan and Shaorou. Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
 
-## Add a shop
+## Add a plate
 
-1. Copy a block in `data/entries.js`:
+1. Copy a block in `data/entries.js`.
    - `date`: `YYYY-MM-DD`
    - `shop`: shop name
    - `type`: `Zhujiaofan` or `Shaorou`
    - `image`: path under `images/`
    - `maps`: the **full** Google Maps link from your browser bar, containing `@lat,lng` (short `maps.app.goo.gl` links will not make a pin)
    - `note`: a short note
-2. Put the photo in `images/`.
+   - Optional: `id` for a stable `#/e/…` link, `photos` for more than one photo, `rating`, `price`.
+2. Put the photograph in `images/`.
 3. Publish:
 
 ```
@@ -22,22 +23,20 @@ git push
 
 GitHub Pages updates in about a minute.
 
-## Styles
+## Files
 
-Styles are authored with Tailwind CSS in `src/input.css` using the palette in `tailwind.config.js`. `styles.css` is the compiled output and is committed, so GitHub Pages needs no build step.
+- `index.html` — the page shell
+- `styles.css` — the whole visual system, hand-authored plain CSS
+- `app.js` — rendering, routing, map, and interactions
+- `data/entries.js` — the only file the owner edits
+- `fonts/` — self-hosted Spectral and Courier Prime
 
-After changing styles:
+## Look and behaviour
 
-```
-npm install
-npm run build
-```
+Dark cloth ground, warm paper photo mats, one brass accent, and two ink stamps for the dishes. Diary is the front door; Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a tape flag.
 
-Then commit `styles.css` along with your source changes. `npm run watch` rebuilds on edit.
+Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a brass focus ring. Reduced-motion is respected.
 
 ## Basemap
 
-The map uses **Esri World Dark Gray Canvas** keyless raster tiles:
-`https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`
-
-Attribution required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The tile URL and attribution string live in `app.js` (`initMap`). If the provider ever starts requiring an API key (CARTO's tiles did exactly that), swap both the URL and the attribution, and confirm a real tile loads — a dead basemap shows a visible warning line above the map.
+Esri World Dark Gray Canvas keyless raster tiles. Attribution is required in the map: "Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors". The URL and attribution live in `app.js`. If the provider starts requiring an API key, swap both and confirm a real tile loads — a dead basemap shows a visible warning line.

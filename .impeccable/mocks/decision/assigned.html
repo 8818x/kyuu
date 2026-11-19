@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Direction A — The Night Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
+body{width:1440px;height:900px;background:#111316;color:#ded8cc;font-family:'Courier Prime',monospace}
+.spine{position:absolute;left:0;top:0;bottom:0;width:66px;background:#0b0c0e;border-right:1px solid #24262a;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24px 0}
+.bowl{width:34px;height:34px;border:2px solid #9a8768;border-radius:50%;position:relative}
+.bowl:after{content:'';position:absolute;left:6px;right:6px;bottom:6px;height:8px;border-bottom:2px solid #9a8768;border-radius:0 0 18px 18px}
+.folio{writing-mode:vertical-rl;letter-spacing:.4em;font-size:12px;color:#6f6f6a}
+.top{position:absolute;left:66px;right:0;top:0;height:104px;padding:26px 54px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid #24262a}
+.brand{font-family:'Spectral',serif;font-size:30px;letter-spacing:.01em}
+.kicker{font-size:11px;letter-spacing:.28em;color:#8c8579;margin-bottom:6px}
+.tabs{display:flex;gap:26px;margin-top:8px}
+.tab{font-size:13px;letter-spacing:.14em;color:#77746d;padding-bottom:8px;border-bottom:2px solid transparent}
+.tab.on{color:#ded8cc;border-bottom-color:#9a8768}
+.stamps{display:flex;gap:10px;align-items:center}
+.stamp{font-size:11px;letter-spacing:.12em;padding:9px 13px;border:1px solid #3a3d41;color:#8c8579}
+.stamp.on{border-color:#9a8768;color:#ded8cc}
+.stage{position:absolute;left:66px;right:0;top:104px;bottom:0;padding:38px 54px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px}
+.print{background:#d8d2c4;padding:18px;align-self:start;box-shadow:0 0 0 1px #0a0a0a}
+.print .img{height:566px;background:#2b2f2c;display:grid;place-items:center;color:#7f8478;font-size:12px;letter-spacing:.2em}
+.plate-no{position:absolute;margin-top:-8px;margin-left:-8px;background:#111316;color:#9a8768;font-size:11px;padding:4px 8px;border:1px solid #9a8768}
+.entry{padding-top:8px}
+.date{display:inline-block;border:2px double #7a4a46;color:#b98a83;padding:8px 14px;font-size:12px;letter-spacing:.22em;transform:rotate(-3deg)}
+.dish{display:inline-block;margin-left:14px;border:2px solid #6f7a5c;color:#9eaa8c;padding:7px 14px;font-size:12px;letter-spacing:.18em;transform:rotate(2deg)}
+h1{font-family:'Spectral',serif;font-size:66px;font-weight:400;line-height:1.02;margin:28px 0 10px;letter-spacing:-.02em}
+.meta{font-size:12px;letter-spacing:.16em;color:#8c8579}
+.note{font-family:'Spectral',serif;font-size:21px;line-height:1.6;color:#c9c3b7;max-width:430px;margin:30px 0 0;border-left:2px solid #3a3d41;padding-left:22px}
+.action{display:inline-block;margin-top:30px;border:1px solid #9a8768;padding:14px 22px;font-size:12px;letter-spacing:.16em;color:#e6dfd2}
+.strip{position:absolute;left:120px;right:54px;bottom:26px;display:flex;gap:12px;align-items:end}
+.frame{width:112px;background:#d8d2c4;padding:6px;opacity:.85}
+.frame i{display:block;height:56px;background:#2b2f2c}
+.frame span{display:block;font-size:10px;color:#3a3a36;padding-top:4px;letter-spacing:.1em}
+.frame.first{opacity:1;box-shadow:0 0 0 2px #9a8768}
+</style></head><body>
+<div class="spine"><div class="bowl"></div><div class="folio">EST. BANGKOK / 2026</div><div class="folio">01</div></div>
+<div class="top"><div><div class="kicker">A PERIODICAL OF TWO DISHES</div><div class="brand">Food Diary</div>
+<div class="tabs"><div class="tab on">DIARY</div><div class="tab">MAP</div></div></div>
+<div class="stamps"><div class="stamp on">ALL</div><div class="stamp">ZHUJIAOFAN</div><div class="stamp">SHAOROU</div></div></div>
+<div class="stage">
+<div class="print"><div class="plate-no">PLATE 01 / EXAMPLE PHOTOGRAPH</div><div class="img">PHOTOGRAPH</div></div>
+<div class="entry"><div><span class="date">17 NOV 2026</span><span class="dish">ZHUJIAOFAN</span></div>
+<h1>Sample Shop</h1><div class="meta">BANGKOK &nbsp;·&nbsp; ENTRY 001 &nbsp;·&nbsp; ฿—</div>
+<p class="note">Rich broth, tender pork. A tipped-in print and a typed line, kept the way a visit is remembered.</p>
+<div class="action">READ ENTRY &nbsp;→</div></div>
+</div>
+<div class="strip"><div class="frame first"><i></i><span>01 / SAMPLE SHOP</span></div><div class="frame"><i></i><span>02</span></div><div class="frame"><i></i><span>03</span></div><div class="frame"><i></i><span>04</span></div><div class="frame"><i></i><span>05</span></div></div>
+</body></html>
