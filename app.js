@@ -225,8 +225,10 @@ function makeFeatured(item) {
   el.dataset.id = id;
 
   if (photos.length) {
-    const media = document.createElement("div");
+    const media = document.createElement("button");
     media.className = "plate";
+    media.type = "button";
+    media.setAttribute("aria-label", "View photograph at full size");
     const img = document.createElement("img");
     img.className = "plate-photo";
     img.src = photos[0];
@@ -238,9 +240,11 @@ function makeFeatured(item) {
     label.textContent = "写真 " + pad(index + 1);
     img.onerror = () => {
       media.classList.add("is-missing");
+      media.disabled = true;
       img.style.visibility = "hidden";
       label.textContent = "写真 " + pad(index + 1) + " / PHOTO UNAVAILABLE";
     };
+    media.addEventListener("click", () => openLightbox(photos[0], img.alt, media));
     media.append(img, label);
     el.appendChild(media);
   }
@@ -256,12 +260,10 @@ function makeFeatured(item) {
   title.textContent = entry.shop || "Untitled";
 
   body.append(marks, title);
-  if (entry.note) {
-    const note = document.createElement("p");
-    note.className = "inscription";
-    note.textContent = entry.note;
-    body.appendChild(note);
-  }
+  const note = document.createElement("p");
+  note.className = "inscription" + (entry.note ? "" : " inscription--empty");
+  note.textContent = entry.note || "No note recorded.";
+  body.appendChild(note);
   el.appendChild(body);
   return el;
 }
@@ -535,12 +537,10 @@ function renderEntry(id) {
     }
   }
 
-  if (entry.note) {
-    const note = document.createElement("p");
-    note.className = "detail-note inscription";
-    note.textContent = entry.note;
-    wrap.appendChild(note);
-  }
+  const note = document.createElement("p");
+  note.className = "detail-note inscription" + (entry.note ? "" : " inscription--empty");
+  note.textContent = entry.note || "No note recorded.";
+  wrap.appendChild(note);
   if (entry.maps) {
     const actions = document.createElement("div");
     actions.className = "detail-actions";
@@ -992,7 +992,7 @@ window.addEventListener("resize", () => {
 
 tabsBox.append(...tabButtons);
 filterBox.append(...filterButtons);
-ledgerList.dataset.expanded = "true";
+ledgerList.dataset.expanded = isPhone() ? "false" : "true";
 updateFilters();
 if (!location.hash) history.replaceState(null, "", "#/diary");
 renderRoute();
