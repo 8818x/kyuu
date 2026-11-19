@@ -83,10 +83,6 @@ input{caret-color:var(--accent)}
 
 /* shared */
 .content{padding:clamp(24px,2vw,32px) var(--pad) 100px}
-.diary-tools{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:4px;margin-bottom:8px}
-.diary-search{width:min(320px,100%)}
-.diary-result{font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--secondary);font-variant-numeric:tabular-nums}
-.diary-result:empty{display:none}
 .ink-link{appearance:none;background:none;border:0;border-bottom:1px solid var(--accent);padding:6px 0;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;color:var(--accent);text-decoration:none;cursor:pointer;line-height:1.5;display:inline-flex;align-items:center;min-height:44px}
 .ink-link:hover{color:var(--accent-deep);border-bottom-color:var(--accent-deep)}
 .dish-stamp{display:inline-block;border-bottom:2px solid var(--accent);color:var(--accent);font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;padding-bottom:3px;white-space:nowrap}

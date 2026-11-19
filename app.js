@@ -4,7 +4,6 @@ const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
 let searchTerm = "";
-let diaryTerm = "";
 let map = null;
 let markers = new Map();
 let sheetIndex = -1;
@@ -28,8 +27,6 @@ const mapCount = $("map-count");
 const statusEl = $("status");
 const sheet = $("sheet");
 const searchInput = $("shop-search");
-const diarySearch = $("diary-search");
-const diaryResult = $("diary-result");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
 const lightbox = $("lightbox");
@@ -139,12 +136,6 @@ function searchMatches(entry) {
   if (!searchTerm) return true;
   const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
   return haystack.indexOf(searchTerm) !== -1;
-}
-
-function diaryMatches(entry) {
-  if (!diaryTerm) return true;
-  const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
-  return haystack.indexOf(diaryTerm) !== -1;
 }
 
 function emptyState(message, actionLabel, onAction) {
@@ -266,7 +257,7 @@ function makeThumb(item, isCurrent) {
 }
 
 function renderDiary() {
-  const list = visibleEntries().filter(({ entry }) => diaryMatches(entry));
+  const list = visibleEntries();
   const shown = list.length;
   const filtered = shown !== entries.length;
 
@@ -277,7 +268,6 @@ function renderDiary() {
   unit.textContent = entries.length === 1 ? "PLATE" : "PLATES";
   ledgerCount.append(no, unit);
   ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
-  diaryResult.textContent = filtered ? "SHOWING " + pad(shown) + " / " + pad(entries.length) : "";
 
   featuredBox.replaceChildren();
   stripBox.replaceChildren();
@@ -285,7 +275,7 @@ function renderDiary() {
     featuredBox.appendChild(emptyState(
       filtered ? "No plates match this search or filter." : "The ledger is empty.",
       filtered ? "Show all plates" : null,
-      () => { diaryTerm = ""; diarySearch.value = ""; setFilter(filters[0]); }
+      () => setFilter(filters[0])
     ));
     return;
   }
@@ -924,12 +914,6 @@ function renderRoute() {
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value.trim().toLowerCase();
   renderShopList();
-});
-
-diarySearch.addEventListener("input", () => {
-  diaryTerm = diarySearch.value.trim().toLowerCase();
-  renderDiary();
-  announce(diaryTerm ? "Diary search updated." : "Diary search cleared.");
 });
 
 listToggle.addEventListener("click", () => {
