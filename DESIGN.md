@@ -105,7 +105,9 @@ Square throughout — chips, buttons, cards, sheet. The only curves are the two 
 
 ## Data contract
 
-`data/entries.js` stays hand-edited. Required fields: `date`, `shop`, `type`, `image`, `maps`, `note`. Optional: `id` (stable `#/e/` link), `photos` (multiple images, replaces `image` on the detail page), `rating`, `price`. Old entries with only `image` render exactly as before. No build step, no backend, no new dependencies.
+`data/entries.js` stays hand-edited. Required fields: `date`, `shop`, `type`, `image`, `maps`, `note`. Optional: `id` (stable `#/e/` link), `photos` (multiple images, replaces `image` on the detail page), `rating`, `price`. Old entries with only `image` render exactly as before. No backend, no framework.
+
+Styles are authored as Tailwind utilities in `src/input.css`; the colour and font tokens live in `tailwind.config.js`. `npm run build` compiles them into the committed `styles.css`, so adding a diary entry still needs no build step. Third-party Leaflet chrome keeps a few plain rules because it cannot be expressed as component utilities.
 
 ## Do's and Don'ts
 
