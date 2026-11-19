@@ -39,7 +39,7 @@ Visitors have no workflow. They open a link, look, and close it.
 - Exactly two dish types exist. This is settled scope, not a starting point; the filter vocabulary does not grow.
 - Read-only for every visitor, permanently. No comments, reactions, accounts, submissions, likes, or analytics-driven features.
 - Static site: plain HTML, CSS, and vanilla JS, no build step, no framework, no server code, no database.
-- Leaflet and OpenStreetMap tiles load from CDNs.
+- Leaflet and Esri World Street Map tiles load from CDNs.
 - Entries are hand-edited in `data/entries.js`; there is no editing UI and none is planned.
 - Pin coordinates are parsed from a pasted Google Maps URL, so a short `maps.app.goo.gl` link silently yields no pin.
 - Hosted on GitHub Pages, public repository.
