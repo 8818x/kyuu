@@ -615,7 +615,7 @@ function makePlaceRow(group) {
   name.textContent = group.shop;
   const sub = document.createElement("small");
   const count = group.visits.length;
-  sub.textContent = dishLabel(latest.type) + " · " + pad(count) + (count === 1 ? " VISIT" : " VISITS") + " · " + formatDate(latest.date);
+  sub.textContent = pad(count) + (count === 1 ? " VISIT" : " VISITS") + " · " + formatDate(latest.date);
   text.append(name, sub);
   if (!groupPosition(group)) {
     const note = document.createElement("small");
@@ -644,14 +644,15 @@ function highlightShop(id) {
   });
 }
 
-function visitBlocks(group, className) {
+function visitBlocks(group, className, includeStamp = true) {
   const holder = document.createElement("div");
   group.visits.forEach(({ entry }) => {
     const block = document.createElement("div");
     block.className = className;
     const meta = document.createElement("div");
     meta.className = "visit-meta";
-    meta.append(makeDateStamp(entry.date), makeStamp(entry));
+    if (includeStamp) meta.append(makeDateStamp(entry.date), makeStamp(entry));
+    else meta.append(makeDateStamp(entry.date));
     block.appendChild(meta);
     if (entry.note) {
       const note = document.createElement("p");
@@ -839,7 +840,7 @@ function openSheet(group, trigger) {
   $("sheet-shop").textContent = group.shop;
   $("sheet-date").textContent = pad(count) + (count === 1 ? " VISIT" : " VISITS");
   const noteBox = $("sheet-note");
-  noteBox.replaceChildren(visitBlocks(group, "sheet-visit"));
+  noteBox.replaceChildren(visitBlocks(group, "sheet-visit", false));
   const withMaps = group.visits.find(({ entry }) => entry.maps);
   const link = $("sheet-link");
   if (withMaps) { link.href = withMaps.entry.maps; link.hidden = false; }
@@ -954,6 +955,7 @@ function renderRoute() {
   const route = parseRoute();
   closeSheet();
   closeLightbox();
+  if (map) map.closePopup();
   syncLayout();
   updateFilters();
   tabButtons.forEach((b) => {
@@ -994,7 +996,9 @@ listToggle.addEventListener("click", () => {
 });
 
 window.addEventListener("hashchange", renderRoute);
+let resizeWasPhone = () => window.innerWidth <= 600;
 window.addEventListener("resize", () => {
+  if (isPhone() !== resizeWasPhone()) { closeSheet(); if (map) map.closePopup(); }
   syncLayout();
   if (stripUpdater) stripUpdater();
   if (map) requestAnimationFrame(() => map.invalidateSize());
