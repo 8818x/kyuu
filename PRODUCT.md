@@ -47,7 +47,7 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Brand Commitments
 
-- Interface language is English, with Chinese dish labels. Known labels: **猪脚饭** (Zhujiaofan), **烧肉** (Shaorou), **泰式炒河粉** (PadThai), **泰式炸蚝饼** (HoiThod). The stored `type` keys stay in pinyin English; a render label maps them to Chinese. One entry may carry an array of types when a visit includes more than one dish. The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
+- Interface language is English. Dish labels are pinyin readings, not Chinese characters: **Zhujiaofan**, **Shaorou**, and **Chao He Fen / Zha Hao Bing** (one combined type for a visit with both ผัดไทย and หอยทอด). The stored `type` keys are English identifiers; a render label maps them to pinyin. The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
 - The site is named **Kyuu**, read from the mark 九. The wordmark in the masthead and the page title both use "Kyuu".
 
 ## Evidence on Hand

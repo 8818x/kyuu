@@ -1,7 +1,7 @@
 // Add a shop: copy the block below and push.
 // Required: date, shop, type, image, maps, note.
-// type: "Zhujiaofan" (猪脚饭), "Shaorou" (烧肉), "PadThai" (泰式炒河粉), "HoiThod" (泰式炸蚝饼)
-//       or an array of them for a visit with more than one dish, e.g. ["PadThai", "HoiThod"]
+// type: "Zhujiaofan", "Shaorou", or "PadThaiHoiThod" (Chao He Fen / Zha Hao Bing)
+//       labels are shown in pinyin; the stored key stays in English
 // maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
 //       A short share.google link will not create a map pin.
 //
@@ -15,7 +15,7 @@ window.DIARY_ENTRIES = [
   {
     date: "2025-11-26",
     shop: "ผัดไท หอยทอด กร& เก้า",
-    type: ["PadThai", "HoiThod"],
+    type: "PadThaiHoiThod",
     image: "images/1795090695048.jpg",
     maps: "https://share.google/X9DNMraTA3ZSJJkiS",
     note: ""

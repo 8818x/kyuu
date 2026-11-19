@@ -1,6 +1,11 @@
 const entries = window.DIARY_ENTRIES || [];
 const baseTypes = ["Zhujiaofan", "Shaorou"];
-const dishNames = { All: "全部", Zhujiaofan: "猪脚饭", Shaorou: "烧肉", PadThai: "泰式炒河粉", HoiThod: "泰式炸蚝饼" };
+const dishNames = {
+  All: "All",
+  Zhujiaofan: "Zhujiaofan",
+  Shaorou: "Shaorou",
+  PadThaiHoiThod: "Chao He Fen / Zha Hao Bing"
+};
 
 function typesOf(entry) {
   if (Array.isArray(entry.type)) return entry.type;
@@ -85,7 +90,7 @@ function findById(id) {
 }
 
 function isCrisp(entry) {
-  return typesOf(entry).some((type) => type === "Shaorou" || type === "HoiThod");
+  return typesOf(entry).some((type) => type === "Shaorou");
 }
 
 function pad(n) {
@@ -117,7 +122,7 @@ function makeStamp(entry) {
   wrap.className = "dish-stamps";
   typesOf(entry).forEach((type) => {
     const stamp = document.createElement("span");
-    stamp.className = "dish-stamp" + (type === "Shaorou" || type === "HoiThod" ? " dish-stamp--crisp" : "");
+    stamp.className = "dish-stamp" + (type === "Shaorou" ? " dish-stamp--crisp" : "");
     stamp.textContent = dishLabel(type);
     wrap.appendChild(stamp);
   });
@@ -815,7 +820,7 @@ function openSheet(group, trigger) {
   sheetTag.replaceChildren();
   typesOf(latest).forEach((type) => {
     const stamp = document.createElement("span");
-    stamp.className = "dish-stamp" + (type === "Shaorou" || type === "HoiThod" ? " dish-stamp--crisp" : "");
+    stamp.className = "dish-stamp" + (type === "Shaorou" ? " dish-stamp--crisp" : "");
     stamp.textContent = dishLabel(type);
     sheetTag.appendChild(stamp);
   });
