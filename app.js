@@ -4,7 +4,7 @@ const dishNames = {
   All: "All",
   Zhujiaofan: "Zhujiaofan",
   Shaorou: "Shaorou",
-  PadThaiHoiThod: "Chao He Fen / Zha Hao Bing"
+  PadThaiHoiTod: "Pad Thai / Hoi Tod"
 };
 
 function typesOf(entry) {
@@ -235,11 +235,11 @@ function makeFeatured(item) {
     img.decoding = "async";
     const label = document.createElement("span");
     label.className = "plate-label";
-    label.textContent = "PLATE " + pad(index + 1);
+    label.textContent = "写真 " + pad(index + 1);
     img.onerror = () => {
       media.classList.add("is-missing");
       img.style.visibility = "hidden";
-      label.textContent = "PLATE " + pad(index + 1) + " / PHOTO UNAVAILABLE";
+      label.textContent = "写真 " + pad(index + 1) + " / PHOTO UNAVAILABLE";
     };
     media.append(img, label);
     el.appendChild(media);
@@ -312,7 +312,7 @@ function renderDiary() {
   const no = document.createElement("span");
   no.textContent = pad(entries.length);
   const unit = document.createElement("small");
-  unit.textContent = entries.length === 1 ? "PLATE" : "PLATES";
+  unit.textContent = "写真";
   ledgerCount.append(no, unit);
   ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 
@@ -335,7 +335,7 @@ function renderDiary() {
   const left = document.createElement("span");
   left.textContent = "THE LEDGER";
   const right = document.createElement("span");
-  right.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
+  right.textContent = pad(list.length) + " 写真";
   head.append(left);
 
   const inner = document.createElement("div");
@@ -487,12 +487,12 @@ function renderEntry(id) {
     const label = document.createElement("span");
     label.className = "plate-label";
     label.style.position = "static";
-    const labelFor = (i) => "PLATE " + pad(index + 1) + " / PHOTO " + pad(i + 1) + " OF " + pad(photos.length);
+    const labelFor = (i) => "写真 " + pad(index + 1) + " / PHOTO " + pad(i + 1) + " OF " + pad(photos.length);
     label.textContent = labelFor(0);
     main.onerror = () => {
       figure.classList.add("is-missing");
       main.style.visibility = "hidden";
-      label.textContent = "PLATE " + pad(index + 1) + " / PHOTO UNAVAILABLE";
+      label.textContent = "写真 " + pad(index + 1) + " / PHOTO UNAVAILABLE";
       zoom.hidden = true;
     };
     const zoom = document.createElement("button");
