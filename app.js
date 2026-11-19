@@ -1,7 +1,19 @@
 const entries = window.DIARY_ENTRIES || [];
-const filters = ["All", "Zhujiaofan", "Shaorou"];
-const dishNames = { All: "全部", Zhujiaofan: "猪脚饭", Shaorou: "烧肉" };
-const dishLabel = (type) => dishNames[type] || type || "";
+const baseTypes = ["Zhujiaofan", "Shaorou"];
+const dishNames = { All: "全部", Zhujiaofan: "猪脚饭", Shaorou: "烧肉", PadThai: "泰式炒河粉", HoiThod: "泰式炸蚝饼" };
+
+function typesOf(entry) {
+  if (Array.isArray(entry.type)) return entry.type;
+  return entry.type ? [entry.type] : [];
+}
+
+const dishLabel = (type) => Array.isArray(type)
+  ? type.map(dishLabel).join(" / ")
+  : (dishNames[type] || type || "");
+
+const recordTypes = [...new Set(entries.flatMap(typesOf))];
+const filters = ["All", ...baseTypes.filter((t) => recordTypes.includes(t)),
+  ...recordTypes.filter((t) => !baseTypes.includes(t) && t !== "All")];
 const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
@@ -73,7 +85,7 @@ function findById(id) {
 }
 
 function isCrisp(entry) {
-  return entry.type === "Shaorou";
+  return typesOf(entry).some((type) => type === "Shaorou" || type === "HoiThod");
 }
 
 function pad(n) {
@@ -101,10 +113,15 @@ function announce(text) {
 }
 
 function makeStamp(entry) {
-  const stamp = document.createElement("span");
-  stamp.className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
-  stamp.textContent = dishLabel(entry.type);
-  return stamp;
+  const wrap = document.createElement("span");
+  wrap.className = "dish-stamps";
+  typesOf(entry).forEach((type) => {
+    const stamp = document.createElement("span");
+    stamp.className = "dish-stamp" + (type === "Shaorou" || type === "HoiThod" ? " dish-stamp--crisp" : "");
+    stamp.textContent = dishLabel(type);
+    wrap.appendChild(stamp);
+  });
+  return wrap;
 }
 
 function makeDateStamp(iso) {
@@ -130,13 +147,13 @@ function makeMapsLink(link) {
 function visibleEntries() {
   return entries
     .map((entry, index) => ({ entry, index }))
-    .filter(({ entry }) => activeFilter === filters[0] || entry.type === activeFilter)
+    .filter(({ entry }) => activeFilter === filters[0] || typesOf(entry).includes(activeFilter))
     .sort((a, b) => (b.entry.date || "").localeCompare(a.entry.date || ""));
 }
 
 function searchMatches(entry) {
   if (!searchTerm) return true;
-  const haystack = [entry.shop, entry.type, entry.note].join(" ").toLowerCase();
+  const haystack = [entry.shop, typesOf(entry).join(" "), entry.note].join(" ").toLowerCase();
   return haystack.indexOf(searchTerm) !== -1;
 }
 
@@ -169,7 +186,7 @@ function visibleMapGroups() {
   const result = [];
   shopGroups().forEach((group) => {
     const visits = group.visits.filter(({ entry }) =>
-      (activeFilter === filters[0] || entry.type === activeFilter) && searchMatches(entry));
+      (activeFilter === filters[0] || typesOf(entry).includes(activeFilter)) && searchMatches(entry));
     if (visits.length) result.push({ ...group, visits });
   });
   return result;
@@ -794,8 +811,14 @@ function openSheet(group, trigger) {
   const latest = group.visits[0].entry;
   const count = group.visits.length;
   sheetTrigger = trigger || null;
-  $("sheet-tag").className = "dish-stamp" + (isCrisp(latest) ? " dish-stamp--crisp" : "");
-  $("sheet-tag").textContent = dishLabel(latest.type);
+  const sheetTag = $("sheet-tag");
+  sheetTag.replaceChildren();
+  typesOf(latest).forEach((type) => {
+    const stamp = document.createElement("span");
+    stamp.className = "dish-stamp" + (type === "Shaorou" || type === "HoiThod" ? " dish-stamp--crisp" : "");
+    stamp.textContent = dishLabel(type);
+    sheetTag.appendChild(stamp);
+  });
   $("sheet-shop").textContent = group.shop;
   $("sheet-date").textContent = pad(count) + (count === 1 ? " VISIT" : " VISITS");
   const noteBox = $("sheet-note");
@@ -845,8 +868,9 @@ const filterButtons = filters.map((label) => {
 function updateFilters() {
   const counts = {
     All: entries.length,
-    Zhujiaofan: entries.filter((e) => e.type === "Zhujiaofan").length,
-    Shaorou: entries.filter((e) => e.type === "Shaorou").length
+    ...Object.fromEntries(baseTypes.map((t) => [t, entries.filter((e) => typesOf(e).includes(t)).length])),
+    ...Object.fromEntries(recordTypes.filter((t) => !baseTypes.includes(t))
+      .map((t) => [t, entries.filter((e) => typesOf(e).includes(t)).length]))
   };
   if (counts[activeFilter] === 0 && activeFilter !== filters[0]) activeFilter = filters[0];
   filterButtons.forEach((b) => {

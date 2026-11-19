@@ -87,6 +87,7 @@ input{caret-color:var(--accent)}
 .content{padding:clamp(24px,2vw,32px) var(--pad) 100px}
 .ink-link{appearance:none;background:none;border:0;border-bottom:1px solid var(--accent);padding:6px 0;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;color:var(--accent);text-decoration:none;cursor:pointer;line-height:1.5;display:inline-flex;align-items:center;min-height:44px}
 .ink-link:hover{color:var(--accent-deep);border-bottom-color:var(--accent-deep)}
+.dish-stamps{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .dish-stamp{display:inline-block;border-bottom:2px solid var(--accent);color:var(--accent);font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;padding-bottom:3px;white-space:nowrap}
 .dish-stamp--crisp{border-bottom-color:var(--ink);color:var(--ink)}
 .date-stamp{font-family:var(--label);font-size:.75rem;letter-spacing:.10em;color:var(--secondary);font-variant-numeric:tabular-nums;text-transform:uppercase}
