@@ -75,14 +75,13 @@ input{caret-color:var(--accent)}
 .tab:hover,.tab[aria-pressed="true"]{color:var(--ink)}
 .tab[aria-pressed="true"]{border-bottom-color:var(--accent)}
 .filter-row{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:66px;flex-wrap:wrap}
-.glossary{position:relative}
-.glossary summary{display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--secondary);cursor:pointer;list-style:none}
-.glossary summary:hover,.glossary[open] summary{color:var(--ink)}
-.glossary summary::-webkit-details-marker{display:none}
-.glossary-body{position:absolute;left:0;top:100%;z-index:900;width:min(280px,80vw);background:var(--paper);border:1px solid var(--rule);padding:14px 16px}
-.glossary-body p{font-family:var(--label);font-size:.75rem;letter-spacing:.04em;color:var(--secondary);margin:0 0 8px}
-.glossary-body p:last-child{margin-bottom:0}
-.glossary-body b{color:var(--ink);font-weight:500;margin-right:8px}
+.wordmark-group{position:relative;display:inline-flex;align-items:center}
+.glossary{position:absolute;left:0;top:100%;z-index:900;width:min(260px,80vw);background:var(--paper);border:1px solid var(--rule);padding:14px 16px;display:none}
+.wordmark-group:hover .glossary,.wordmark-group:focus-within .glossary{display:block}
+.glossary p{font-family:var(--label);font-size:.75rem;letter-spacing:.04em;color:var(--secondary);margin:0 0 8px}
+.glossary p:last-child{margin-bottom:0}
+.glossary b{color:var(--ink);font-weight:500;margin-right:8px}
+@media (hover:none){.wordmark-group:focus-within .glossary{display:none}}
 .stamp-filters{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
 .filter{appearance:none;background:none;border:0;border-bottom:2px solid transparent;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;color:var(--secondary);min-height:44px;padding:8px 0;cursor:pointer}
 .filter:hover{color:var(--ink)}
@@ -261,7 +260,6 @@ input{caret-color:var(--accent)}
   .wordmark{font-size:1.35rem}
   .page-tabs{gap:16px}
   .tab{font-size:.7rem;letter-spacing:.12em;min-height:48px}
-  .glossary-body{position:fixed;left:calc(var(--rail) + 14px);right:14px;top:70px;width:auto}
   .filter-row{min-height:60px;gap:10px}
   .filter{font-size:.7rem}
   .stamp-filters{gap:16px}
