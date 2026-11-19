@@ -1,12 +1,13 @@
 const entries = window.DIARY_ENTRIES || [];
 const filters = ["All", "Zhujiaofan", "Shaorou"];
+const dishNames = { All: "全部", Zhujiaofan: "猪脚饭", Shaorou: "烧肉" };
+const dishLabel = (type) => dishNames[type] || type || "";
 const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
 let searchTerm = "";
 let map = null;
 let markers = new Map();
-let sheetIndex = -1;
 let sheetTrigger = null;
 let popupTrigger = null;
 let zoomTrigger = null;
@@ -101,7 +102,7 @@ function announce(text) {
 function makeStamp(entry) {
   const stamp = document.createElement("span");
   stamp.className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
-  stamp.textContent = entry.type || "";
+  stamp.textContent = dishLabel(entry.type);
   return stamp;
 }
 
@@ -166,10 +167,8 @@ function makeFeatured(item) {
   el.dataset.id = id;
 
   if (photos.length) {
-    const media = document.createElement("a");
+    const media = document.createElement("div");
     media.className = "plate";
-    media.href = "#/e/" + encodeURIComponent(id);
-    media.setAttribute("aria-label", "Open " + (entry.shop || "entry"));
     const img = document.createElement("img");
     img.className = "plate-photo";
     img.src = photos[0];
@@ -196,10 +195,7 @@ function makeFeatured(item) {
 
   const title = document.createElement("h1");
   title.className = "shop-name";
-  const link = document.createElement("a");
-  link.href = "#/e/" + encodeURIComponent(id);
-  link.textContent = entry.shop || "Untitled";
-  title.appendChild(link);
+  title.textContent = entry.shop || "Untitled";
 
   body.append(marks, title);
   if (entry.note) {
@@ -208,11 +204,6 @@ function makeFeatured(item) {
     note.textContent = entry.note;
     body.appendChild(note);
   }
-  const read = document.createElement("a");
-  read.className = "ink-link";
-  read.href = "#/e/" + encodeURIComponent(id);
-  read.textContent = "Read entry  →";
-  body.appendChild(read);
   el.appendChild(body);
   return el;
 }
@@ -221,10 +212,9 @@ function makeThumb(item, isCurrent) {
   const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
-  const btn = document.createElement("button");
-  btn.className = "print-thumb" + (isCurrent ? " is-current" : "");
-  btn.type = "button";
-  btn.dataset.id = id;
+  const el = document.createElement("div");
+  el.className = "print-thumb" + (isCurrent ? " is-current" : "");
+  el.dataset.id = id;
 
   const mat = document.createElement("span");
   mat.className = "thumb-mat";
@@ -244,16 +234,15 @@ function makeThumb(item, isCurrent) {
   const name = document.createElement("span");
   name.textContent = entry.shop || "Untitled";
   meta.append(no, name);
-  btn.append(mat, meta);
+  el.append(mat, meta);
 
   if (id === getLast()) {
     const flag = document.createElement("span");
     flag.className = "tape-flag";
     flag.setAttribute("aria-label", "Last viewed");
-    btn.appendChild(flag);
+    el.appendChild(flag);
   }
-  btn.addEventListener("click", () => { location.hash = "#/e/" + encodeURIComponent(id); });
-  return btn;
+  return el;
 }
 
 function renderDiary() {
@@ -556,7 +545,7 @@ function makePlaceRow(item) {
   const name = document.createElement("strong");
   name.textContent = entry.shop || "Untitled";
   const sub = document.createElement("small");
-  sub.textContent = (entry.type || "") + " · " + formatDate(entry.date);
+  sub.textContent = dishLabel(entry.type) + " · " + formatDate(entry.date);
   text.append(name, sub);
   if (!coordsFromLink(entry.maps)) {
     const note = document.createElement("small");
@@ -600,12 +589,6 @@ function popupFor(entry, index, trigger) {
     box.appendChild(note);
   }
   if (entry.maps) box.appendChild(makeMapsLink(entry.maps));
-  const open = document.createElement("button");
-  open.className = "ink-link";
-  open.type = "button";
-  open.textContent = "Open entry";
-  open.addEventListener("click", () => { location.hash = "#/e/" + encodeURIComponent(entryId(entry, index)); });
-  box.appendChild(open);
   return box;
 }
 
@@ -619,8 +602,8 @@ function activateShop(id, trigger) {
   const pos = coordsFromLink(entry.maps);
   if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
   if (!marker || !pos) {
-    announce(entry.shop + " has no map pin. Opening the entry.");
-    location.hash = "#/e/" + encodeURIComponent(id);
+    announce(entry.shop + " has no map pin.");
+    if (isPhone()) openSheet(index, trigger || null);
     return;
   }
 
@@ -708,7 +691,7 @@ function ensureMap() {
     const pos = coordsFromLink(entry.maps);
     if (!pos) return;
     const id = entryId(entry, index);
-    const label = (entry.shop || "Untitled") + ", " + (entry.type || "");
+    const label = (entry.shop || "Untitled") + ", " + dishLabel(entry.type);
     const marker = L.marker(pos, { icon: pinIcon(entry), title: label, keyboard: true });
     marker.on("add", () => {
       const node = marker.getElement();
@@ -753,16 +736,14 @@ document.addEventListener("keydown", (event) => {
 /* ---------- Phone sheet ---------- */
 
 const sheetClose = $("sheet-close");
-const sheetOpen = $("sheet-open");
 const sheetGrip = $("sheet-grip");
 
 function openSheet(index, trigger) {
   const entry = entries[index];
   if (!entry) return;
-  sheetIndex = index;
   sheetTrigger = trigger || null;
   $("sheet-tag").className = "dish-stamp" + (isCrisp(entry) ? " dish-stamp--crisp" : "");
-  $("sheet-tag").textContent = entry.type || "";
+  $("sheet-tag").textContent = dishLabel(entry.type);
   $("sheet-shop").textContent = entry.shop || "Untitled";
   $("sheet-date").textContent = formatDate(entry.date);
   $("sheet-note").textContent = entry.note || "";
@@ -795,11 +776,6 @@ function toggleSheet() {
 
 sheetClose.addEventListener("click", closeSheet);
 sheetGrip.addEventListener("click", toggleSheet);
-sheetOpen.addEventListener("click", () => {
-  const index = sheetIndex;
-  closeSheet();
-  if (index >= 0) location.hash = "#/e/" + encodeURIComponent(entryId(entries[index], index));
-});
 
 /* ---------- Filters and routing ---------- */
 
@@ -822,13 +798,13 @@ function updateFilters() {
   filterButtons.forEach((b) => {
     const label = filters.find((f) => f === b.dataset.filter);
     b.innerHTML = "";
-    b.appendChild(document.createTextNode(label));
+    b.appendChild(document.createTextNode(dishLabel(label)));
     const n = document.createElement("b");
     n.textContent = pad(counts[label]);
     b.appendChild(n);
     b.hidden = counts[label] === 0 && label !== filters[0];
     b.setAttribute("aria-pressed", String(b.dataset.filter === activeFilter));
-    b.setAttribute("aria-label", label + ", " + counts[label] + (counts[label] === 1 ? " entry" : " entries"));
+    b.setAttribute("aria-label", dishLabel(label) + ", " + counts[label] + (counts[label] === 1 ? " entry" : " entries"));
   });
   ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 }
@@ -842,7 +818,7 @@ function setFilter(label, rerender = true) {
   const shown = visibleEntries().length;
   announce(label === filters[0]
     ? "Showing all entries. " + (shown === 1 ? "1 entry." : shown + " entries.")
-    : "Showing " + label + ". " + (shown === 1 ? "1 entry." : shown + " entries."));
+    : "Showing " + dishLabel(label) + ". " + (shown === 1 ? "1 entry." : shown + " entries."));
 }
 
 const tabButtons = [["diary", "Diary"], ["map", "Map"]].map(([name, label]) => {

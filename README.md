@@ -33,7 +33,7 @@ GitHub Pages updates in about a minute.
 
 ## Look and behaviour
 
-Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a red tape flag.
+Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Dish names display in Chinese (猪脚饭 / 烧肉); the stored `type` values stay in pinyin. Entries are read in place — nothing links into a separate detail page. Map has a searchable list on desktop and a collapsible sheet on phones; an entry opens one large plate with its note. The last entry you opened gets a red tape flag.
 
 Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a red focus ring. Reduced-motion is respected.
 

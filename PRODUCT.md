@@ -47,7 +47,7 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Brand Commitments
 
-- Interface language is English. The only non-English words are the two dish names, kept in pinyin: **Zhujiaofan** and **Shaorou**. The single exception is the brand mark 九 (nine) in the binding rail; it is a logo, not interface copy.
+- Interface language is English. The dish names are shown in Chinese: **猪脚饭** (Zhujiaofan, pork leg rice) and **烧肉** (Shaorou, crispy pork). The stored `type` values stay `Zhujiaofan` and `Shaorou`; a render label maps them to Chinese. The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
 - The site is named **Kyuu**, read from the mark 九. The wordmark in the masthead and the page title both use "Kyuu".
 
 ## Evidence on Hand

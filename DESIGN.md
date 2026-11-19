@@ -31,6 +31,11 @@ typography:
     fontSize: "0.75rem"
     lineHeight: 1.4
     letterSpacing: "0.10em"
+  cjk:
+    fontFamily: "'Noto Sans SC', sans-serif"
+    fontWeight: 500
+    fontSize: "0.75rem"
+    lineHeight: 1.4
 spacing:
   tight: "8px"
   base: "16px"
@@ -95,6 +100,7 @@ A printed page: warm-neutral paper, black ink, and one signal red.
 **Display:** Taviraj (Georgia fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
 **Body:** Noto Sans Thai (Arial fallback), self-hosted in `fonts/`, Latin and Thai subsets per weight.
 **Label:** Noto Sans Thai (Arial fallback), weight 500, same files as the body face.
+**Chinese dish labels:** Noto Sans SC (system CJK fallback), a tiny self-hosted subset covering 全部猪脚饭烧肉. It supplies only Chinese glyphs; Latin still renders in the role's primary face.
 
 **Character:** Taviraj gives shop names a quiet printed authority in both scripts. Noto Sans Thai is built for long Thai reading and stays crisp on a phone; the same face at weight 500 handles dates and labels. Two voices, two jobs.
 
