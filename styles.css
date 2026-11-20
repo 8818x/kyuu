@@ -13,8 +13,6 @@
 @font-face{font-family:'Noto Sans Thai';src:url('fonts/noto-sans-thai-500-thai.woff2') format('woff2');font-weight:500;font-display:swap;unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
 @font-face{font-family:'Noto Sans Thai';src:url('fonts/noto-sans-thai-600-latin.woff2') format('woff2');font-weight:600;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Noto Sans Thai';src:url('fonts/noto-sans-thai-600-thai.woff2') format('woff2');font-weight:600;font-display:swap;unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
-@font-face{font-family:'Noto Sans JP';src:url('fonts/noto-sans-jp-400.woff2') format('woff2');font-weight:400;font-display:swap;unicode-range:U+4E5D,U+5834,U+6240,U+771F,U+9801}
-@font-face{font-family:'Noto Sans JP';src:url('fonts/noto-sans-jp-500.woff2') format('woff2');font-weight:500;font-display:swap;unicode-range:U+4E5D,U+5834,U+6240,U+771F,U+9801}
 
 :root{
   --ground:#f7f5ef;
@@ -30,9 +28,9 @@
   --error:#f3e0da;
   --rail:66px;
   --pad:clamp(20px,4vw,56px);
-  --display:Taviraj,Georgia,'Noto Sans JP',serif;
-  --body:'Noto Sans Thai',Arial,'Noto Sans JP',sans-serif;
-  --label:'Noto Sans Thai',Arial,'Noto Sans JP',sans-serif;
+  --display:Taviraj,Georgia,serif;
+  --body:'Noto Sans Thai',Arial,sans-serif;
+  --label:'Noto Sans Thai',Arial,sans-serif;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -75,8 +73,6 @@ input{caret-color:var(--accent)}
 .tab:hover,.tab[aria-pressed="true"]{color:var(--ink)}
 .tab[aria-pressed="true"]{border-bottom-color:var(--accent)}
 .filter-row{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:66px;flex-wrap:wrap}
-.mark{cursor:help;border-bottom:1px dotted var(--rule-strong)}
-.mark-tip{position:fixed;z-index:3000;pointer-events:none;background:var(--paper);color:var(--ink);border:1px solid var(--rule);padding:6px 10px;font-family:var(--label);font-size:.75rem;letter-spacing:.04em;white-space:nowrap}
 .stamp-filters{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
 .filter{appearance:none;background:none;border:0;border-bottom:2px solid transparent;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;color:var(--secondary);min-height:44px;padding:8px 0;cursor:pointer}
 .filter:hover{color:var(--ink)}

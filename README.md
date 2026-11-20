@@ -33,7 +33,7 @@ GitHub Pages updates in about a minute.
 
 ## Look and behaviour
 
-Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Dish labels are Thai transliterations (Zhujiaofan / Shaorou / Pad Thai / Hoi Tod); the stored `type` keys are English identifiers. ผัดไทย and หอยทอด share one combined type. Photo markers read 写真 instead of PLATE. Entries are read in place — nothing links into a separate detail page. The map groups visits by shop: one pin per restaurant, and the popup or phone sheet lists every visit with its date, dish and note. Map has a searchable list on desktop and a collapsible sheet on phones.
+Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Dish labels are Thai transliterations (Zhujiaofan / Shaorou / Pad Thai / Hoi Tod); the stored `type` keys are English identifiers. ผัดไทย and หอยทอด share one combined type. Photo markers read PLATE. Entries are read in place — nothing links into a separate detail page. The map groups visits by shop: one pin per restaurant, and the popup or phone sheet lists every visit with its date, dish and note. Map has a searchable list on desktop and a collapsible sheet on phones.
 
 Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a red focus ring. Reduced-motion is respected.
 

@@ -6,7 +6,7 @@
   <title>Kyuu</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=49">
+  <link rel="stylesheet" href="styles.css?v=50">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -18,7 +18,7 @@
         <path d="M7 18h30c0 12-5 20-12 20-5 0-9-3-11-7" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </span>
-    <span class="binding-folio">頁</span>
+    <span class="binding-folio">FOLIO</span>
     <span id="binding-number" class="binding-number">001</span>
     <span id="binding-tape" class="binding-tape" hidden></span>
   </div>
@@ -29,7 +29,6 @@
         <a class="wordmark" href="#/diary">Kyuu</a>
         <nav id="tabs" class="page-tabs" aria-label="View"></nav>
       </div>
-      <p class="visually-hidden">Marks: 写真 photo number. 頁 page number. 場所 place. 九 nine.</p>
       <div class="filter-row">
         <div id="filters" class="stamp-filters" aria-label="Filter by dish"></div>
         <p id="ledger-count" class="ledger-count"></p>
@@ -48,7 +47,7 @@
         <div class="map-ledger">
           <aside class="ledger-list" aria-label="Place list">
             <button id="list-toggle" class="list-toggle" type="button" aria-expanded="true" aria-controls="list-body">
-              <span>場所</span><span id="map-count" class="map-count"></span>
+              <span>Places</span><span id="map-count" class="map-count"></span>
             </button>
             <div id="pin-legend" class="pin-legend" aria-label="Map pin key"></div>
             <div id="list-body" class="list-body">
@@ -98,10 +97,8 @@
     <p class="lightbox-hint">Scroll or drag to explore the full-size photograph.</p>
   </div>
 
-  <div id="mark-tip" class="mark-tip" role="tooltip" hidden></div>
-
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data/entries.js?v=49"></script>
-  <script src="app.js?v=49"></script>
+  <script src="data/entries.js?v=50"></script>
+  <script src="app.js?v=50"></script>
 </body>
 </html>

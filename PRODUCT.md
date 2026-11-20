@@ -47,7 +47,7 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Brand Commitments
 
-- Interface language is English. Dish labels are Thai transliterations: **Zhujiaofan**, **Shaorou**, and **Pad Thai / Hoi Tod** (one combined type for a visit with both ผัดไทย and หอยทอด). The stored `type` keys are English identifiers; a render label maps them to romanised Thai. Photo markers use the Japanese word **写真** instead of "PLATE". The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
+- Interface language is English. Dish labels are Thai transliterations: **Zhujiaofan**, **Shaorou**, and **Pad Thai / Hoi Tod** (one combined type for a visit with both ผัดไทย and หอยทอด). The stored `type` keys are English identifiers; a render label maps them to romanised Thai. Photo markers read "PLATE". The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
 - The site is named **Kyuu**, read from the mark 九. The wordmark in the masthead and the page title both use "Kyuu".
 
 ## Evidence on Hand

@@ -47,60 +47,8 @@ const sheet = $("sheet");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
 const lightbox = $("lightbox");
-const markTip = $("mark-tip");
 
 /* ---------- helpers ---------- */
-
-const MARK_GLOSS = { "写真": "photo number", "頁": "page number", "場所": "place", "九": "nine" };
-
-function wrapMarks(root) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  const nodes = [];
-  while (walker.nextNode()) nodes.push(walker.currentNode);
-  nodes.forEach((node) => {
-    if (!node.nodeValue.trim() || node.parentElement.closest(".mark, .visually-hidden")) return;
-    const parts = node.nodeValue.split(/(写真|頁|場所|九)/);
-    if (parts.length === 1) return;
-    const frag = document.createDocumentFragment();
-    parts.forEach((part) => {
-      if (MARK_GLOSS[part]) {
-        const span = document.createElement("span");
-        span.className = "mark";
-        span.textContent = part;
-        frag.appendChild(span);
-      } else if (part) {
-        frag.appendChild(document.createTextNode(part));
-      }
-    });
-    node.parentNode.replaceChild(frag, node);
-  });
-}
-
-function showMarkTip(target) {
-  markTip.textContent = MARK_GLOSS[target.textContent] || "";
-  markTip.hidden = false;
-  const r = target.getBoundingClientRect();
-  markTip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - markTip.offsetWidth - 8)) + "px";
-  const above = r.top - markTip.offsetHeight - 8;
-  markTip.style.top = (above >= 8 ? above : r.bottom + 8) + "px";
-}
-
-function hideMarkTip() { markTip.hidden = true; }
-
-document.addEventListener("pointerover", (e) => {
-  const mark = e.target.closest(".mark");
-  if (mark) showMarkTip(mark);
-});
-document.addEventListener("pointerout", (e) => {
-  if (e.target.closest(".mark")) hideMarkTip();
-});
-document.addEventListener("focusin", (e) => {
-  const mark = e.target.closest(".mark");
-  if (mark) showMarkTip(mark);
-});
-document.addEventListener("focusout", (e) => {
-  if (e.target.closest(".mark")) hideMarkTip();
-});
 
 function coordsFromLink(link) {
   if (!link) return null;
@@ -125,13 +73,11 @@ function formatDate(iso) {
 }
 
 function photosOf(entry) {
-  if (Array.isArray(entry.photos) && entry.photos.length) return entry.photos;
   return entry.image ? [entry.image] : [];
 }
 
 function displaySrc(entry) {
-  if (entry.display) return entry.display;
-  return entry.image || (Array.isArray(entry.photos) && entry.photos[0]) || "";
+  return entry.display || entry.image || "";
 }
 
 function entryId(entry, index) {
@@ -286,12 +232,12 @@ function makeFeatured(item) {
     img.decoding = "async";
     const label = document.createElement("span");
     label.className = "plate-label";
-    label.textContent = "写真 " + pad(index + 1);
+    label.textContent = "PLATE " + pad(index + 1);
     img.onerror = () => {
       media.classList.add("is-missing");
       media.disabled = true;
       img.style.visibility = "hidden";
-      label.textContent = "写真 " + pad(index + 1) + " / PHOTO UNAVAILABLE";
+      label.textContent = "PLATE " + pad(index + 1) + " — PHOTO UNAVAILABLE";
     };
     media.addEventListener("click", () => openLightbox(photos[0], img.alt, media));
     media.append(img, label);
@@ -370,7 +316,7 @@ function renderDiary() {
   const no = document.createElement("span");
   no.textContent = pad(entries.length);
   const unit = document.createElement("small");
-  unit.textContent = "写真";
+  unit.textContent = "PLATES";
   ledgerCount.append(no, unit);
   ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 
@@ -392,7 +338,7 @@ function renderDiary() {
   head.className = "strip-head";
   const right = document.createElement("span");
   right.className = "strip-count";
-  right.textContent = pad(list.length) + " 写真";
+  right.textContent = pad(list.length) + " PLATES";
 
   const inner = document.createElement("div");
   inner.className = "strip-inner";
@@ -543,12 +489,11 @@ function renderEntry(id) {
     const label = document.createElement("span");
     label.className = "plate-label";
     label.style.position = "static";
-    const labelFor = (i) => "写真 " + pad(index + 1) + " / PHOTO " + pad(i + 1) + " OF " + pad(photos.length);
-    label.textContent = labelFor(0);
+    label.textContent = "PLATE " + pad(index + 1);
     main.onerror = () => {
       figure.classList.add("is-missing");
       main.style.visibility = "hidden";
-      label.textContent = "写真 " + pad(index + 1) + " / PHOTO UNAVAILABLE";
+      label.textContent = "PLATE " + pad(index + 1) + " — PHOTO UNAVAILABLE";
       zoom.hidden = true;
     };
     const zoom = document.createElement("button");
@@ -560,35 +505,6 @@ function renderEntry(id) {
     figure.append(main, cap);
     wrap.appendChild(figure);
 
-    if (photos.length > 1) {
-      const thumbs = document.createElement("div");
-      thumbs.className = "detail-thumbs";
-      photos.forEach((src, i) => {
-        const btn = document.createElement("button");
-        btn.className = "thumb-btn";
-        btn.type = "button";
-        btn.setAttribute("aria-label", "Show photo " + (i + 1));
-        btn.setAttribute("aria-pressed", String(i === 0));
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = "";
-        img.loading = "lazy";
-        img.onerror = () => { img.hidden = true; };
-        btn.appendChild(img);
-        btn.addEventListener("click", () => {
-          main.src = src;
-          main.alt = (entry.shop || "Entry") + ", photo " + (i + 1);
-          main.style.visibility = "visible";
-          figure.classList.remove("is-missing");
-          label.textContent = labelFor(i);
-          zoom.hidden = false;
-          thumbs.querySelectorAll(".thumb-btn").forEach((b) => b.setAttribute("aria-pressed", "false"));
-          btn.setAttribute("aria-pressed", "true");
-        });
-        thumbs.appendChild(btn);
-      });
-      wrap.appendChild(thumbs);
-    }
   }
 
   const note = document.createElement("p");
@@ -776,7 +692,7 @@ function renderPinLegend(groups) {
 
 function renderShopList() {
   const list = visibleMapGroups();
-  mapCount.textContent = pad(list.length) + " 場所";
+  mapCount.textContent = pad(list.length) + (list.length === 1 ? " PLACE" : " PLACES");
   renderPinLegend(list);
   if (!list.length) {
     shopItemsBox.replaceChildren(emptyState(
@@ -1047,7 +963,6 @@ function renderRoute() {
       if (link) link.focus();
     }
   }
-  wrapMarks(document.body);
   window.scrollTo(0, 0);
 }
 
