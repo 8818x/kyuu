@@ -80,6 +80,19 @@ function displaySrc(entry) {
   return entry.display || entry.image || "";
 }
 
+function noteText(entry) {
+  const raw = entry && entry.note;
+  return typeof raw === "string" ? raw.trim() : "";
+}
+
+function makeNote(entry, className = "inscription", emptyClass = "inscription--empty") {
+  const text = noteText(entry);
+  const p = document.createElement("p");
+  p.className = className + (text ? "" : " " + emptyClass);
+  p.textContent = text || "No note yet.";
+  return p;
+}
+
 function entryId(entry, index) {
   if (entry.id != null && entry.id !== "") return String(entry.id);
   const base = (entry.date || "") + "-" + (entry.shop || index + 1);
@@ -254,11 +267,7 @@ function makeFeatured(item) {
   title.className = "shop-name";
   title.textContent = entry.shop || "Untitled";
 
-  body.append(marks, title);
-  const note = document.createElement("p");
-  note.className = "inscription" + (entry.note ? "" : " inscription--empty");
-  note.textContent = entry.note || "No note recorded.";
-  body.appendChild(note);
+  body.append(marks, title, makeNote(entry));
   el.appendChild(body);
   return el;
 }
@@ -507,10 +516,7 @@ function renderEntry(id) {
 
   }
 
-  const note = document.createElement("p");
-  note.className = "detail-note inscription" + (entry.note ? "" : " inscription--empty");
-  note.textContent = entry.note || "No note recorded.";
-  wrap.appendChild(note);
+  wrap.appendChild(makeNote(entry, "detail-note inscription"));
   if (entry.maps) {
     const actions = document.createElement("div");
     actions.className = "detail-actions";
@@ -611,13 +617,7 @@ function visitBlocks(group, className, includeStamp = true) {
     meta.className = "visit-meta";
     if (includeStamp) meta.append(makeDateStamp(entry.date), makeStamp(entry));
     else meta.append(makeDateStamp(entry.date));
-    block.appendChild(meta);
-    if (entry.note) {
-      const note = document.createElement("p");
-      note.className = "visit-note";
-      note.textContent = entry.note;
-      block.appendChild(note);
-    }
+    block.append(meta, makeNote(entry, "visit-note", "visit-note--empty"));
     holder.appendChild(block);
   });
   return holder;

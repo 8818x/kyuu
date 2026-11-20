@@ -221,6 +221,7 @@ input{caret-color:var(--accent)}
 .sheet-visit:first-child{border-top:0;padding-top:0;margin-top:0}
 .visit-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .visit-note{margin:6px 0 0;color:var(--ink)}
+.visit-note--empty{color:var(--secondary);font-style:italic}
 .sheet-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .sheet[data-collapsed="false"] .sheet-detail{max-height:50vh}
 .sheet-detail .ink-link{display:block;margin-top:14px}

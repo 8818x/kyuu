@@ -5,7 +5,7 @@
 // maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
 //       A short share.google link will not create a map pin.
 // display: optional 1200px 3:2 derivative used on cards; the original image is kept for 1:1 view.
-// note: write a short personal line before publishing — an empty note renders as "No note recorded."
+// note: write a short personal line before publishing — blank or whitespace-only renders as "No note yet."
 //
 // Optional extras (leave out any you do not have):
 //   id: "my-shop-01"        // stable link for #/e/... (generated from date + shop if omitted)
