@@ -35,6 +35,17 @@ def known_types():
     return out
 
 
+def known_shops():
+    text = (ROOT / "data" / "entries.js").read_text(encoding="utf-8")
+    out = []
+    seen = set()
+    for shop, maps in re.findall(r'shop:\s*"([^"]+)"[\s\S]*?maps:\s*"([^"]+)"', text):
+        if shop not in seen:
+            seen.add(shop)
+            out.append({"shop": shop, "maps": maps})
+    return out
+
+
 def unused_photos():
     used = set()
     data = (ROOT / "data" / "entries.js").read_text(encoding="utf-8")
@@ -86,7 +97,8 @@ button:disabled{opacity:.6;cursor:wait}
 <div id="preview"></div>
 <label>Photo path</label><input name="image" required placeholder="images/IMG_20260501_120000.jpg">
 <div class="hint">Pick a photo above, or type a path. Date and metadata are handled automatically.</div>
-<label>Shop</label><input name="shop" required placeholder="ร้านตัวอย่าง">
+<label>Shop</label><input name="shop" required placeholder="ร้านตัวอย่าง" list="shops"><datalist id="shops"></datalist>
+<div class="msg" id="shop-msg"></div>
 <div class="row"><div><label>Type key</label><input name="type" required placeholder="Roti" list="types"><datalist id="types"></datalist>
 <div class="msg" id="type-msg"></div></div>
 <div><label>Display label</label><input name="label" placeholder="A la carte"><div class="msg" id="label-msg"></div></div></div>
@@ -107,7 +119,8 @@ function selectPhoto(p,btn){
   photosBox.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
 }
-(async()=>{
+async function loadPhotos(){
+  photosBox.innerHTML='';preview.innerHTML='';
   try{
     const r=await fetch('/photos'), list=await r.json();
     if(!list.length){photosBox.textContent='No unused photos found in images/.';return}
@@ -118,7 +131,18 @@ function selectPhoto(p,btn){
       b.append(i,s);b.addEventListener('click',()=>selectPhoto(p,b));photosBox.appendChild(b);
     });
   }catch(e){photosBox.textContent='Could not load photos.'}
-})();
+}
+loadPhotos();
+let SHOPS=[];
+async function loadShops(){try{SHOPS=await (await fetch('/shops')).json();
+  const dl=document.getElementById('shops');dl.innerHTML='';
+  SHOPS.forEach(s=>{const o=document.createElement('option');o.value=s.shop;dl.appendChild(o)});
+}catch(e){}}
+loadShops();
+function checkShop(){const v=f.shop.value.trim();const hit=SHOPS.find(s=>s.shop===v);
+  if(hit){f.maps.value=hit.maps;msg('shop-msg','Existing shop — location filled in',true);checkMaps()}
+  else msg('shop-msg','New shop',true)}
+f.shop.addEventListener('input',checkShop);
 let TYPES={};
 function msg(id,text,ok){const e=document.getElementById(id);e.textContent=text;e.className='msg '+(ok?'ok':'warn')}
 function norm(s){return s.trim().toLowerCase().replace(/[^a-z0-9]/g,'')}
@@ -144,7 +168,9 @@ function checkAll(){checkType();checkMaps();checkDate()}
 f.addEventListener('submit',async e=>{e.preventDefault();go.disabled=true;out.style.display='block';out.textContent='Working…';
 const d=Object.fromEntries(new FormData(f));
 try{const r=await fetch('/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-const j=await r.json();out.textContent=(j.ok?'OK\\n\\n'+j.stdout:(j.error||j.stdout||'Failed'))+(j.stderr?'\\n'+j.stderr:'');}
+const j=await r.json();out.textContent=(j.ok?'OK\\n\\n'+j.stdout:(j.error||j.stdout||'Failed'))+(j.stderr?'\\n'+j.stderr:'');
+if(j.ok){f.reset();['type-msg','label-msg','maps-msg','date-msg','shop-msg'].forEach(id=>msg(id,'',true));
+  preview.innerHTML='';await loadPhotos();await loadShops();}}
 catch(err){out.textContent='Error: '+err}finally{go.disabled=false}});
 </script></body></html>"""
 
@@ -159,6 +185,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_response(405); self.end_headers(); return
         if path == "/photos":
             body = json.dumps(unused_photos()).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers(); self.wfile.write(body); return
+        if path == "/shops":
+            body = json.dumps(known_shops()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
