@@ -143,6 +143,45 @@ function announce(text) {
   statusEl.textContent = text;
 }
 
+function currentThread() {
+  return stripBox.querySelector(".thread");
+}
+
+function centerThumb(el, smooth = true) {
+  const thread = currentThread();
+  if (!thread || !el) return;
+  const target = el.offsetLeft - (thread.clientWidth - el.offsetWidth) / 2;
+  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
+  thread.scrollTo({
+    left: Math.max(0, Math.min(target, max)),
+    behavior: smooth && !prefersReducedMotion() ? "smooth" : "auto"
+  });
+}
+
+function updateStripNav() {
+  const thread = currentThread();
+  const prev = stripBox.querySelector('.film-nav-btn[data-dir="-1"]');
+  const next = stripBox.querySelector('.film-nav-btn[data-dir="1"]');
+  if (!thread || !prev || !next) return;
+  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
+  prev.disabled = thread.scrollLeft <= 1;
+  next.disabled = thread.scrollLeft >= max - 1;
+}
+
+function selectPlate(id) {
+  const item = visibleEntries().find((x) => entryId(x.entry, x.index) === id);
+  if (!item) return;
+  selectedPlateId = id;
+  setLast(id);
+  renderDiary();
+  announce("Plate " + plateNumber(item.entry) + ", " + (item.entry.shop || "untitled"));
+  const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
+  if (next) {
+    centerThumb(next, false);
+    next.focus({ preventScroll: true });
+  }
+}
+
 function makeStamp(entry) {
   const wrap = document.createElement("span");
   wrap.className = "dish-stamps";
@@ -321,14 +360,7 @@ function makeThumb(item, isCurrent) {
   }
   if (photos.length) {
     el.setAttribute("aria-label", "View plate from " + (entry.shop || "this plate"));
-    el.addEventListener("click", () => {
-      selectedPlateId = id;
-      setLast(id);
-      renderDiary();
-      announce("Plate " + plateNumber(entry) + ", " + (entry.shop || "untitled"));
-      const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
-      if (next) next.focus({ preventScroll: true });
-    });
+    el.addEventListener("click", () => selectPlate(id));
   } else {
     el.disabled = true;
   }
@@ -353,12 +385,56 @@ function renderDiary() {
   const selected = list.find((item) => entryId(item.entry, item.index) === selectedPlateId) || list[0];
   featuredBox.appendChild(makeFeatured(selected));
 
+  const currentId = entryId(selected.entry, selected.index);
+  const film = document.createElement("div");
+  film.className = "filmstrip";
+
+  const head = document.createElement("div");
+  head.className = "film-head";
+  const prev = document.createElement("button");
+  prev.type = "button";
+  prev.className = "film-nav-btn";
+  prev.dataset.dir = "-1";
+  prev.setAttribute("aria-label", "Newer plates");
+  prev.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const next = document.createElement("button");
+  next.type = "button";
+  next.className = "film-nav-btn";
+  next.dataset.dir = "1";
+  next.setAttribute("aria-label", "Older plates");
+  next.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  head.append(prev, next);
+
   const thread = document.createElement("div");
   thread.className = "thread";
-  const currentId = entryId(selected.entry, selected.index);
-  thread.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
-  stripUpdater = null;
-  stripBox.appendChild(thread);
+  thread.tabIndex = 0;
+  thread.setAttribute("role", "listbox");
+  thread.setAttribute("aria-label", "Photograph archive — use arrow keys to browse");
+  thread.append(...list.map((item) => {
+    const thumb = makeThumb(item, entryId(item.entry, item.index) === currentId);
+    thumb.setAttribute("role", "option");
+    thumb.setAttribute("aria-selected", String(entryId(item.entry, item.index) === currentId));
+    return thumb;
+  }));
+
+  film.append(head, thread);
+  stripBox.appendChild(film);
+
+  const step = () => Math.max(120, thread.clientWidth * 0.85);
+  const jump = (dir) => thread.scrollBy({
+    left: dir * step(),
+    behavior: prefersReducedMotion() ? "auto" : "smooth"
+  });
+  prev.addEventListener("click", () => jump(-1));
+  next.addEventListener("click", () => jump(1));
+  thread.addEventListener("scroll", updateStripNav, { passive: true });
+  stripUpdater = updateStripNav;
+
+  requestAnimationFrame(() => {
+    const active = thread.querySelector(".print-thumb.is-current");
+    centerThumb(active, false);
+    updateStripNav();
+  });
   const tape = $("binding-tape");
   if (tape) tape.hidden = !getLast();
 }
@@ -814,6 +890,75 @@ listToggle.addEventListener("click", () => {
   const open = ledgerList.dataset.expanded !== "true";
   ledgerList.dataset.expanded = String(open);
   listToggle.setAttribute("aria-expanded", String(open));
+});
+
+/* filmstrip interactions — delegated so re-renders keep one listener set */
+let filmDrag = null;
+let filmSuppressClick = false;
+
+stripBox.addEventListener("pointerdown", (e) => {
+  const thread = e.target.closest(".thread");
+  if (!thread || e.pointerType !== "mouse" || e.button !== 0) return;
+  filmDrag = { thread, id: e.pointerId, x: e.clientX, scroll: thread.scrollLeft, moved: false };
+  try { thread.setPointerCapture(e.pointerId); } catch (err) { /* synthetic pointer */ }
+});
+
+stripBox.addEventListener("pointermove", (e) => {
+  if (!filmDrag || e.pointerId !== filmDrag.id) return;
+  const dx = e.clientX - filmDrag.x;
+  if (Math.abs(dx) > 4) filmDrag.moved = true;
+  if (filmDrag.moved) {
+    filmDrag.thread.classList.add("is-dragging");
+    filmDrag.thread.scrollLeft = filmDrag.scroll - dx;
+  }
+});
+
+function endFilmDrag(e) {
+  if (!filmDrag || e.pointerId !== filmDrag.id) return;
+  const thread = filmDrag.thread;
+  thread.classList.remove("is-dragging");
+  if (thread.hasPointerCapture(e.pointerId)) thread.releasePointerCapture(e.pointerId);
+  if (filmDrag.moved) {
+    filmSuppressClick = true;
+    setTimeout(() => { filmSuppressClick = false; }, 0);
+  }
+  filmDrag = null;
+}
+stripBox.addEventListener("pointerup", endFilmDrag);
+stripBox.addEventListener("pointercancel", endFilmDrag);
+
+stripBox.addEventListener("click", (e) => {
+  if (!filmSuppressClick) return;
+  e.preventDefault();
+  e.stopPropagation();
+  filmSuppressClick = false;
+}, true);
+
+stripBox.addEventListener("wheel", (e) => {
+  const thread = e.target.closest(".thread");
+  if (!thread) return;
+  const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+  if (!delta) return;
+  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
+  if ((delta > 0 && thread.scrollLeft >= max - 1) || (delta < 0 && thread.scrollLeft <= 1)) return;
+  e.preventDefault();
+  thread.scrollLeft += delta;
+}, { passive: false });
+
+stripBox.addEventListener("keydown", (e) => {
+  const thread = e.target.closest(".thread");
+  if (!thread) return;
+  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+  e.preventDefault();
+  const list = visibleEntries();
+  if (!list.length) return;
+  let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
+  if (idx < 0) idx = 0;
+  if (e.key === "Home") idx = 0;
+  else if (e.key === "End") idx = list.length - 1;
+  else idx = Math.max(0, Math.min(list.length - 1, idx + (e.key === "ArrowRight" ? 1 : -1)));
+  const target = list[idx];
+  selectPlate(entryId(target.entry, target.index));
 });
 
 window.addEventListener("hashchange", renderRoute);
