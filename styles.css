@@ -172,7 +172,9 @@ input{caret-color:var(--accent)}
 .leaflet-container{font-family:var(--body);background:var(--surface)}
 .leaflet-popup-content-wrapper{background:var(--paper);color:var(--ink);border-radius:0;border:1px solid var(--rule);box-shadow:none}
 .leaflet-popup-tip{background:var(--paper)}
-.leaflet-popup-content{margin:16px 18px;line-height:1.5}
+.leaflet-popup-content{margin:16px 18px;line-height:1.5;max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--rule-strong) transparent}
+.leaflet-popup-content::-webkit-scrollbar{width:6px}
+.leaflet-popup-content::-webkit-scrollbar-thumb{background:var(--rule-strong)}
 .leaflet-popup-content strong{font-family:var(--display);font-size:1.2rem;font-weight:400;display:block;margin:8px 0 2px}
 .leaflet-popup-content p{font-size:.94rem;color:var(--ink)}
 .leaflet-popup-content .visit-count{font-family:var(--label);font-size:.7rem;letter-spacing:.14em;color:var(--secondary);margin:4px 0 8px}
