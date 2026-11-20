@@ -24,6 +24,8 @@ try:
 except Exception:
     pass
 
+TYPE_ALIASES = {"ข้าวขาหมู": "KhaoKhaMu"}
+
 ROOT = Path(__file__).resolve().parent.parent
 IMAGES = ROOT / "images"
 DATA = ROOT / "data" / "entries.js"
@@ -223,6 +225,7 @@ def main():
     ap.add_argument("--date", help="override capture date YYYY-MM-DD")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    a.type = TYPE_ALIASES.get(a.type.strip(), a.type.strip())
 
     src = Path(a.image).expanduser()
     if not src.is_absolute():
