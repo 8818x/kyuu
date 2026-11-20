@@ -1,6 +1,6 @@
 // Add a shop: copy the block below and push.
-// Required: date, shop, type, image, maps, note.
-// type: "Zhujiaofan", "Shaorou", or "PadThaiHoiTod" (Pad Thai / Hoi Tod — Thai transliteration)
+// Required: date, shop, type, image, maps.
+// type: "Zhujiaofan", "Shaorou", "PadThaiHoiTod" (Pad Thai / Hoi Tod) or "Roti"
 //       the stored key is an English identifier; the label is romanised Thai
 // maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
 //       A short share.google link will not create a map pin.
@@ -20,6 +20,15 @@ window.DIARY_ENTRIES = [
     image: "images/1795090695048.jpg",
     display: "images/1795090695048-display.webp",
     maps: "https://www.google.com/maps/@13.824002421411782,100.51619379335499,17z?hl=en",
+    note: ""
+  },
+  {
+    date: "2026-04-02",
+    shop: "โรตีเจ้าฟ้า",
+    type: "Roti",
+    image: "images/IMG_20260402_124650.jpg",
+    display: "images/IMG_20260402_124650-display.webp",
+    maps: "https://www.google.com/maps/@7.878388933281209,98.38048871016771,17z?hl=en",
     note: ""
   }
 ];

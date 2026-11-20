@@ -4,7 +4,8 @@ const dishNames = {
   All: "All",
   Zhujiaofan: "Zhujiaofan",
   Shaorou: "Shaorou",
-  PadThaiHoiTod: "Pad Thai / Hoi Tod"
+  PadThaiHoiTod: "Pad Thai / Hoi Tod",
+  Roti: "Roti"
 };
 
 function typesOf(entry) {
