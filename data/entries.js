@@ -14,15 +14,6 @@
 // Old entries with only "image" still work exactly as before.
 window.DIARY_ENTRIES = [
   {
-    date: "2025-11-26",
-    shop: "ผัดไท หอยทอด กร& เก้า",
-    type: "PadThaiHoiTod",
-    image: "images/1795090695048.jpg",
-    display: "images/1795090695048-display.webp",
-    maps: "https://www.google.com/maps/@13.824002421411782,100.51619379335499,17z?hl=en",
-    note: ""
-  },
-  {
     date: "2026-04-02",
     shop: "โรตีเจ้าฟ้า",
     type: "Roti",
