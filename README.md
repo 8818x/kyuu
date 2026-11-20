@@ -4,16 +4,26 @@ A personal food diary of two dishes: Zhujiaofan and Shaorou. The mark is 九 (ni
 
 ## Add a plate
 
-1. Copy a block in `data/entries.js`.
-   - `date`: `YYYY-MM-DD`
-   - `shop`: shop name
-   - `type`: `Zhujiaofan` or `Shaorou`
-   - `image`: path under `images/`
-   - `maps`: the **full** Google Maps link from your browser bar, containing `@lat,lng` (short `maps.app.goo.gl` links will not make a pin)
-   - `note`: a short note
-   - Optional: `id` for a stable `#/e/…` link, `photos` for more than one photo, `rating`, `price`.
-2. Put the photograph in `images/`.
-3. Publish:
+Put the photo anywhere, then run one command from the project root:
+
+```
+python scripts/add_entry.py <image> "<shop>" <type> <maps> [--label "A la carte"] [--note "..."] [--date YYYY-MM-DD]
+```
+
+Example:
+
+```
+python scripts/add_entry.py images/IMG_20260501_120000.jpg "ร้านตัวอย่าง" Roti "13.75,100.50" --note "อร่อย"
+```
+
+- `<image>` is copied into `images/` if needed.
+- Date is read from the photo's EXIF (or its `IMG_YYYYMMDD_…` name); use `--date` to override.
+- EXIF is stripped from the stored original, and a 1200px `*-display.webp` is generated.
+- `<type>` can be any key (`Zhujiaofan`, `Shaorou`, `PadThaiHoiTod`, `Roti`, `ALaCarte`, or a new one). A new key is registered in `app.js` automatically; pass `--label` for its display name.
+- `<maps>` accepts either `lat,lng` or a full Google Maps URL containing `@lat,lng`.
+- Add `--dry-run` to preview without writing.
+
+Then publish:
 
 ```
 git add -A
@@ -28,7 +38,8 @@ GitHub Pages updates in about a minute.
 - `index.html` — the page shell
 - `styles.css` — the whole visual system, hand-authored plain CSS
 - `app.js` — rendering, routing, map, and interactions
-- `data/entries.js` — the only file the owner edits
+- `data/entries.js` — the entry list (normally written by `scripts/add_entry.py`)
+- `scripts/add_entry.py` — one-command helper: date, metadata, display image, entry, cache version
 - `fonts/` — self-hosted Taviraj and Noto Sans Thai, each with Latin and Thai subsets
 
 ## Look and behaviour
