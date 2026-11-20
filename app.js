@@ -110,7 +110,15 @@ function appendNote(parent, entry, className) {
 function entryId(entry, index) {
   if (entry.id != null && entry.id !== "") return String(entry.id);
   const base = (entry.date || "") + "-" + (entry.shop || index + 1);
-  return base.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "entry-" + (index + 1);
+  const slug = base.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "entry-" + (index + 1);
+  const photo = entry.display || entry.thumb || "";
+  const dupe = entries.some((other, i) => i !== index && entryIdBase(other, i) === base);
+  return dupe ? slug + "-" + photo.replace(/^images\//, "").replace(/\..*$/, "").toLowerCase() : slug;
+}
+
+function entryIdBase(entry, index) {
+  if (entry.id != null && entry.id !== "") return String(entry.id);
+  return (entry.date || "") + "-" + (entry.shop || index + 1);
 }
 
 function pad(n) {
@@ -435,8 +443,6 @@ function renderDiary() {
     centerThumb(active, false);
     updateStripNav();
   });
-  const tape = $("binding-tape");
-  if (tape) tape.hidden = !getLast();
 }
 
 /* ---------- Entry detail ---------- */
@@ -900,7 +906,6 @@ stripBox.addEventListener("pointerdown", (e) => {
   const thread = e.target.closest(".thread");
   if (!thread || e.pointerType !== "mouse" || e.button !== 0) return;
   filmDrag = { thread, id: e.pointerId, x: e.clientX, scroll: thread.scrollLeft, moved: false };
-  try { thread.setPointerCapture(e.pointerId); } catch (err) { /* synthetic pointer */ }
 });
 
 stripBox.addEventListener("pointermove", (e) => {
@@ -917,7 +922,6 @@ function endFilmDrag(e) {
   if (!filmDrag || e.pointerId !== filmDrag.id) return;
   const thread = filmDrag.thread;
   thread.classList.remove("is-dragging");
-  if (thread.hasPointerCapture(e.pointerId)) thread.releasePointerCapture(e.pointerId);
   if (filmDrag.moved) {
     filmSuppressClick = true;
     setTimeout(() => { filmSuppressClick = false; }, 0);

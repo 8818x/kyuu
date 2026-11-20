@@ -60,7 +60,6 @@ input{caret-color:var(--accent)}
 .binding-mark svg{width:100%;height:100%;display:block}
 .binding-folio{margin-top:auto;font-family:var(--label);font-size:.7rem;letter-spacing:.24em;color:var(--secondary);writing-mode:vertical-rl;transform:rotate(180deg)}
 .binding-number{font-family:var(--label);font-size:.9rem;letter-spacing:.1em;color:var(--accent);font-variant-numeric:tabular-nums}
-.binding-tape{position:absolute;bottom:96px;left:0;width:22px;height:30px;background:var(--accent);opacity:.85;clip-path:polygon(0 0,100% 0,100% 78%,50% 100%,0 78%)}
 
 /* masthead */
 .page{max-width:1560px;margin:0 auto}
