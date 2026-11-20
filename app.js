@@ -940,6 +940,7 @@ function renderRoute() {
   if (map) map.closePopup();
   syncLayout();
   updateFilters();
+  filterBox.hidden = route.view !== "map";
   tabButtons.forEach((b) => {
     b.setAttribute("aria-pressed", String(b.dataset.tab === route.view || (route.view === "entry" && b.dataset.tab === "diary")));
   });
