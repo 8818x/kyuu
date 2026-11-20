@@ -47,8 +47,60 @@ const sheet = $("sheet");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
 const lightbox = $("lightbox");
+const markTip = $("mark-tip");
 
 /* ---------- helpers ---------- */
+
+const MARK_GLOSS = { "写真": "photo number", "頁": "page number", "場所": "place", "九": "nine" };
+
+function wrapMarks(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach((node) => {
+    if (!node.nodeValue.trim() || node.parentElement.closest(".mark, .visually-hidden")) return;
+    const parts = node.nodeValue.split(/(写真|頁|場所|九)/);
+    if (parts.length === 1) return;
+    const frag = document.createDocumentFragment();
+    parts.forEach((part) => {
+      if (MARK_GLOSS[part]) {
+        const span = document.createElement("span");
+        span.className = "mark";
+        span.textContent = part;
+        frag.appendChild(span);
+      } else if (part) {
+        frag.appendChild(document.createTextNode(part));
+      }
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+function showMarkTip(target) {
+  markTip.textContent = MARK_GLOSS[target.textContent] || "";
+  markTip.hidden = false;
+  const r = target.getBoundingClientRect();
+  markTip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - markTip.offsetWidth - 8)) + "px";
+  const above = r.top - markTip.offsetHeight - 8;
+  markTip.style.top = (above >= 8 ? above : r.bottom + 8) + "px";
+}
+
+function hideMarkTip() { markTip.hidden = true; }
+
+document.addEventListener("pointerover", (e) => {
+  const mark = e.target.closest(".mark");
+  if (mark) showMarkTip(mark);
+});
+document.addEventListener("pointerout", (e) => {
+  if (e.target.closest(".mark")) hideMarkTip();
+});
+document.addEventListener("focusin", (e) => {
+  const mark = e.target.closest(".mark");
+  if (mark) showMarkTip(mark);
+});
+document.addEventListener("focusout", (e) => {
+  if (e.target.closest(".mark")) hideMarkTip();
+});
 
 function coordsFromLink(link) {
   if (!link) return null;
@@ -995,6 +1047,7 @@ function renderRoute() {
       if (link) link.focus();
     }
   }
+  wrapMarks(document.body);
   window.scrollTo(0, 0);
 }
 
