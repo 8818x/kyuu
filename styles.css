@@ -184,8 +184,7 @@ input{caret-color:var(--accent)}
 .leaflet-popup-content .visit-note{margin:6px 0 0;font-size:.9rem}
 .leaflet-popup-content .ink-link{display:block;margin-top:10px}
 .leaflet-container a.leaflet-popup-close-button{color:var(--secondary)}
-.leaflet-control-attribution,.leaflet-control-zoom a{background:var(--paper)!important;color:var(--secondary)!important;border-color:var(--rule)!important}
-.leaflet-container .leaflet-control-zoom a{width:44px;height:44px;line-height:44px;text-align:center}
+.leaflet-control-attribution{background:var(--paper)!important;color:var(--secondary)!important;border-color:var(--rule)!important}
 .leaflet-control-attribution a{color:var(--accent)!important}
 .leaflet-control-attribution{font-family:var(--label);font-size:.7rem}
 
@@ -274,7 +273,6 @@ input{caret-color:var(--accent)}
   .place-row{width:210px;flex:none;border-bottom:0;border-right:1px solid var(--rule);height:72px;min-height:72px}
   .place-text small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .place-thumb,.place-blank{width:44px;height:44px}
-  .leaflet-control-zoom{display:none}
   .leaflet-control-attribution{font-size:.7rem}
   .detail-title{font-size:2.5rem}
   .detail-note{font-size:1.05rem}

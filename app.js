@@ -23,6 +23,7 @@ const filters = ["All", ...baseTypes.filter((t) => recordTypes.includes(t)),
 const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
+let selectedPlateId = null;
 let map = null;
 let markers = new Map();
 let selectedShopKey = null;
@@ -116,6 +117,12 @@ function isCrisp(entry) {
 
 function pad(n) {
   return String(n).padStart(3, "0");
+}
+
+function plateNumber(entry) {
+  const ranked = entries.slice().sort((a, b) =>
+    (a.date || "").localeCompare(b.date || "") || entries.indexOf(a) - entries.indexOf(b));
+  return pad(ranked.indexOf(entry) + 1);
 }
 
 function getLast() {
@@ -252,12 +259,12 @@ function makeFeatured(item) {
     img.decoding = "async";
     const label = document.createElement("span");
     label.className = "plate-label";
-    label.textContent = "PLATE " + pad(index + 1);
+    label.textContent = "PLATE " + plateNumber(entry);
     img.onerror = () => {
       media.classList.add("is-missing");
       media.disabled = true;
       img.style.visibility = "hidden";
-      label.textContent = "PLATE " + pad(index + 1) + " — PHOTO UNAVAILABLE";
+      label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
     };
     media.addEventListener("click", () => openLightbox(photos[0], img.alt, media));
     media.append(img, label);
@@ -304,7 +311,7 @@ function makeThumb(item, isCurrent) {
   const meta = document.createElement("span");
   meta.className = "thumb-meta";
   const no = document.createElement("b");
-  no.textContent = pad(index + 1);
+  no.textContent = plateNumber(entry);
   const name = document.createElement("span");
   name.textContent = entry.shop || "Untitled";
   meta.append(no, name);
@@ -317,7 +324,13 @@ function makeThumb(item, isCurrent) {
     el.appendChild(flag);
   }
   if (photos.length) {
-    el.addEventListener("click", () => openLightbox(photos[0], entry.shop ? "Photograph from " + entry.shop : "", el));
+    el.setAttribute("aria-label", "View plate from " + (entry.shop || "this plate"));
+    el.addEventListener("click", () => {
+      selectedPlateId = id;
+      renderDiary();
+      const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
+      if (next) next.focus({ preventScroll: true });
+    });
   } else {
     el.disabled = true;
   }
@@ -347,7 +360,8 @@ function renderDiary() {
     ));
     return;
   }
-  featuredBox.appendChild(makeFeatured(list[0]));
+  const selected = list.find((item) => entryId(item.entry, item.index) === selectedPlateId) || list[0];
+  featuredBox.appendChild(makeFeatured(selected));
 
   document.body.classList.toggle("diary-few", list.length > 0 && list.length <= 3);
 
@@ -359,7 +373,7 @@ function renderDiary() {
 
   const inner = document.createElement("div");
   inner.className = "strip-inner";
-  const currentId = entryId(list[0].entry, list[0].index);
+  const currentId = entryId(selected.entry, selected.index);
   inner.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
 
   if (list.length > 4) {
@@ -506,11 +520,11 @@ function renderEntry(id) {
     const label = document.createElement("span");
     label.className = "plate-label";
     label.style.position = "static";
-    label.textContent = "PLATE " + pad(index + 1);
+    label.textContent = "PLATE " + plateNumber(entry);
     main.onerror = () => {
       figure.classList.add("is-missing");
       main.style.visibility = "hidden";
-      label.textContent = "PLATE " + pad(index + 1) + " — PHOTO UNAVAILABLE";
+      label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
       zoom.hidden = true;
     };
     const zoom = document.createElement("button");
@@ -743,7 +757,7 @@ function ensureMap() {
     $("map-error").hidden = false;
     return;
   }
-  map = L.map("map", { scrollWheelZoom: false }).setView([13.7563, 100.5018], 12);
+  map = L.map("map", { scrollWheelZoom: false, zoomControl: false }).setView([13.7563, 100.5018], 12);
   const tiles = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
     {
