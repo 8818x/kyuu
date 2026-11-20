@@ -8,7 +8,7 @@ const dishNames = {
   Noodles: "Noodles"
 };
 
-const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#9a5a1f", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
+const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#8a4f19", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
 function typeColor(type) {
   const known = { PadThaiHoiTod: 0, Roti: 1, ALaCarte: 2, KhaoKhaMu: 3, Noodles: 4};
   if (type in known) return TYPE_COLORS[known[type]];
@@ -273,6 +273,7 @@ function makeFeatured(item) {
 
   const title = document.createElement("h1");
   title.className = "shop-name";
+  title.lang = "th";
   title.textContent = entry.shop || "Untitled";
 
   body.append(marks, title);
@@ -307,6 +308,7 @@ function makeThumb(item, isCurrent) {
   const no = document.createElement("b");
   no.textContent = plateNumber(entry);
   const name = document.createElement("span");
+  name.lang = "th";
   name.textContent = entry.shop || "Untitled";
   meta.append(no, name);
   el.append(mat, meta);
@@ -321,7 +323,9 @@ function makeThumb(item, isCurrent) {
     el.setAttribute("aria-label", "View plate from " + (entry.shop || "this plate"));
     el.addEventListener("click", () => {
       selectedPlateId = id;
+      setLast(id);
       renderDiary();
+      announce("Plate " + plateNumber(entry) + ", " + (entry.shop || "untitled"));
       const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
       if (next) next.focus({ preventScroll: true });
     });
@@ -422,6 +426,7 @@ function makePlaceRow(group) {
   const text = document.createElement("span");
   text.className = "place-text";
   const name = document.createElement("strong");
+  name.lang = "th";
   name.textContent = group.shop;
   const sub = document.createElement("small");
   const count = group.visits.length;
@@ -473,6 +478,7 @@ function visitBlocks(group, className, includeStamp = true) {
 function popupFor(group) {
   const box = document.createElement("div");
   const title = document.createElement("strong");
+  title.lang = "th";
   title.textContent = group.shop;
   box.appendChild(title);
   const count = document.createElement("div");
@@ -663,7 +669,9 @@ function openSheet(group, trigger) {
     stamp.textContent = dishLabel(type);
     sheetTag.appendChild(stamp);
   });
-  $("sheet-shop").textContent = group.shop;
+  const sheetShop = $("sheet-shop");
+  sheetShop.lang = "th";
+  sheetShop.textContent = group.shop;
   $("sheet-date").textContent = pad(count) + (count === 1 ? " VISIT" : " VISITS");
   const noteBox = $("sheet-note");
   noteBox.replaceChildren(visitBlocks(group, "sheet-visit", false));
@@ -778,6 +786,7 @@ function renderRoute() {
   syncLayout();
   updateFilters();
   filterBox.hidden = route.view !== "map";
+  filterBox.parentElement.hidden = route.view !== "map";
   tabButtons.forEach((b) => {
     b.setAttribute("aria-pressed", String(b.dataset.tab === route.view));
   });
