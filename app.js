@@ -37,6 +37,7 @@ let selectedShopKey = null;
 let sheetTrigger = null;
 let popupTrigger = null;
 let stripUpdater = null;
+let pendingReveal = false;
 
 const $ = (id) => document.getElementById(id);
 const tabsBox = $("tabs");
@@ -133,6 +134,14 @@ function plateNumber(entry) {
   return pad(ranked.indexOf(entry) + 1);
 }
 
+function diaryList() {
+  return visibleEntries().slice().sort((a, b) => {
+    const byDate = (b.entry.date || "").localeCompare(a.entry.date || "");
+    if (byDate) return byDate;
+    return entries.indexOf(b.entry) - entries.indexOf(a.entry);
+  });
+}
+
 function getLast() {
   try { return localStorage.getItem(LAST_KEY); } catch (e) { return null; }
 }
@@ -157,41 +166,38 @@ function currentThread() {
   return stripBox.querySelector(".thread");
 }
 
-function centerThumb(el, smooth = true) {
+function centerThumb(el) {
   const thread = currentThread();
   if (!thread || !el) return;
-  const target = el.offsetLeft - (thread.clientWidth - el.offsetWidth) / 2;
+  const threadRect = thread.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const offset = elRect.left - threadRect.left;
+  const target = thread.scrollLeft + offset - (thread.clientWidth - elRect.width) / 2;
   const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
-  thread.scrollTo({
-    left: Math.max(0, Math.min(target, max)),
-    behavior: smooth && !prefersReducedMotion() ? "smooth" : "auto"
-  });
+  thread.scrollLeft = Math.max(0, Math.min(target, max));
 }
 
-function updateStripNav() {
+function ensureVisible(el) {
   const thread = currentThread();
-  const prev = stripBox.querySelector('.film-nav-btn[data-dir="-1"]');
-  const next = stripBox.querySelector('.film-nav-btn[data-dir="1"]');
-  if (!thread || !prev || !next) return;
-  const list = visibleEntries();
-  let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
-  if (idx < 0) idx = 0;
-  prev.disabled = idx <= 0;
-  next.disabled = idx >= list.length - 1;
+  if (!thread || !el) return;
+  const threadRect = thread.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const inset = Math.min(48, thread.clientWidth * 0.12);
+  if (elRect.left >= threadRect.left + inset && elRect.right <= threadRect.right - inset) return;
+  centerThumb(el);
 }
 
-function selectPlate(id) {
+function selectPlate(id, keepFocus = true) {
   const item = visibleEntries().find((x) => entryId(x.entry, x.index) === id);
   if (!item) return;
   selectedPlateId = id;
   setLast(id);
+  pendingReveal = true;
   renderDiary();
   announce("Plate " + plateNumber(item.entry) + ", " + (item.entry.shop || "untitled"));
+  if (!keepFocus) return;
   const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
-  if (next) {
-    centerThumb(next, true);
-    next.focus({ preventScroll: true });
-  }
+  if (next) next.focus({ preventScroll: true });
 }
 
 function makeStamp(entry) {
@@ -351,6 +357,7 @@ function makeThumb(item, isCurrent) {
     img.alt = "";
     img.loading = "lazy";
     img.decoding = "async";
+    img.draggable = false;
     img.onerror = () => { img.hidden = true; };
     mat.appendChild(img);
   }
@@ -359,6 +366,7 @@ function makeThumb(item, isCurrent) {
   const no = document.createElement("b");
   no.textContent = plateNumber(entry);
   const name = document.createElement("span");
+  name.className = "thumb-title";
   name.lang = "th";
   name.textContent = entry.shop || "Untitled";
   meta.append(no, name);
@@ -372,7 +380,7 @@ function makeThumb(item, isCurrent) {
   }
   if (photos.length) {
     el.setAttribute("aria-label", "View plate from " + (entry.shop || "this plate"));
-    el.addEventListener("click", () => selectPlate(id));
+    el.addEventListener("click", (e) => selectPlate(id, e.detail === 0));
   } else {
     el.disabled = true;
   }
@@ -380,7 +388,7 @@ function makeThumb(item, isCurrent) {
 }
 
 function renderDiary() {
-  const list = visibleEntries();
+  const list = diaryList();
   const shown = list.length;
   const filtered = shown !== entries.length;
 
@@ -398,57 +406,33 @@ function renderDiary() {
   featuredBox.appendChild(makeFeatured(selected));
 
   const currentId = entryId(selected.entry, selected.index);
-  const film = document.createElement("div");
-  film.className = "filmstrip";
-
-  const head = document.createElement("div");
-  head.className = "film-head";
-  const prev = document.createElement("button");
-  prev.type = "button";
-  prev.className = "film-nav-btn";
-  prev.dataset.dir = "-1";
-  prev.setAttribute("aria-label", "Newer plates");
-  prev.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const next = document.createElement("button");
-  next.type = "button";
-  next.className = "film-nav-btn";
-  next.dataset.dir = "1";
-  next.setAttribute("aria-label", "Older plates");
-  next.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  head.append(prev, next);
-
   const thread = document.createElement("div");
   thread.className = "thread";
   thread.tabIndex = 0;
   thread.setAttribute("role", "listbox");
-  thread.setAttribute("aria-label", "Photograph archive — use arrow keys to browse");
+  thread.setAttribute("aria-label", "Photograph archive — click a plate, or use the arrow keys");
   thread.append(...list.map((item) => {
     const thumb = makeThumb(item, entryId(item.entry, item.index) === currentId);
     thumb.setAttribute("role", "option");
     thumb.setAttribute("aria-selected", String(entryId(item.entry, item.index) === currentId));
     return thumb;
   }));
+  stripBox.appendChild(thread);
 
-  film.append(head, thread);
-  stripBox.appendChild(film);
-
-  const stepTo = (dir) => {
-    const list = visibleEntries();
-    let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
-    if (idx < 0) idx = 0;
-    const target = list[Math.max(0, Math.min(list.length - 1, idx + dir))];
-    if (target) selectPlate(entryId(target.entry, target.index));
-  };
-  prev.addEventListener("click", () => stepTo(-1));
-  next.addEventListener("click", () => stepTo(1));
-  thread.addEventListener("scroll", updateStripNav, { passive: true });
-  stripUpdater = updateStripNav;
-
-  requestAnimationFrame(() => {
+  stripUpdater = () => {
     const active = thread.querySelector(".print-thumb.is-current");
-    centerThumb(active, false);
-    updateStripNav();
-  });
+    if (active) centerThumb(active);
+  };
+
+  const active = thread.querySelector(".print-thumb.is-current");
+  if (active) {
+    if (pendingReveal) {
+      pendingReveal = false;
+      ensureVisible(active);
+    } else {
+      centerThumb(active);
+    }
+  }
 }
 
 /* ---------- Entry detail ---------- */
@@ -959,7 +943,9 @@ stripBox.addEventListener("wheel", (e) => {
   const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
   if ((delta > 0 && thread.scrollLeft >= max - 1) || (delta < 0 && thread.scrollLeft <= 1)) return;
   e.preventDefault();
+  thread.style.scrollBehavior = "auto";
   thread.scrollLeft += delta;
+  thread.style.scrollBehavior = "";
 }, { passive: false });
 
 stripBox.addEventListener("keydown", (e) => {
@@ -967,7 +953,7 @@ stripBox.addEventListener("keydown", (e) => {
   if (!thread) return;
   if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
   e.preventDefault();
-  const list = visibleEntries();
+  const list = diaryList();
   if (!list.length) return;
   let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
   if (idx < 0) idx = 0;
