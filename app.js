@@ -85,12 +85,18 @@ function noteText(entry) {
   return typeof raw === "string" ? raw.trim() : "";
 }
 
-function makeNote(entry, className = "inscription", emptyClass = "inscription--empty") {
+function makeNote(entry, className = "inscription") {
   const text = noteText(entry);
+  if (!text) return null;
   const p = document.createElement("p");
-  p.className = className + (text ? "" : " " + emptyClass);
-  p.textContent = text || "No note yet.";
+  p.className = className;
+  p.textContent = text;
   return p;
+}
+
+function appendNote(parent, entry, className) {
+  const note = makeNote(entry, className);
+  if (note) parent.appendChild(note);
 }
 
 function entryId(entry, index) {
@@ -267,7 +273,8 @@ function makeFeatured(item) {
   title.className = "shop-name";
   title.textContent = entry.shop || "Untitled";
 
-  body.append(marks, title, makeNote(entry));
+  body.append(marks, title);
+  appendNote(body, entry);
   el.appendChild(body);
   return el;
 }
@@ -516,7 +523,7 @@ function renderEntry(id) {
 
   }
 
-  wrap.appendChild(makeNote(entry, "detail-note inscription"));
+  appendNote(wrap, entry, "detail-note inscription");
   if (entry.maps) {
     const actions = document.createElement("div");
     actions.className = "detail-actions";
@@ -617,7 +624,8 @@ function visitBlocks(group, className, includeStamp = true) {
     meta.className = "visit-meta";
     if (includeStamp) meta.append(makeDateStamp(entry.date), makeStamp(entry));
     else meta.append(makeDateStamp(entry.date));
-    block.append(meta, makeNote(entry, "visit-note", "visit-note--empty"));
+    block.appendChild(meta);
+    appendNote(block, entry, "visit-note");
     holder.appendChild(block);
   });
   return holder;

@@ -92,7 +92,6 @@ input{caret-color:var(--accent)}
 .date-stamp time{font-variant-numeric:tabular-nums}
 .marks{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:2px solid var(--accent);padding-top:12px}
 .inscription{font-family:var(--body);font-size:1.12rem;line-height:1.8;color:var(--ink);max-width:66ch;border-top:1px solid var(--rule);padding-top:18px}
-.inscription--empty{color:var(--secondary);font-size:.95rem;font-style:italic;border-top:1px solid var(--rule);padding-top:12px;margin-top:4px}
 
 /* featured print */
 .feature{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,4vw,64px);align-items:start;animation:settle .5s cubic-bezier(.2,.8,.2,1) both}
@@ -221,7 +220,6 @@ input{caret-color:var(--accent)}
 .sheet-visit:first-child{border-top:0;padding-top:0;margin-top:0}
 .visit-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .visit-note{margin:6px 0 0;color:var(--ink)}
-.visit-note--empty{color:var(--secondary);font-style:italic}
 .sheet-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .sheet[data-collapsed="false"] .sheet-detail{max-height:50vh}
 .sheet-detail .ink-link{display:block;margin-top:14px}
