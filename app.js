@@ -8,6 +8,14 @@ const dishNames = {
   Roti: "Roti"
 };
 
+const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#9a5a1f", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
+function typeColor(type) {
+  const known = { Zhujiaofan: 0, Shaorou: 1, PadThaiHoiTod: 2, Roti: 3 };
+  if (type in known) return TYPE_COLORS[known[type]];
+  const types = recordTypes.filter((t) => t !== "All");
+  return TYPE_COLORS[types.indexOf(type) % TYPE_COLORS.length];
+}
+
 function typesOf(entry) {
   if (Array.isArray(entry.type)) return entry.type;
   return entry.type ? [entry.type] : [];
@@ -247,10 +255,8 @@ function makeFeatured(item) {
   el.dataset.id = id;
 
   if (photos.length) {
-    const media = document.createElement("button");
+    const media = document.createElement("div");
     media.className = "plate";
-    media.type = "button";
-    media.setAttribute("aria-label", "View photograph at full size");
     const img = document.createElement("img");
     img.className = "plate-photo";
     img.src = displaySrc(entry);
@@ -262,11 +268,9 @@ function makeFeatured(item) {
     label.textContent = "PLATE " + plateNumber(entry);
     img.onerror = () => {
       media.classList.add("is-missing");
-      media.disabled = true;
       img.style.visibility = "hidden";
       label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
     };
-    media.addEventListener("click", () => openLightbox(photos[0], img.alt, media));
     media.append(img, label);
     el.appendChild(media);
   }
@@ -553,21 +557,20 @@ function renderEntry(id) {
 
 /* ---------- Map ---------- */
 
-const STEW_PIN =
-  '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
-  '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-  'fill="#bf2f1e" stroke="#ffffff" stroke-width="2.2"/>' +
-  '<circle cx="14" cy="14" r="4" fill="#ffffff"/></svg>';
-const CRISP_PIN =
-  '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
-  '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-  'fill="#161514" stroke="#ffffff" stroke-width="2.2"/></svg>';
-
 function pinIcon(entry) {
   const crisp = isCrisp(entry);
+  const color = typeColor(typesOf(entry)[0] || "All");
+  const html = crisp
+    ? '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
+      '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
+      'fill="' + color + '" stroke="#ffffff" stroke-width="2.2"/></svg>'
+    : '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
+      '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
+      'fill="' + color + '" stroke="#ffffff" stroke-width="2.2"/>' +
+      '<circle cx="14" cy="14" r="4" fill="#ffffff"/></svg>';
   return L.divIcon({
     className: "map-pin",
-    html: crisp ? CRISP_PIN : STEW_PIN,
+    html: html,
     iconSize: crisp ? [26, 26] : [28, 38],
     iconAnchor: crisp ? [13, 13] : [14, 38],
     popupAnchor: [0, crisp ? -14 : -34]
@@ -705,6 +708,7 @@ function renderPinLegend(groups) {
   legend.replaceChildren(...types.map((type) => {
     const row = document.createElement("span");
     row.className = "pin-key" + (type === "Shaorou" ? " pin-key--crisp" : "");
+    row.style.color = typeColor(type);
     row.innerHTML = type === "Shaorou" ? PIN_MARK.crisp : PIN_MARK.stew;
     const label = document.createElement("span");
     label.textContent = dishLabel(type);
