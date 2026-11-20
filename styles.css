@@ -79,7 +79,7 @@ input{caret-color:var(--accent)}
 .filter[aria-pressed="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 .filter b{font-weight:400;color:var(--secondary);font-variant-numeric:tabular-nums;margin-left:8px}
 .filter[aria-pressed="true"] b{color:var(--accent)}
-.ledger-count{margin-left:auto;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;color:var(--secondary);font-variant-numeric:tabular-nums}
+.ledger-count,.strip-count{margin-left:auto;font-family:var(--label);font-size:.75rem;letter-spacing:.10em;color:var(--secondary);font-variant-numeric:tabular-nums}
 
 /* shared */
 .content{padding:clamp(24px,2vw,32px) var(--pad) 100px}
@@ -87,7 +87,6 @@ input{caret-color:var(--accent)}
 .ink-link:hover{color:var(--accent-deep);border-bottom-color:var(--accent-deep)}
 .dish-stamps{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .dish-stamp{display:inline-block;border-bottom:2px solid var(--accent);color:var(--accent);font-family:var(--label);font-size:.75rem;letter-spacing:.10em;text-transform:uppercase;padding-bottom:3px;white-space:nowrap}
-.dish-stamp--crisp{border-bottom-color:var(--ink);color:var(--ink)}
 .date-stamp{font-family:var(--label);font-size:.75rem;letter-spacing:.10em;color:var(--secondary);font-variant-numeric:tabular-nums;text-transform:uppercase}
 .date-stamp time{font-variant-numeric:tabular-nums}
 .marks{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:2px solid var(--accent);padding-top:12px}
@@ -111,7 +110,6 @@ input{caret-color:var(--accent)}
 /* print strip */
 .print-strip{margin-top:32px;border-top:1px solid var(--rule);padding-top:18px}
 .strip-head{display:flex;justify-content:space-between;align-items:center;gap:16px;font-family:var(--label);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--secondary);margin-bottom:16px}
-.strip-count{margin-left:auto}
 .strip-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
 .strip-nav-btn{display:grid;place-items:center;width:44px;height:44px;appearance:none;background:none;border:1px solid var(--rule);color:var(--secondary);cursor:pointer}
 .strip-nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}

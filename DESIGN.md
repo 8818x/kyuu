@@ -77,10 +77,10 @@ There are no cards, no shadows, no rounded panels, and no coloured buttons. Dept
 A printed page: warm-neutral paper, black ink, and one signal red.
 
 ### Primary
-- **Vermilion** (`#bf2f1e`): the only accent. Active tab and filter, plate label, tape flag, underlined actions, focus ring, map pin for Zhujiaofan. Never a background fill.
+- **Vermilion** (`#bf2f1e`): the only accent. Active tab and filter, plate label, tape flag, underlined actions, focus ring. Never a background fill.
 
 ### Secondary
-- **Ink** (`#161514`): the dish mark for Shaorou and the neutral map pin. It is a mark, not a second accent.
+- **Ink** (`#161514`): the primary text colour.
 
 ### Neutral
 - **Newsprint** (`#f7f5ef`): the page ground.

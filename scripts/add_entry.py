@@ -5,7 +5,7 @@ Usage (from anywhere):
   python scripts/add_entry.py <image> "<shop>" <type> <maps> [--label "A la carte"] [--note "..."] [--date YYYY-MM-DD] [--dry-run]
 
 <image>  path to the photo (in images/ or elsewhere; it will be copied into images/)
-<type>   key such as Roti, ALaCarte, Shaorou ... new keys are registered automatically
+<type>   key such as Roti, ALaCarte, KhaoKhaMu ... new keys are registered automatically
 <maps>   either "lat,lng" or a full Google Maps URL containing @lat,lng
 """
 import argparse

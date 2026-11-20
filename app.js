@@ -1,9 +1,6 @@
 const entries = window.DIARY_ENTRIES || [];
-const baseTypes = ["Zhujiaofan", "Shaorou"];
 const dishNames = {
   All: "All",
-  Zhujiaofan: "Zhujiaofan",
-  Shaorou: "Shaorou",
   PadThaiHoiTod: "Pad Thai / Hoi Tod",
   Roti: "Roti",
   ALaCarte: "A la carte",
@@ -12,7 +9,7 @@ const dishNames = {
 
 const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#9a5a1f", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
 function typeColor(type) {
-  const known = { Zhujiaofan: 0, Shaorou: 1, PadThaiHoiTod: 2, Roti: 3, ALaCarte: 4, KhaoKhaMu: 5};
+  const known = { PadThaiHoiTod: 0, Roti: 1, ALaCarte: 2, KhaoKhaMu: 3 };
   if (type in known) return TYPE_COLORS[known[type]];
   const types = recordTypes.filter((t) => t !== "All");
   return TYPE_COLORS[types.indexOf(type) % TYPE_COLORS.length];
@@ -28,8 +25,7 @@ const dishLabel = (type) => Array.isArray(type)
   : (dishNames[type] || type || "");
 
 const recordTypes = [...new Set(entries.flatMap(typesOf))];
-const filters = ["All", ...baseTypes.filter((t) => recordTypes.includes(t)),
-  ...recordTypes.filter((t) => !baseTypes.includes(t) && t !== "All")];
+const filters = ["All", ...recordTypes.filter((t) => t !== "All")];
 const LAST_KEY = "food-diary-last";
 
 let activeFilter = filters[0];
@@ -121,10 +117,6 @@ function findById(id) {
   return entries.findIndex((entry, i) => entryId(entry, i) === id);
 }
 
-function isCrisp(entry) {
-  return typesOf(entry).some((type) => type === "Shaorou");
-}
-
 function pad(n) {
   return String(n).padStart(3, "0");
 }
@@ -160,7 +152,7 @@ function makeStamp(entry) {
   wrap.className = "dish-stamps";
   typesOf(entry).forEach((type) => {
     const stamp = document.createElement("span");
-    stamp.className = "dish-stamp" + (type === "Shaorou" ? " dish-stamp--crisp" : "");
+    stamp.className = "dish-stamp";
     stamp.textContent = dishLabel(type);
     wrap.appendChild(stamp);
   });
@@ -348,12 +340,8 @@ function renderDiary() {
   const shown = list.length;
   const filtered = shown !== entries.length;
 
-  ledgerCount.innerHTML = "";
-  const no = document.createElement("span");
-  no.textContent = pad(entries.length);
-  const unit = document.createElement("small");
-  unit.textContent = "PLATES";
-  ledgerCount.append(no, unit);
+  const countText = (n) => pad(n) + (n === 1 ? " PLATE" : " PLATES");
+  ledgerCount.textContent = countText(entries.length);
   ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 
   featuredBox.replaceChildren();
@@ -375,7 +363,7 @@ function renderDiary() {
   head.className = "strip-head";
   const right = document.createElement("span");
   right.className = "strip-count";
-  right.textContent = pad(list.length) + " PLATES";
+  right.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
 
   const inner = document.createElement("div");
   inner.className = "strip-inner";
@@ -560,22 +548,16 @@ function renderEntry(id) {
 /* ---------- Map ---------- */
 
 function pinIcon(entry) {
-  const crisp = isCrisp(entry);
   const color = typeColor(typesOf(entry)[0] || "All");
-  const html = crisp
-    ? '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
-      '<rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" ' +
-      'fill="' + color + '" stroke="#ffffff" stroke-width="2.2"/></svg>'
-    : '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
-      '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
-      'fill="' + color + '" stroke="#ffffff" stroke-width="2.2"/>' +
-      '<circle cx="14" cy="14" r="4" fill="#ffffff"/></svg>';
   return L.divIcon({
     className: "map-pin",
-    html: html,
-    iconSize: crisp ? [26, 26] : [28, 38],
-    iconAnchor: crisp ? [13, 13] : [14, 38],
-    popupAnchor: [0, crisp ? -14 : -34]
+    html: '<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true">' +
+      '<path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" ' +
+      'fill="' + color + '" stroke="#ffffff" stroke-width="2.2"/>' +
+      '<circle cx="14" cy="14" r="4" fill="#ffffff"/></svg>',
+    iconSize: [28, 38],
+    iconAnchor: [14, 38],
+    popupAnchor: [0, -34]
   });
 }
 
@@ -695,10 +677,7 @@ function activateShop(id, trigger) {
   announce(group.shop + ", " + group.visits.length + (group.visits.length === 1 ? " visit" : " visits") + " selected on the map.");
 }
 
-const PIN_MARK = {
-  stew: '<svg viewBox="0 0 28 38" width="14" height="19" aria-hidden="true"><path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" fill="currentColor" stroke="var(--paper)" stroke-width="2"/></svg>',
-  crisp: '<svg viewBox="0 0 26 26" width="15" height="15" aria-hidden="true"><rect x="4.5" y="4.5" width="17" height="17" rx="3" transform="rotate(45 13 13)" fill="currentColor" stroke="var(--paper)" stroke-width="2"/></svg>'
-};
+const PIN_MARK = '<svg viewBox="0 0 28 38" width="14" height="19" aria-hidden="true"><path d="M14 36.5S2.5 23.2 2.5 14a11.5 11.5 0 0 1 23 0c0 9.2-11.5 22.5-11.5 22.5Z" fill="currentColor" stroke="var(--paper)" stroke-width="2"/></svg>';
 
 function renderPinLegend(groups) {
   const legend = $("pin-legend");
@@ -709,9 +688,9 @@ function renderPinLegend(groups) {
   legend.hidden = !types.length;
   legend.replaceChildren(...types.map((type) => {
     const row = document.createElement("span");
-    row.className = "pin-key" + (type === "Shaorou" ? " pin-key--crisp" : "");
+    row.className = "pin-key";
     row.style.color = typeColor(type);
-    row.innerHTML = type === "Shaorou" ? PIN_MARK.crisp : PIN_MARK.stew;
+    row.innerHTML = PIN_MARK;
     const label = document.createElement("span");
     label.textContent = dishLabel(type);
     row.appendChild(label);
@@ -844,7 +823,7 @@ function openSheet(group, trigger) {
   sheetTag.replaceChildren();
   typesOf(latest).forEach((type) => {
     const stamp = document.createElement("span");
-    stamp.className = "dish-stamp" + (type === "Shaorou" ? " dish-stamp--crisp" : "");
+    stamp.className = "dish-stamp";
     stamp.textContent = dishLabel(type);
     sheetTag.appendChild(stamp);
   });
@@ -897,9 +876,7 @@ const filterButtons = filters.map((label) => {
 function updateFilters() {
   const counts = {
     All: entries.length,
-    ...Object.fromEntries(baseTypes.map((t) => [t, entries.filter((e) => typesOf(e).includes(t)).length])),
-    ...Object.fromEntries(recordTypes.filter((t) => !baseTypes.includes(t))
-      .map((t) => [t, entries.filter((e) => typesOf(e).includes(t)).length]))
+    ...Object.fromEntries(recordTypes.map((t) => [t, entries.filter((e) => typesOf(e).includes(t)).length]))
   };
   if (counts[activeFilter] === 0 && activeFilter !== filters[0]) activeFilter = filters[0];
   filterButtons.forEach((b) => {

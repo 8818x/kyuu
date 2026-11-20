@@ -1,6 +1,6 @@
 # Kyuu
 
-A personal food diary of two dishes: Zhujiaofan and Shaorou. The mark is 九 (nine), read "Kyuu". Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
+A personal photo diary of meals out. The mark is 九 (nine), read "Kyuu". Built as a static site — HTML, one CSS file, vanilla JavaScript, Leaflet, GitHub Pages. No build step, no packages.
 
 ## Add a plate
 
@@ -19,7 +19,7 @@ python scripts/add_entry.py images/IMG_20260501_120000.jpg "ร้านตั�
 - `<image>` is copied into `images/` if needed.
 - Date is read from the photo's EXIF (or its `IMG_YYYYMMDD_…` name); use `--date` to override.
 - EXIF is stripped from the stored original, and a 1200px `*-display.webp` is generated.
-- `<type>` can be any key (`Zhujiaofan`, `Shaorou`, `PadThaiHoiTod`, `Roti`, `ALaCarte`, or a new one). A new key is registered in `app.js` automatically; pass `--label` for its display name.
+- `<type>` can be any key (`PadThaiHoiTod`, `Roti`, `ALaCarte`, `KhaoKhaMu`, or a new one). A new key is registered in `app.js` automatically; pass `--label` for its display name.
 - `<maps>` accepts either `lat,lng` or a full Google Maps URL containing `@lat,lng`.
 - Add `--dry-run` to preview without writing.
 
@@ -44,7 +44,7 @@ GitHub Pages updates in about a minute.
 
 ## Look and behaviour
 
-Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Dish labels are Thai transliterations (Zhujiaofan / Shaorou / Pad Thai / Hoi Tod); the stored `type` keys are English identifiers. ผัดไทย and หอยทอด share one combined type. Photo markers read PLATE. Entries are read in place — nothing links into a separate detail page. The map groups visits by shop: one pin per restaurant, and the popup or phone sheet lists every visit with its date, dish and note. Map has a searchable list on desktop and a collapsible sheet on phones.
+Paper Editorial: a newsprint ground, white photo mounts, black ink and one vermilion rule. Diary is the front door, with a ledger strip that gains jump controls as the archive grows. Dish filters with zero entries hide themselves. Dish labels are Thai transliterations (Pad Thai / Hoi Tod, Roti, A la carte, Khao Kha Mu); the stored `type` keys are English identifiers. ผัดไทย and หอยทอด share one combined type. Photo markers read PLATE. Entries are read in place — nothing links into a separate detail page. The map groups visits by shop: one pin per restaurant, and the popup or phone sheet lists every visit with its date, dish and note. Map has a searchable list on desktop and a collapsible sheet on phones.
 
 Keyboard works throughout: pins respond to Enter and Space, the sheet closes with Escape and returns focus, and all controls show a red focus ring. Reduced-motion is respected.
 

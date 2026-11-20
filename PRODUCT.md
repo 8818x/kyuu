@@ -10,7 +10,7 @@ web
 
 Two audiences.
 
-Visitors are strangers who like Thai pork rice. They arrive from a shared link, usually on a phone, and want to know where this person ate Zhujiaofan (khao kha mu, pork leg rice) or Shaorou (crispy pork), and what it was like. They read and then leave.
+Visitors are strangers who like Thai food. They arrive from a shared link, usually on a phone, and want to know where this person ate and what it was like. They read and then leave.
 
 The owner is the only writer: one person recording their own meals. They are comfortable editing a data file and pushing to GitHub, and they do not want a CMS, an admin panel, or an account.
 
@@ -33,7 +33,7 @@ Visitors have no workflow. They open a link, look, and close it.
 ## Capabilities and Constraints
 
 - Two views: **Diary** (default) and **Map**, switched by tabs.
-- Diary filters: `All`, `Zhujiaofan`, `Shaorou`.
+- Diary filters: `All`, then only dish types that have entries.
 - Map pins distinguish the two dishes by shape and colour, and a summary line gives the shop and per-dish counts.
 - A pin opens a popup with the shop, date, dish, note, and an "Open in diary" action that switches views and lands on that card.
 - Exactly two dish types exist. This is settled scope, not a starting point; the filter vocabulary does not grow.
@@ -47,7 +47,7 @@ Visitors have no workflow. They open a link, look, and close it.
 
 ## Brand Commitments
 
-- Interface language is English. Dish labels are Thai transliterations: **Zhujiaofan**, **Shaorou**, and **Pad Thai / Hoi Tod** (one combined type for a visit with both ผัดไทย and หอยทอด). The stored `type` keys are English identifiers; a render label maps them to romanised Thai. Photo markers read "PLATE". The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
+- Interface language is English. Dish labels are Thai transliterations: **Pad Thai / Hoi Tod** (one combined type for a visit with both ผัดไทย and หอยทอด), **Roti**, **A la carte**, and **Khao Kha Mu**. The stored `type` keys are English identifiers; a render label maps them to romanised Thai. Photo markers read "PLATE". The brand mark 九 (nine) in the binding rail is a logo, not interface copy.
 - The site is named **Kyuu**, read from the mark 九. The wordmark in the masthead and the page title both use "Kyuu".
 
 ## Evidence on Hand
