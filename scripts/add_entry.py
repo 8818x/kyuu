@@ -142,6 +142,13 @@ def make_display(src, dst):
     ], check=True)
 
 
+def make_thumb(src, dst):
+    subprocess.run([
+        "ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
+        "-vf", "scale=400:-2", "-q:v", "76", str(dst)
+    ], check=True)
+
+
 def maps_url(value):
     if value.startswith("http"):
         return value
@@ -155,15 +162,15 @@ def js(v):
     return json.dumps(v, ensure_ascii=False)
 
 
-def add_entry_block(date, shop, type_key, image_rel, display_rel, maps_link, note):
+def add_entry_block(date, shop, type_key, display_rel, thumb_rel, maps_link, note):
     note_line = f',\n    note: {js(note)}' if note else ""
     return (
         "  {\n"
         f"    date: {js(date)},\n"
         f"    shop: {js(shop)},\n"
         f"    type: {js(type_key)},\n"
-        f"    image: {js(image_rel)},\n"
         f"    display: {js(display_rel)},\n"
+        f"    thumb: {js(thumb_rel)},\n"
         f"    maps: {js(maps_link)}{note_line}\n"
         "  }"
     )
@@ -250,20 +257,23 @@ def main():
         raise SystemExit(f"วันที่ไม่ถูกต้อง: {date}")
 
     display = photo.with_name(photo.stem + "-display.webp")
+    thumb = photo.with_name(photo.stem + "-thumb.webp")
     block = add_entry_block(date, a.shop, a.type,
-                            "images/" + photo.name, "images/" + display.name,
-                            maps_url(a.maps), a.note)
+                            "images/" + display.name,
+                            "images/" + thumb.name, maps_url(a.maps), a.note)
 
     if a.dry_run:
         print("DRY RUN")
         print("date:", date)
         print("photo:", photo)
         print("display:", display)
+        print("thumb:", thumb)
         print(block)
         return
 
     print("strip metadata:", "removed" if strip_metadata(photo) else "already clean")
     make_display(photo, display)
+    make_thumb(photo, thumb)
     DATA.write_text(insert_entry(DATA.read_text(encoding="utf-8"), block), encoding="utf-8")
     added = register_type(a.type, a.label or a.type)
     version = bump_cache()

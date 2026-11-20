@@ -16,7 +16,7 @@ Example:
 python scripts/add_entry.py images/IMG_20260501_120000.jpg "ร้านตัวอย่าง" Roti "13.75,100.50" --note "อร่อย"
 ```
 
-- `<image>` is copied into `images/` if needed.
+- `<image>` is copied into `images/` if needed; the original stays on disk but is not published.
 - Date is read from the photo's EXIF (or its `IMG_YYYYMMDD_…` name); use `--date` to override.
 - EXIF is stripped from the stored original, and a 1200px `*-display.webp` is generated.
 - `<type>` can be any key (`PadThaiHoiTod`, `Roti`, `ALaCarte`, `KhaoKhaMu`, or a new one). A new key is registered in `app.js` automatically; pass `--label` for its display name.
@@ -39,7 +39,7 @@ GitHub Pages updates in about a minute.
 - `styles.css` — the whole visual system, hand-authored plain CSS
 - `app.js` — rendering, routing, map, and interactions
 - `data/entries.js` — the entry list (normally written by `scripts/add_entry.py`)
-- `scripts/add_entry.py` — one-command helper: date, metadata, display image, entry, cache version
+- `scripts/add_entry.py` — one-command helper: date, metadata, 1200px display image, 400px thumbnail, entry, cache version
 - `fonts/` — self-hosted Taviraj and Noto Sans Thai, each with Latin and Thai subsets
 
 ## Look and behaviour

@@ -36,7 +36,6 @@ let markers = new Map();
 let selectedShopKey = null;
 let sheetTrigger = null;
 let popupTrigger = null;
-let zoomTrigger = null;
 let stripUpdater = null;
 
 const $ = (id) => document.getElementById(id);
@@ -44,18 +43,14 @@ const tabsBox = $("tabs");
 const filterBox = $("filters");
 const diaryPanel = $("diary-panel");
 const mapPanel = $("map-panel");
-const entryPanel = $("entry-panel");
 const featuredBox = $("featured");
 const stripBox = $("strip");
 const shopItemsBox = $("shop-items");
-const entryContent = $("entry-content");
-const ledgerCount = $("ledger-count");
 const mapCount = $("map-count");
 const statusEl = $("status");
 const sheet = $("sheet");
 const listToggle = $("list-toggle");
 const ledgerList = document.querySelector(".ledger-list");
-const lightbox = $("lightbox");
 
 /* ---------- helpers ---------- */
 
@@ -82,11 +77,15 @@ function formatDate(iso) {
 }
 
 function photosOf(entry) {
-  return entry.image ? [entry.image] : [];
+  return entry.display ? [entry.display] : [];
 }
 
 function displaySrc(entry) {
-  return entry.display || entry.image || "";
+  return entry.display || "";
+}
+
+function thumbSrc(entry) {
+  return entry.thumb || displaySrc(entry);
 }
 
 function noteText(entry) {
@@ -112,10 +111,6 @@ function entryId(entry, index) {
   if (entry.id != null && entry.id !== "") return String(entry.id);
   const base = (entry.date || "") + "-" + (entry.shop || index + 1);
   return base.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "entry-" + (index + 1);
-}
-
-function findById(id) {
-  return entries.findIndex((entry, i) => entryId(entry, i) === id);
 }
 
 function pad(n) {
@@ -300,7 +295,7 @@ function makeThumb(item, isCurrent) {
   mat.className = "thumb-mat";
   if (photos.length) {
     const img = document.createElement("img");
-    img.src = displaySrc(entry);
+    img.src = thumbSrc(entry);
     img.alt = "";
     img.loading = "lazy";
     img.decoding = "async";
@@ -340,10 +335,6 @@ function renderDiary() {
   const list = visibleEntries();
   const shown = list.length;
   const filtered = shown !== entries.length;
-
-  const countText = (n) => pad(n) + (n === 1 ? " PLATE" : " PLATES");
-  ledgerCount.textContent = countText(entries.length);
-  ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 
   featuredBox.replaceChildren();
   stripBox.replaceChildren();
@@ -443,113 +434,6 @@ function makeMeta(entry) {
   return meta;
 }
 
-function openLightbox(src, alt, trigger) {
-  const holder = $("lightbox-image");
-  holder.innerHTML = "";
-  const img = document.createElement("img");
-  img.src = src;
-  img.alt = alt;
-  holder.appendChild(img);
-  zoomTrigger = trigger || null;
-  lightbox.hidden = false;
-  lightbox.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  $("lightbox-close").focus({ preventScroll: true });
-}
-
-function closeLightbox() {
-  if (lightbox.hidden) return;
-  lightbox.hidden = true;
-  lightbox.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  if (zoomTrigger && document.contains(zoomTrigger)) zoomTrigger.focus({ preventScroll: true });
-  zoomTrigger = null;
-}
-
-$("lightbox-close").addEventListener("click", closeLightbox);
-lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
-
-function renderEntry(id) {
-  const index = findById(id);
-  if (index < 0) {
-    const back = document.createElement("a");
-    back.className = "back-link";
-    back.href = "#/diary";
-    back.textContent = "← All entries";
-    const msg = document.createElement("p");
-    msg.className = "empty-state";
-    msg.textContent = "That entry was not found.";
-    entryContent.replaceChildren(back, msg);
-    announce("Entry not found.");
-    return;
-  }
-
-  const entry = entries[index];
-  const photos = photosOf(entry);
-  setLast(id);
-
-  const wrap = document.createElement("article");
-  wrap.className = "detail";
-  const back = document.createElement("a");
-  back.className = "back-link";
-  back.href = "#/diary";
-  back.textContent = "← All entries";
-
-  const head = document.createElement("div");
-  head.className = "detail-head";
-  const marks = document.createElement("div");
-  marks.className = "marks";
-  marks.append(makeDateStamp(entry.date), makeStamp(entry));
-  const title = document.createElement("h1");
-  title.className = "detail-title";
-  title.tabIndex = -1;
-  title.textContent = entry.shop || "Untitled";
-  head.append(marks, title, makeMeta(entry));
-  wrap.append(back, head);
-
-  if (photos.length) {
-    const figure = document.createElement("figure");
-    figure.className = "detail-plate";
-    const main = document.createElement("img");
-    main.className = "detail-photo";
-    main.src = photos[0];
-    main.alt = entry.shop ? "Photograph from " + entry.shop : "";
-    main.decoding = "async";
-    const cap = document.createElement("figcaption");
-    const label = document.createElement("span");
-    label.className = "plate-label";
-    label.style.position = "static";
-    label.textContent = "PLATE " + plateNumber(entry);
-    main.onerror = () => {
-      figure.classList.add("is-missing");
-      main.style.visibility = "hidden";
-      label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
-      zoom.hidden = true;
-    };
-    const zoom = document.createElement("button");
-    zoom.className = "ink-link";
-    zoom.type = "button";
-    zoom.textContent = "View at 1:1";
-    zoom.addEventListener("click", () => openLightbox(main.src, main.alt, zoom));
-    cap.append(label, zoom);
-    figure.append(main, cap);
-    wrap.appendChild(figure);
-
-  }
-
-  appendNote(wrap, entry, "detail-note inscription");
-  if (entry.maps) {
-    const actions = document.createElement("div");
-    actions.className = "detail-actions";
-    actions.appendChild(makeMapsLink(entry.maps));
-    wrap.appendChild(actions);
-  }
-
-  entryContent.replaceChildren(wrap);
-  title.focus({ preventScroll: true });
-  announce(entry.shop + " entry opened.");
-}
-
 /* ---------- Map ---------- */
 
 function pinIcon(entry) {
@@ -577,7 +461,7 @@ function makePlaceRow(group) {
   if (photos.length) {
     const img = document.createElement("img");
     img.className = "place-thumb";
-    img.src = displaySrc(latest);
+    img.src = thumbSrc(latest);
     img.alt = "";
     img.loading = "lazy";
     img.onerror = () => { img.hidden = true; };
@@ -801,7 +685,6 @@ function ensureMap() {
 /* keyboard activation for leaflet pins */
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    closeLightbox();
     closeSheet();
     if (map) map.closePopup();
     return;
@@ -895,7 +778,6 @@ function updateFilters() {
     b.setAttribute("aria-pressed", String(b.dataset.filter === activeFilter));
     b.setAttribute("aria-label", dishLabel(label) + ", " + counts[label] + (counts[label] === 1 ? " entry" : " entries"));
   });
-  ledgerCount.setAttribute("aria-label", entries.length + (entries.length === 1 ? " plate recorded" : " plates recorded"));
 }
 
 function setFilter(label, rerender = true) {
@@ -924,10 +806,7 @@ const tabButtons = [["diary", "Diary"], ["map", "Map"]].map(([name, label]) => {
 });
 
 function parseRoute() {
-  const hash = location.hash.replace(/^#\/?/, "");
-  if (hash === "map") return { view: "map" };
-  if (hash.indexOf("e/") === 0) return { view: "entry", id: decodeURIComponent(hash.slice(2)) };
-  return { view: "diary" };
+  return location.hash.replace(/^#\/?/, "") === "map" ? { view: "map" } : { view: "diary" };
 }
 
 function syncLayout() {
@@ -947,25 +826,21 @@ function syncLayout() {
 function renderRoute() {
   const route = parseRoute();
   closeSheet();
-  closeLightbox();
   if (map) map.closePopup();
   syncLayout();
   updateFilters();
   filterBox.hidden = route.view !== "map";
   tabButtons.forEach((b) => {
-    b.setAttribute("aria-pressed", String(b.dataset.tab === route.view || (route.view === "entry" && b.dataset.tab === "diary")));
+    b.setAttribute("aria-pressed", String(b.dataset.tab === route.view));
   });
   diaryPanel.hidden = route.view !== "diary";
   mapPanel.hidden = route.view !== "map";
-  entryPanel.hidden = route.view !== "entry";
   if (route.view !== "diary") document.body.classList.remove("diary-few");
 
   if (route.view === "map") {
     renderShopList();
     ensureMap();
     announce("Map view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
-  } else if (route.view === "entry") {
-    renderEntry(route.id);
   } else {
     renderDiary();
     announce("Diary view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));

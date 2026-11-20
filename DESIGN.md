@@ -84,7 +84,7 @@ A printed page: warm-neutral paper, black ink, and one signal red.
 
 ### Neutral
 - **Newsprint** (`#f7f5ef`): the page ground.
-- **Paper** (`#ffffff`): photograph mounts, masthead, popup, sheet, lightbox caption.
+- **Paper** (`#ffffff`): photograph mounts, masthead, popup and sheet.
 - **Surface** (`#ece8de`): map list and binding rail.
 - **Secondary** (`#6a655e`): dates, metadata, captions.
 - **Rule** (`#d5cfc4`) and **Rule Strong** (`#bdb5a7`): one-pixel separators and input underlines.
@@ -136,7 +136,7 @@ Square everywhere. The plate label is a solid red rectangle overlapping the moun
 ### Photo mount
 - **Mount:** white, 1px `#d5cfc4` border, 14px padding, no shadow.
 - **Plate label:** red block, white Noto Sans Thai text at 500, overlapping the top-left corner.
-- **Detail variant:** caption under the mount carries a 1:1 control that opens a full-size lightbox.
+
 
 ### Print strip
 - Ruled top edge, numbered white thumbnails, current one marked by a 2px red bottom rule, last-viewed one by the tape flag.
