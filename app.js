@@ -349,64 +349,12 @@ function renderDiary() {
   const selected = list.find((item) => entryId(item.entry, item.index) === selectedPlateId) || list[0];
   featuredBox.appendChild(makeFeatured(selected));
 
-  document.body.classList.toggle("diary-few", list.length > 0 && list.length <= 3);
-
-  const head = document.createElement("div");
-  head.className = "strip-head";
-  const right = document.createElement("span");
-  right.className = "strip-count";
-  right.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
-
-  const inner = document.createElement("div");
-  inner.className = "strip-inner";
+  const thread = document.createElement("div");
+  thread.className = "thread";
   const currentId = entryId(selected.entry, selected.index);
-  inner.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
-
-  if (list.length > 4) {
-    const nav = document.createElement("div");
-    nav.className = "strip-nav";
-    const prev = document.createElement("button");
-    prev.type = "button";
-    prev.className = "strip-nav-btn";
-    prev.setAttribute("aria-label", "Newer plates");
-    prev.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const next = document.createElement("button");
-    next.type = "button";
-    next.className = "strip-nav-btn";
-    next.setAttribute("aria-label", "Older plates");
-    next.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const range = document.createElement("span");
-    range.className = "strip-range";
-    const updateRange = () => {
-      const thumbs = [...inner.children];
-      if (!thumbs.length) return;
-      const step = thumbs[0].getBoundingClientRect().width + 12;
-      const startIdx = Math.min(thumbs.length - 1, Math.max(0, Math.round(inner.scrollLeft / step)));
-      const visible = Math.max(1, Math.round(inner.clientWidth / step));
-      const endIdx = Math.min(thumbs.length - 1, startIdx + visible - 1);
-      const numOf = (el) => el.querySelector(".thumb-meta b")?.textContent || "";
-      const a = numOf(thumbs[startIdx]);
-      const b = numOf(thumbs[endIdx]);
-      range.textContent = a === b ? a : a + "–" + b;
-      prev.disabled = inner.scrollLeft <= 2;
-      next.disabled = inner.scrollLeft + inner.clientWidth >= inner.scrollWidth - 2;
-    };
-    const jump = (dir) => {
-      inner.scrollBy({ left: dir * inner.clientWidth * 0.9, behavior: prefersReducedMotion() ? "auto" : "smooth" });
-    };
-    prev.addEventListener("click", () => jump(-1));
-    next.addEventListener("click", () => jump(1));
-    inner.addEventListener("scroll", updateRange, { passive: true });
-    stripUpdater = updateRange;
-    nav.append(prev, range, next);
-    head.append(nav);
-    requestAnimationFrame(updateRange);
-  } else {
-    stripUpdater = null;
-  }
-  head.append(right);
-  stripBox.append(head, inner);
-
+  thread.append(...list.map((item) => makeThumb(item, entryId(item.entry, item.index) === currentId)));
+  stripUpdater = null;
+  stripBox.appendChild(thread);
   const tape = $("binding-tape");
   if (tape) tape.hidden = !getLast();
 }
