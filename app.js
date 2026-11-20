@@ -107,18 +107,20 @@ function appendNote(parent, entry, className) {
   if (note) parent.appendChild(note);
 }
 
-function entryId(entry, index) {
-  if (entry.id != null && entry.id !== "") return String(entry.id);
+function entrySlug(entry, index) {
   const base = (entry.date || "") + "-" + (entry.shop || index + 1);
-  const slug = base.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "entry-" + (index + 1);
-  const photo = entry.display || entry.thumb || "";
-  const dupe = entries.some((other, i) => i !== index && entryIdBase(other, i) === base);
-  return dupe ? slug + "-" + photo.replace(/^images\//, "").replace(/\..*$/, "").toLowerCase() : slug;
+  return base.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "entry-" + (index + 1);
 }
 
-function entryIdBase(entry, index) {
+function entryId(entry, index) {
   if (entry.id != null && entry.id !== "") return String(entry.id);
-  return (entry.date || "") + "-" + (entry.shop || index + 1);
+  const slug = entrySlug(entry, index);
+  const clash = entries.some((other, i) =>
+    i !== index && (other.id == null || other.id === "") && entrySlug(other, i) === slug);
+  if (!clash) return slug;
+  const photo = (entry.display || entry.thumb || "photo-" + index)
+    .replace(/^images\//, "").replace(/\.[a-z0-9]+$/i, "").toLowerCase();
+  return slug + "-" + photo;
 }
 
 function pad(n) {
