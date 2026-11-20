@@ -1,6 +1,6 @@
 // Add a shop: copy the block below and push.
 // Required: date, shop, type, image, maps.
-// type: "Zhujiaofan", "Shaorou", "PadThaiHoiTod" (Pad Thai / Hoi Tod), "Roti" or "AhanTamSang" (food ordered to taste)
+// type: "Zhujiaofan", "Shaorou", "PadThaiHoiTod" (Pad Thai / Hoi Tod), "Roti" or "AhanTamSang" (A la carte)
 //       the stored key is an English identifier; the label is romanised Thai
 // maps: paste the FULL Google Maps link from your browser bar - the one with @lat,lng in it.
 //       A short share.google link will not create a map pin.

@@ -6,7 +6,7 @@ const dishNames = {
   Shaorou: "Shaorou",
   PadThaiHoiTod: "Pad Thai / Hoi Tod",
   Roti: "Roti",
-  AhanTamSang: "Ahan Tam Sang"
+  AhanTamSang: "A la carte"
 };
 
 const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#9a5a1f", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
