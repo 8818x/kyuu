@@ -171,9 +171,11 @@ function updateStripNav() {
   const prev = stripBox.querySelector('.film-nav-btn[data-dir="-1"]');
   const next = stripBox.querySelector('.film-nav-btn[data-dir="1"]');
   if (!thread || !prev || !next) return;
-  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
-  prev.disabled = thread.scrollLeft <= 1;
-  next.disabled = thread.scrollLeft >= max - 1;
+  const list = visibleEntries();
+  let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
+  if (idx < 0) idx = 0;
+  prev.disabled = idx <= 0;
+  next.disabled = idx >= list.length - 1;
 }
 
 function selectPlate(id) {
@@ -185,7 +187,7 @@ function selectPlate(id) {
   announce("Plate " + plateNumber(item.entry) + ", " + (item.entry.shop || "untitled"));
   const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
   if (next) {
-    centerThumb(next, false);
+    centerThumb(next, true);
     next.focus({ preventScroll: true });
   }
 }
@@ -428,13 +430,15 @@ function renderDiary() {
   film.append(head, thread);
   stripBox.appendChild(film);
 
-  const step = () => Math.max(120, thread.clientWidth * 0.85);
-  const jump = (dir) => thread.scrollBy({
-    left: dir * step(),
-    behavior: prefersReducedMotion() ? "auto" : "smooth"
-  });
-  prev.addEventListener("click", () => jump(-1));
-  next.addEventListener("click", () => jump(1));
+  const stepTo = (dir) => {
+    const list = visibleEntries();
+    let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
+    if (idx < 0) idx = 0;
+    const target = list[Math.max(0, Math.min(list.length - 1, idx + dir))];
+    if (target) selectPlate(entryId(target.entry, target.index));
+  };
+  prev.addEventListener("click", () => stepTo(-1));
+  next.addEventListener("click", () => stepTo(1));
   thread.addEventListener("scroll", updateStripNav, { passive: true });
   stripUpdater = updateStripNav;
 
