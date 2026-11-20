@@ -23,6 +23,18 @@ PORT = 8130
 PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
 
+def known_types():
+    text = (ROOT / "app.js").read_text(encoding="utf-8")
+    m = re.search(r"const dishNames = \{(.*?)\n\};", text, re.S)
+    if not m:
+        return {}
+    out = {}
+    for k, v in re.findall(r'^\s*([A-Za-z]\w*)\s*:\s*"([^"]*)"', m.group(1), re.M):
+        if k != "All":
+            out[k] = v
+    return out
+
+
 def unused_photos():
     used = set()
     data = (ROOT / "data" / "entries.js").read_text(encoding="utf-8")
@@ -65,6 +77,8 @@ button:disabled{opacity:.6;cursor:wait}
 #photos span{display:block;font-size:11px;color:var(--sec);padding:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #preview{margin-top:12px;border:1px solid var(--rule);background:var(--ground);min-height:40px;text-align:center}
 #preview img{max-width:100%;max-height:300px;display:block;margin:auto}
+.msg{font-size:13px;margin-top:4px;min-height:18px}
+.msg.ok{color:#2f6f5e}.msg.warn{color:var(--accent)}
 </style></head><body><div class="wrap">
 <h1>Add a plate</h1><p class="lead">Local editor only — nothing here is published.</p>
 <form id="f">
@@ -73,12 +87,14 @@ button:disabled{opacity:.6;cursor:wait}
 <label>Photo path</label><input name="image" required placeholder="images/IMG_20260501_120000.jpg">
 <div class="hint">Pick a photo above, or type a path. Date and metadata are handled automatically.</div>
 <label>Shop</label><input name="shop" required placeholder="ร้านตัวอย่าง">
-<div class="row"><div><label>Type key</label><input name="type" required placeholder="Roti"></div>
-<div><label>Display label</label><input name="label" placeholder="A la carte"></div></div>
-<div class="hint">Existing keys: Zhujiaofan, Shaorou, PadThaiHoiTod, Roti, ALaCarte. New keys are registered.</div>
+<div class="row"><div><label>Type key</label><input name="type" required placeholder="Roti" list="types"><datalist id="types"></datalist>
+<div class="msg" id="type-msg"></div></div>
+<div><label>Display label</label><input name="label" placeholder="A la carte"><div class="msg" id="label-msg"></div></div></div>
 <label>Google Maps — coords or full link</label><input name="maps" required placeholder="13.75,100.50">
+<div class="msg" id="maps-msg"></div>
 <label>Note (optional)</label><input name="note">
 <label>Date override (optional)</label><input name="date" placeholder="YYYY-MM-DD">
+<div class="msg" id="date-msg"></div>
 <button id="go" type="submit">Add entry</button>
 </form><div id="out"></div>
 </div><script>
@@ -103,6 +119,28 @@ function selectPhoto(p,btn){
     });
   }catch(e){photosBox.textContent='Could not load photos.'}
 })();
+let TYPES={};
+function msg(id,text,ok){const e=document.getElementById(id);e.textContent=text;e.className='msg '+(ok?'ok':'warn')}
+function norm(s){return s.trim().toLowerCase().replace(/[^a-z0-9]/g,'')}
+(async()=>{try{TYPES=await (await fetch('/types')).json();
+  const dl=document.getElementById('types');Object.keys(TYPES).forEach(k=>{const o=document.createElement('option');o.value=k;o.label=TYPES[k];dl.appendChild(o)});
+  checkAll();}catch(e){}})();
+function checkType(){const v=f.type.value.trim();if(!v){msg('type-msg','',true);return null}
+  const n=norm(v);const hit=Object.keys(TYPES).find(k=>norm(k)===n||norm(TYPES[k])===n);
+  if(hit){if(v!==hit)f.type.value=hit;if(!f.label.value)f.label.value=TYPES[hit];msg('type-msg','ok',true);return hit}
+  msg('type-msg','New key — add a display label',false);return null}
+function checkMaps(){const v=f.maps.value.trim();if(!v){msg('maps-msg','',true);return}
+  const m=v.match(/^([-.\\d]+)\\s*,\\s*([-.\\d]+)$/);
+  if(m){f.maps.value='https://www.google.com/maps/@'+m[1]+','+m[2]+',17z?hl=en';msg('maps-msg','Coords converted to full link',true);return}
+  if(/maps\\.app\\.goo\\.gl|share\\.google/.test(v)){msg('maps-msg','Short link will not make a pin — paste the full link',false);return}
+  if(v.includes('/@')){msg('maps-msg','Full link ready',true);return}
+  msg('maps-msg','Use lat,lng or a full Google Maps link',false)}
+function checkDate(){const v=f.date.value.trim();if(!v){msg('date-msg','Leave blank to use the photo date',true);return}
+  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(v)){msg('date-msg','Use YYYY-MM-DD',false);return}
+  const d=new Date(v);if(isNaN(d)){msg('date-msg','Invalid date',false);return}
+  msg('date-msg','Date ready',true)}
+function checkAll(){checkType();checkMaps();checkDate()}
+['type','label','maps','date'].forEach(n=>f[n].addEventListener('input',checkAll));
 f.addEventListener('submit',async e=>{e.preventDefault();go.disabled=true;out.style.display='block';out.textContent='Working…';
 const d=Object.fromEntries(new FormData(f));
 try{const r=await fetch('/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
@@ -121,6 +159,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_response(405); self.end_headers(); return
         if path == "/photos":
             body = json.dumps(unused_photos()).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers(); self.wfile.write(body); return
+        if path == "/types":
+            body = json.dumps(known_types()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
