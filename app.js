@@ -5,12 +5,13 @@ const dishNames = {
   Zhujiaofan: "Zhujiaofan",
   Shaorou: "Shaorou",
   PadThaiHoiTod: "Pad Thai / Hoi Tod",
-  Roti: "Roti"
+  Roti: "Roti",
+  AhanTamSang: "Ahan Tam Sang"
 };
 
 const TYPE_COLORS = ["#2f6f5e", "#2f5b8f", "#9a5a1f", "#7a3f6e", "#3f6b2f", "#8f3b3b"];
 function typeColor(type) {
-  const known = { Zhujiaofan: 0, Shaorou: 1, PadThaiHoiTod: 2, Roti: 3 };
+  const known = { Zhujiaofan: 0, Shaorou: 1, PadThaiHoiTod: 2, Roti: 3, AhanTamSang: 4 };
   if (type in known) return TYPE_COLORS[known[type]];
   const types = recordTypes.filter((t) => t !== "All");
   return TYPE_COLORS[types.indexOf(type) % TYPE_COLORS.length];
