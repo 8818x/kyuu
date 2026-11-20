@@ -521,14 +521,19 @@ function makePlaceRow(group) {
     text.appendChild(note);
   }
   btn.appendChild(text);
-  if (group.visits.some(({ entry, index }) => entryId(entry, index) === getLast())) {
-    const flag = document.createElement("span");
-    flag.className = "tape-flag";
-    flag.setAttribute("aria-label", "Last viewed");
-    btn.appendChild(flag);
-  }
   btn.addEventListener("click", () => activateShop(group.key, btn));
   return btn;
+}
+
+function movePlaceFlag(id) {
+  shopItemsBox.querySelectorAll(".place-row .tape-flag").forEach((flag) => flag.remove());
+  const row = shopItemsBox.querySelector('.place-row[data-id="' + CSS.escape(id) + '"]');
+  if (row) {
+    const flag = document.createElement("span");
+    flag.className = "tape-flag";
+    flag.setAttribute("aria-label", "Selected place");
+    row.appendChild(flag);
+  }
 }
 
 function highlightShop(id) {
@@ -567,7 +572,7 @@ function popupFor(group) {
   count.className = "visit-count";
   count.textContent = pad(group.visits.length) + (group.visits.length === 1 ? " VISIT" : " VISITS");
   box.appendChild(count);
-  box.appendChild(visitBlocks(group, "visit-block"));
+  box.appendChild(visitBlocks(group, "visit-block", false));
   const withMaps = group.visits.find(({ entry }) => entry.maps);
   if (withMaps) box.appendChild(makeMapsLink(withMaps.entry.maps));
   return box;
@@ -580,8 +585,9 @@ function activateShop(id, trigger) {
   const pos = groupPosition(group);
   selectedShopKey = id;
   highlightShop(id);
+  movePlaceFlag(id);
 
-  if (pos && map) map.panTo(pos, { animate: !prefersReducedMotion() });
+  if (pos && map) map.flyTo(pos, 16, { animate: !prefersReducedMotion() });
   if (!marker || !pos) {
     announce(group.shop + " has no map pin.");
     if (isPhone()) openSheet(group, trigger || null);
@@ -635,6 +641,7 @@ function renderShopList() {
     ));
   } else {
     shopItemsBox.replaceChildren(...list.map(makePlaceRow));
+    if (selectedShopKey) movePlaceFlag(selectedShopKey);
   }
   updateMapMarkers();
 }
@@ -667,7 +674,7 @@ function ensureMap() {
     $("map-error").hidden = false;
     return;
   }
-  map = L.map("map", { scrollWheelZoom: false, zoomControl: false }).setView([13.7563, 100.5018], 12);
+  map = L.map("map", { scrollWheelZoom: true, zoomControl: false }).setView([13.7563, 100.5018], 12);
   const tiles = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
     {

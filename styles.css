@@ -167,8 +167,6 @@ input{caret-color:var(--accent)}
 .map-error{position:absolute;z-index:500;top:0;left:0;right:0;margin:0;padding:10px 14px;background:var(--error);color:var(--ink);border-bottom:1px solid var(--accent);font-family:var(--label);font-size:.72rem;letter-spacing:.04em}
 .map-pin{background:none;border:0}
 .map-pin svg{display:block}
-.map-pin::before{content:"";position:absolute;inset:-12px;border:2px solid transparent}
-.map-pin.is-active::before{border-color:var(--accent)}
 
 /* leaflet, set like a paper slip */
 .leaflet-container{font-family:var(--body);background:var(--surface)}
