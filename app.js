@@ -470,10 +470,12 @@ function startFlight(update) {
   }
   const vt = document.startViewTransition(update);
   flight = vt;
-  vt.finished.finally(() => {
+  const settle = () => {
     if (flight === vt) flight = null;
     clearFlight();
-  });
+  };
+  vt.finished.then(settle, settle);
+  setTimeout(settle, 1200);
   return vt;
 }
 
@@ -518,13 +520,76 @@ function makeArchiveTile(item) {
   tile.setAttribute("aria-label",
     "Plate " + plateNumber(entry) + ", " + (entry.shop || "untitled") + (entry.date ? ", " + formatDate(entry.date) : ""));
   tile.addEventListener("click", (e) => openPlateFromArchive(id, tile, e.detail === 0));
+  tile.addEventListener("pointerenter", () => preloadDisplay(entry), { once: true });
+  tile.addEventListener("focus", () => preloadDisplay(entry), { once: true });
   return tile;
+}
+
+const preloaded = new Set();
+
+function preloadDisplay(entry) {
+  const src = displaySrc(entry);
+  if (!src || preloaded.has(src)) return;
+  const img = new Image();
+  img.decoding = "async";
+  img.onload = () => preloaded.add(src);
+  img.src = src;
+}
+
+function archiveBatchSize() {
+  return 40;
+}
+
+let archiveObserver = null;
+
+function appendArchiveSlice(list, from) {
+  const slice = list.slice(from, from + archiveBatchSize());
+  const more = archiveGrid.querySelector(".archive-more");
+  const frag = document.createDocumentFragment();
+  slice.forEach((item) => frag.appendChild(makeArchiveTile(item)));
+  if (more) archiveGrid.insertBefore(frag, more);
+  else archiveGrid.appendChild(frag);
+  return from + slice.length;
+}
+
+function syncArchiveMore(list, shown) {
+  let more = archiveGrid.querySelector(".archive-more");
+  if (shown >= list.length) {
+    if (more) more.remove();
+    if (archiveObserver) { archiveObserver.disconnect(); archiveObserver = null; }
+    return;
+  }
+  if (!more) {
+    more = document.createElement("button");
+    more.type = "button";
+    more.className = "archive-more";
+    more.addEventListener("click", () => {
+      const all = diaryList();
+      const next = appendArchiveSlice(all, archiveGrid.querySelectorAll(".archive-tile").length);
+      syncArchiveMore(all, next);
+      const first = archiveGrid.querySelectorAll(".archive-tile")[next - archiveBatchSize()];
+      if (first) first.focus({ preventScroll: true });
+    });
+    archiveGrid.appendChild(more);
+  }
+  const remaining = list.length - shown;
+  more.textContent = "Load " + (remaining < archiveBatchSize() ? remaining : archiveBatchSize()) + " more plates";
+  if (archiveObserver) archiveObserver.disconnect();
+  if (typeof IntersectionObserver === "function") {
+    archiveObserver = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) more.click();
+    }, { rootMargin: "600px 0px" });
+    archiveObserver.observe(more);
+  }
 }
 
 function renderArchive() {
   const list = diaryList();
   archiveCount.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
-  archiveGrid.replaceChildren(...list.map(makeArchiveTile));
+  archiveGrid.replaceChildren();
+  if (archiveObserver) { archiveObserver.disconnect(); archiveObserver = null; }
+  const shown = appendArchiveSlice(list, 0);
+  syncArchiveMore(list, shown);
 }
 
 function openPlateFromArchive(id, tile, fromKeyboard = false) {
@@ -533,6 +598,11 @@ function openPlateFromArchive(id, tile, fromKeyboard = false) {
   setLast(id);
   pendingReveal = true;
   revealedId = id;
+
+  const item = diaryList().find((x) => entryId(x.entry, x.index) === id);
+  const sharp = item ? displaySrc(item.entry) : "";
+  const img = tile.querySelector("img");
+  if (img && sharp && preloaded.has(sharp)) img.src = sharp;
 
   const land = () => {
     goRoute("#/diary");
