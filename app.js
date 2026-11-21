@@ -36,8 +36,7 @@ let markers = new Map();
 let selectedShopKey = null;
 let sheetTrigger = null;
 let popupTrigger = null;
-let pendingReveal = false;
-let revealedId = null;
+let renderedPlateId = null;
 let archiveReturn = null;
 
 const $ = (id) => document.getElementById(id);
@@ -50,7 +49,6 @@ const archiveCount = $("archive-count");
 const archiveBack = $("archive-back");
 const mapPanel = $("map-panel");
 const featuredBox = $("featured");
-const stripBox = $("strip");
 const shopItemsBox = $("shop-items");
 const mapCount = $("map-count");
 const statusEl = $("status");
@@ -167,49 +165,14 @@ function announce(text) {
   statusEl.textContent = text;
 }
 
-function currentThread() {
-  return stripBox.querySelector(".thread");
-}
-
-function scrollThreadTo(thread, left, smooth) {
-  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
-  const target = Math.max(0, Math.min(left, max));
-  const behavior = smooth && !prefersReducedMotion() ? "smooth" : "instant";
-  try { thread.scrollTo({ left: target, behavior }); }
-  catch (e) { thread.scrollLeft = target; }
-}
-
-function centerThumb(el, smooth = false) {
-  const thread = currentThread();
-  if (!thread || !el) return;
-  const threadRect = thread.getBoundingClientRect();
-  const elRect = el.getBoundingClientRect();
-  const offset = elRect.left - threadRect.left;
-  scrollThreadTo(thread, thread.scrollLeft + offset - (thread.clientWidth - elRect.width) / 2, smooth);
-}
-
-function ensureVisible(el, smooth = false) {
-  const thread = currentThread();
-  if (!thread || !el) return;
-  const threadRect = thread.getBoundingClientRect();
-  const elRect = el.getBoundingClientRect();
-  const inset = Math.min(48, thread.clientWidth * 0.12);
-  if (elRect.left >= threadRect.left + inset && elRect.right <= threadRect.right - inset) return;
-  centerThumb(el, smooth);
-}
-
 function selectPlate(id, keepFocus = true) {
   if (id === selectedPlateId) return;
-  const item = visibleEntries().find((x) => entryId(x.entry, x.index) === id);
+  const item = diaryList().find((x) => entryId(x.entry, x.index) === id);
   if (!item) return;
   selectedPlateId = id;
   setLast(id);
-  pendingReveal = true;
   renderDiary();
   announce("Plate " + plateNumber(item.entry) + ", " + (item.entry.shop || "untitled"));
-  if (!keepFocus) return;
-  const next = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(id) + '"]');
-  if (next) next.focus({ preventScroll: true });
 }
 
 function makeStamp(entry) {
@@ -305,146 +268,132 @@ function emptyState(message, actionLabel, onAction) {
 
 /* ---------- Diary ---------- */
 
-function makeFeatured(item) {
+function makeFeatured(item, list, isEntering) {
   const { entry, index } = item;
   const id = entryId(entry, index);
   const photos = photosOf(entry);
   const el = document.createElement("article");
-  el.className = "feature";
+  el.className = "feature" + (isEntering ? " is-entering" : "");
   el.dataset.id = id;
 
+  const media = document.createElement("figure");
+  media.className = "plate";
   if (photos.length) {
-    const media = document.createElement("div");
-    media.className = "plate";
     const img = document.createElement("img");
     img.className = "plate-photo";
     img.src = displaySrc(entry);
     img.alt = entry.shop ? "Photograph from " + entry.shop : "";
     img.loading = "eager";
     img.decoding = "async";
-    const label = document.createElement("span");
-    label.className = "plate-label";
-    label.textContent = "PLATE " + plateNumber(entry);
     img.onerror = () => {
       media.classList.add("is-missing");
-      img.style.visibility = "hidden";
-      label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
+      img.hidden = true;
     };
-    media.append(img, label);
-    el.appendChild(media);
+    media.appendChild(img);
+  } else {
+    media.classList.add("is-missing");
   }
+  media.appendChild(makeMissingLabel(entry));
 
-  const body = document.createElement("div");
-  body.className = "feature-body";
-  const marks = document.createElement("div");
-  marks.className = "marks";
-  marks.append(makeDateStamp(entry.date), makeStamp(entry));
+  const col = document.createElement("div");
+  col.className = "plate-side";
 
+  const head = document.createElement("div");
+  head.className = "plate-head";
   const title = document.createElement("h1");
   title.className = "shop-name";
   title.lang = "th";
   title.textContent = entry.shop || "Untitled";
+  const meta = document.createElement("p");
+  meta.className = "plate-meta";
+  const no = document.createElement("span");
+  no.className = "plate-no";
+  no.textContent = "PLATE " + plateNumber(entry);
+  meta.appendChild(no);
+  const bits = [formatDate(entry.date), dishLabel(typesOf(entry))].filter(Boolean);
+  if (bits.length) {
+    const rest = document.createElement("span");
+    rest.textContent = " · " + bits.join(" · ");
+    meta.appendChild(rest);
+  }
+  head.append(title, meta);
+  appendNote(head, entry);
 
-  body.append(marks, title);
-  appendNote(body, entry);
-  el.appendChild(body);
+  col.append(head, makeNextPlate(list, item));
+  el.append(media, col);
   return el;
 }
 
-function makeThumb(item, isCurrent) {
-  const { entry, index } = item;
-  const id = entryId(entry, index);
-  const photos = photosOf(entry);
-  const el = document.createElement("button");
-  el.className = "print-thumb" + (isCurrent ? " is-current" : "");
-  el.type = "button";
-  el.dataset.id = id;
-  if (photos.length) el.setAttribute("aria-label", "View photograph from " + (entry.shop || "this plate"));
+function makeMissingLabel(entry) {
+  const label = document.createElement("figcaption");
+  label.className = "plate-missing";
+  label.textContent = "PLATE " + plateNumber(entry) + " — PHOTO UNAVAILABLE";
+  return label;
+}
 
-  const mat = document.createElement("span");
-  mat.className = "thumb-mat";
-  if (photos.length) {
+function makeNextPlate(list, item) {
+  const idx = list.indexOf(item);
+  const next = list[(idx + 1) % list.length];
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "next-plate";
+  if (!next || list.length < 2) {
+    btn.hidden = true;
+    return btn;
+  }
+  const nextId = entryId(next.entry, next.index);
+  const thumb = document.createElement("span");
+  thumb.className = "next-plate-thumb";
+  if (photosOf(next.entry).length) {
     const img = document.createElement("img");
-    img.src = thumbSrc(entry);
+    img.src = thumbSrc(next.entry);
     img.alt = "";
     img.loading = "lazy";
     img.decoding = "async";
     img.draggable = false;
     img.onerror = () => { img.hidden = true; };
-    mat.appendChild(img);
+    thumb.appendChild(img);
   }
-  const meta = document.createElement("span");
-  meta.className = "thumb-meta";
-  const no = document.createElement("b");
-  no.textContent = plateNumber(entry);
-  const name = document.createElement("span");
-  name.className = "thumb-title";
-  name.lang = "th";
-  name.textContent = entry.shop || "Untitled";
-  meta.append(no, name);
-  el.append(mat, meta);
+  const label = document.createElement("span");
+  label.className = "next-plate-label";
+  label.textContent = "Next plate";
+  const num = document.createElement("span");
+  num.className = "next-plate-no";
+  num.textContent = plateNumber(next.entry);
+  btn.append(thumb, label, num);
+  btn.setAttribute("aria-label",
+    "Next plate: " + plateNumber(next.entry) + ", " + (next.entry.shop || "untitled"));
+  btn.addEventListener("click", () => goToPlate(nextId));
+  return btn;
+}
 
-  if (id === getLast()) {
-    const flag = document.createElement("span");
-    flag.className = "tape-flag";
-    flag.setAttribute("aria-label", "Last viewed");
-    el.appendChild(flag);
-  }
-  if (photos.length) {
-    el.setAttribute("aria-label", "View plate from " + (entry.shop || "this plate"));
-    el.addEventListener("click", (e) => selectPlate(id, e.detail === 0));
-  } else {
-    el.disabled = true;
-  }
-  return el;
+function goToPlate(id) {
+  const feature = featuredBox.querySelector(".feature");
+  if (!feature || prefersReducedMotion()) { selectPlate(id); return; }
+  feature.classList.add("is-leaving");
+  setTimeout(() => selectPlate(id), 150);
 }
 
 function renderDiary() {
   const list = diaryList();
   const shown = list.length;
   const filtered = shown !== entries.length;
-  const previousScroll = currentThread()?.scrollLeft || 0;
-  const firstBuild = revealedId === null;
+  const isEntering = renderedPlateId !== null && renderedPlateId !== selectedPlateId;
 
   featuredBox.replaceChildren();
-  stripBox.replaceChildren();
   if (!list.length) {
     featuredBox.appendChild(emptyState(
       filtered ? "No plates match this search or filter." : "The ledger is empty.",
       filtered ? "Show all plates" : null,
       () => setFilter(filters[0])
     ));
+    renderedPlateId = null;
     return;
   }
   const selected = list.find((item) => entryId(item.entry, item.index) === selectedPlateId) || list[0];
-  featuredBox.appendChild(makeFeatured(selected));
-
-  const currentId = entryId(selected.entry, selected.index);
-  const thread = document.createElement("div");
-  thread.className = "thread";
-  thread.tabIndex = 0;
-  thread.setAttribute("role", "listbox");
-  thread.setAttribute("aria-label", "Photograph archive — click a plate, or use the arrow keys");
-  thread.append(...list.map((item) => {
-    const thumb = makeThumb(item, entryId(item.entry, item.index) === currentId);
-    thumb.setAttribute("role", "option");
-    thumb.setAttribute("aria-selected", String(entryId(item.entry, item.index) === currentId));
-    return thumb;
-  }));
-  stripBox.appendChild(thread);
-
-  const active = thread.querySelector(".print-thumb.is-current");
-  if (active) {
-    if (firstBuild) {
-      centerThumb(active);
-    } else if (pendingReveal) {
-      ensureVisible(active, true);
-    } else {
-      thread.scrollLeft = previousScroll;
-    }
-  }
-  revealedId = currentId;
-  pendingReveal = false;
+  selectedPlateId = entryId(selected.entry, selected.index);
+  featuredBox.appendChild(makeFeatured(selected, list, isEntering));
+  renderedPlateId = selectedPlateId;
 }
 
 /* ---------- Archive ---------- */
@@ -596,8 +545,7 @@ function openPlateFromArchive(id, tile, fromKeyboard = false) {
   archiveReturn = { id, scrollY: window.scrollY, fromKeyboard };
   selectedPlateId = id;
   setLast(id);
-  pendingReveal = true;
-  revealedId = id;
+  renderedPlateId = id;
 
   const item = diaryList().find((x) => entryId(x.entry, x.index) === id);
   const sharp = item ? displaySrc(item.entry) : "";
@@ -1104,75 +1052,6 @@ listToggle.addEventListener("click", () => {
   const open = ledgerList.dataset.expanded !== "true";
   ledgerList.dataset.expanded = String(open);
   listToggle.setAttribute("aria-expanded", String(open));
-});
-
-/* filmstrip interactions — delegated so re-renders keep one listener set */
-let filmDrag = null;
-let filmSuppressClick = false;
-
-stripBox.addEventListener("pointerdown", (e) => {
-  const thread = e.target.closest(".thread");
-  if (!thread || e.pointerType !== "mouse" || e.button !== 0) return;
-  filmDrag = { thread, id: e.pointerId, x: e.clientX, scroll: thread.scrollLeft, moved: false };
-});
-
-stripBox.addEventListener("pointermove", (e) => {
-  if (!filmDrag || e.pointerId !== filmDrag.id) return;
-  const dx = e.clientX - filmDrag.x;
-  if (Math.abs(dx) > 4) filmDrag.moved = true;
-  if (filmDrag.moved) {
-    filmDrag.thread.classList.add("is-dragging");
-    filmDrag.thread.scrollLeft = filmDrag.scroll - dx;
-  }
-});
-
-function endFilmDrag(e) {
-  if (!filmDrag || e.pointerId !== filmDrag.id) return;
-  const thread = filmDrag.thread;
-  thread.classList.remove("is-dragging");
-  if (filmDrag.moved) {
-    filmSuppressClick = true;
-    setTimeout(() => { filmSuppressClick = false; }, 0);
-  }
-  filmDrag = null;
-}
-stripBox.addEventListener("pointerup", endFilmDrag);
-stripBox.addEventListener("pointercancel", endFilmDrag);
-
-stripBox.addEventListener("click", (e) => {
-  if (!filmSuppressClick) return;
-  e.preventDefault();
-  e.stopPropagation();
-  filmSuppressClick = false;
-}, true);
-
-stripBox.addEventListener("wheel", (e) => {
-  const thread = e.target.closest(".thread");
-  if (!thread) return;
-  const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-  if (!delta) return;
-  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
-  if ((delta > 0 && thread.scrollLeft >= max - 1) || (delta < 0 && thread.scrollLeft <= 1)) return;
-  e.preventDefault();
-  thread.style.scrollBehavior = "auto";
-  thread.scrollLeft += delta;
-  thread.style.scrollBehavior = "";
-}, { passive: false });
-
-stripBox.addEventListener("keydown", (e) => {
-  const thread = e.target.closest(".thread");
-  if (!thread) return;
-  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
-  e.preventDefault();
-  const list = diaryList();
-  if (!list.length) return;
-  let idx = list.findIndex((x) => entryId(x.entry, x.index) === selectedPlateId);
-  if (idx < 0) idx = 0;
-  if (e.key === "Home") idx = 0;
-  else if (e.key === "End") idx = list.length - 1;
-  else idx = Math.max(0, Math.min(list.length - 1, idx + (e.key === "ArrowRight" ? 1 : -1)));
-  const target = list[idx];
-  selectPlate(entryId(target.entry, target.index));
 });
 
 window.addEventListener("hashchange", renderRoute);
