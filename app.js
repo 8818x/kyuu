@@ -453,6 +453,8 @@ function makeArchiveTile(item) {
   img.loading = "lazy";
   img.decoding = "async";
   img.draggable = false;
+  img.width = 400;
+  img.height = 267;
   img.onerror = () => { img.hidden = true; };
   mat.appendChild(img);
 
