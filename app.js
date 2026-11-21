@@ -492,19 +492,73 @@ function archiveBatchSize() {
 }
 
 let archiveObserver = null;
+let archiveLayoutFrame = 0;
+
+function archiveColumnCount() {
+  const w = archiveGrid.clientWidth;
+  if (w >= 980) return 4;
+  if (w >= 620) return 3;
+  return 2;
+}
+
+function archiveGaps() {
+  const w = archiveGrid.clientWidth;
+  if (w <= 640) return { x: 12, y: 22 };
+  return {
+    x: Math.max(14, Math.min(22, w * 0.015)),
+    y: Math.max(26, Math.min(40, w * 0.026))
+  };
+}
+
+/* Genuine masonry: every tile keeps its own aspect ratio and stacks in the
+   shortest column. DOM order stays chronological, so keyboard order matches. */
+function layoutArchive() {
+  const tiles = [...archiveGrid.querySelectorAll(".archive-tile")];
+  if (!tiles.length) {
+    archiveGrid.style.height = "";
+    return;
+  }
+  const cols = archiveColumnCount();
+  const { x: gapX, y: gapY } = archiveGaps();
+  const width = archiveGrid.clientWidth;
+  const colW = Math.max(80, (width - gapX * (cols - 1)) / cols);
+  const heights = new Array(cols).fill(0);
+
+  tiles.forEach((tile) => {
+    let col = 0;
+    for (let i = 1; i < cols; i++) {
+      if (heights[i] < heights[col] - 0.5) col = i;
+    }
+    tile.style.width = colW + "px";
+    const h = tile.offsetHeight;
+    tile.style.transform = "translate(" + (col * (colW + gapX)) + "px," + heights[col] + "px)";
+    heights[col] += h + gapY;
+  });
+
+  const total = Math.max(...heights) - gapY;
+  archiveGrid.style.height = total + "px";
+}
+
+function queueArchiveLayout() {
+  if (archiveLayoutFrame) cancelAnimationFrame(archiveLayoutFrame);
+  archiveLayoutFrame = requestAnimationFrame(() => {
+    archiveLayoutFrame = 0;
+    layoutArchive();
+  });
+}
 
 function appendArchiveSlice(list, from) {
   const slice = list.slice(from, from + archiveBatchSize());
-  const more = archiveGrid.querySelector(".archive-more");
   const frag = document.createDocumentFragment();
   slice.forEach((item) => frag.appendChild(makeArchiveTile(item)));
-  if (more) archiveGrid.insertBefore(frag, more);
-  else archiveGrid.appendChild(frag);
+  archiveGrid.appendChild(frag);
+  queueArchiveLayout();
   return from + slice.length;
 }
 
 function syncArchiveMore(list, shown) {
-  let more = archiveGrid.querySelector(".archive-more");
+  const host = archiveGrid.parentElement;
+  let more = host.querySelector(".archive-more");
   if (shown >= list.length) {
     if (more) more.remove();
     if (archiveObserver) { archiveObserver.disconnect(); archiveObserver = null; }
@@ -521,7 +575,7 @@ function syncArchiveMore(list, shown) {
       const first = archiveGrid.querySelectorAll(".archive-tile")[next - archiveBatchSize()];
       if (first) first.focus({ preventScroll: true });
     });
-    archiveGrid.appendChild(more);
+    host.appendChild(more);
   }
   const remaining = list.length - shown;
   more.textContent = "Load " + (remaining < archiveBatchSize() ? remaining : archiveBatchSize()) + " more plates";
@@ -538,9 +592,12 @@ function renderArchive() {
   const list = diaryList();
   archiveCount.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
   archiveGrid.replaceChildren();
+  const oldMore = archiveGrid.parentElement.querySelector(".archive-more");
+  if (oldMore) oldMore.remove();
   if (archiveObserver) { archiveObserver.disconnect(); archiveObserver = null; }
   const shown = appendArchiveSlice(list, 0);
   syncArchiveMore(list, shown);
+  queueArchiveLayout();
 }
 
 function openPlateFromArchive(id, tile, fromKeyboard = false) {
@@ -1063,6 +1120,7 @@ let resizeWasPhone = () => window.innerWidth <= 600;
 window.addEventListener("resize", () => {
   if (isPhone() !== resizeWasPhone()) { closeSheet(); if (map) map.closePopup(); }
   syncLayout();
+  if (archivePanel && !archivePanel.hidden) queueArchiveLayout();
   if (map) requestAnimationFrame(() => map.invalidateSize());
 });
 
