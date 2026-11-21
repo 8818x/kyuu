@@ -36,8 +36,8 @@ let markers = new Map();
 let selectedShopKey = null;
 let sheetTrigger = null;
 let popupTrigger = null;
-let stripUpdater = null;
 let pendingReveal = false;
+let revealedId = null;
 
 const $ = (id) => document.getElementById(id);
 const tabsBox = $("tabs");
@@ -166,28 +166,35 @@ function currentThread() {
   return stripBox.querySelector(".thread");
 }
 
-function centerThumb(el) {
+function scrollThreadTo(thread, left, smooth) {
+  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
+  const target = Math.max(0, Math.min(left, max));
+  const behavior = smooth && !prefersReducedMotion() ? "smooth" : "instant";
+  try { thread.scrollTo({ left: target, behavior }); }
+  catch (e) { thread.scrollLeft = target; }
+}
+
+function centerThumb(el, smooth = false) {
   const thread = currentThread();
   if (!thread || !el) return;
   const threadRect = thread.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
   const offset = elRect.left - threadRect.left;
-  const target = thread.scrollLeft + offset - (thread.clientWidth - elRect.width) / 2;
-  const max = Math.max(0, thread.scrollWidth - thread.clientWidth);
-  thread.scrollLeft = Math.max(0, Math.min(target, max));
+  scrollThreadTo(thread, thread.scrollLeft + offset - (thread.clientWidth - elRect.width) / 2, smooth);
 }
 
-function ensureVisible(el) {
+function ensureVisible(el, smooth = false) {
   const thread = currentThread();
   if (!thread || !el) return;
   const threadRect = thread.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
   const inset = Math.min(48, thread.clientWidth * 0.12);
   if (elRect.left >= threadRect.left + inset && elRect.right <= threadRect.right - inset) return;
-  centerThumb(el);
+  centerThumb(el, smooth);
 }
 
 function selectPlate(id, keepFocus = true) {
+  if (id === selectedPlateId) return;
   const item = visibleEntries().find((x) => entryId(x.entry, x.index) === id);
   if (!item) return;
   selectedPlateId = id;
@@ -391,6 +398,8 @@ function renderDiary() {
   const list = diaryList();
   const shown = list.length;
   const filtered = shown !== entries.length;
+  const previousScroll = currentThread()?.scrollLeft || 0;
+  const firstBuild = revealedId === null;
 
   featuredBox.replaceChildren();
   stripBox.replaceChildren();
@@ -419,20 +428,18 @@ function renderDiary() {
   }));
   stripBox.appendChild(thread);
 
-  stripUpdater = () => {
-    const active = thread.querySelector(".print-thumb.is-current");
-    if (active) centerThumb(active);
-  };
-
   const active = thread.querySelector(".print-thumb.is-current");
   if (active) {
-    if (pendingReveal) {
-      pendingReveal = false;
-      ensureVisible(active);
-    } else {
+    if (firstBuild) {
       centerThumb(active);
+    } else if (pendingReveal) {
+      ensureVisible(active, true);
+    } else {
+      thread.scrollLeft = previousScroll;
     }
   }
+  revealedId = currentId;
+  pendingReveal = false;
 }
 
 /* ---------- Entry detail ---------- */
@@ -880,11 +887,6 @@ function renderRoute() {
   } else {
     renderDiary();
     announce("Diary view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
-    const last = getLast();
-    if (last) {
-      const link = stripBox.querySelector('.print-thumb[data-id="' + CSS.escape(last) + '"]');
-      if (link) link.focus();
-    }
   }
   window.scrollTo(0, 0);
 }
@@ -969,7 +971,6 @@ let resizeWasPhone = () => window.innerWidth <= 600;
 window.addEventListener("resize", () => {
   if (isPhone() !== resizeWasPhone()) { closeSheet(); if (map) map.closePopup(); }
   syncLayout();
-  if (stripUpdater) stripUpdater();
   if (map) requestAnimationFrame(() => map.invalidateSize());
 });
 
