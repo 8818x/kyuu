@@ -38,11 +38,16 @@ let sheetTrigger = null;
 let popupTrigger = null;
 let pendingReveal = false;
 let revealedId = null;
+let archiveReturn = null;
 
 const $ = (id) => document.getElementById(id);
 const tabsBox = $("tabs");
 const filterBox = $("filters");
 const diaryPanel = $("diary-panel");
+const archivePanel = $("archive-panel");
+const archiveGrid = $("archive-grid");
+const archiveCount = $("archive-count");
+const archiveBack = $("archive-back");
 const mapPanel = $("map-panel");
 const featuredBox = $("featured");
 const stripBox = $("strip");
@@ -442,6 +447,127 @@ function renderDiary() {
   pendingReveal = false;
 }
 
+/* ---------- Archive ---------- */
+
+const FLIGHT = "plate-flight";
+let flight = null;
+
+function canAnimate() {
+  return typeof document.startViewTransition === "function" && !prefersReducedMotion();
+}
+
+function clearFlight() {
+  document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => {
+    if (el.style.viewTransitionName === FLIGHT) el.style.viewTransitionName = "";
+  });
+}
+
+function startFlight(update) {
+  if (flight) {
+    try { flight.skipTransition(); } catch (e) { /* already settled */ }
+    flight = null;
+    clearFlight();
+  }
+  const vt = document.startViewTransition(update);
+  flight = vt;
+  vt.finished.finally(() => {
+    if (flight === vt) flight = null;
+    clearFlight();
+  });
+  return vt;
+}
+
+function goRoute(hash) {
+  if (location.hash === hash) { renderRoute(); return; }
+  history.pushState(null, "", hash);
+  renderRoute();
+}
+
+function makeArchiveTile(item) {
+  const { entry, index } = item;
+  const id = entryId(entry, index);
+  const tile = document.createElement("button");
+  tile.type = "button";
+  tile.className = "archive-tile";
+  tile.dataset.id = id;
+  tile.setAttribute("data-type", String(entry.type || ""));
+  tile.setAttribute("data-year", (entry.date || "").slice(0, 4));
+  if (id === selectedPlateId) tile.classList.add("is-current");
+
+  const mat = document.createElement("span");
+  mat.className = "archive-mat";
+  const img = document.createElement("img");
+  img.src = thumbSrc(entry);
+  img.alt = "";
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.draggable = false;
+  img.onerror = () => { img.hidden = true; };
+  mat.appendChild(img);
+
+  const caption = document.createElement("span");
+  caption.className = "archive-caption";
+  const no = document.createElement("b");
+  no.textContent = plateNumber(entry);
+  const sub = document.createElement("span");
+  sub.className = "archive-sub";
+  sub.textContent = [formatDate(entry.date), dishLabel(entry.type)].filter(Boolean).join(" · ");
+  caption.append(no, sub);
+
+  tile.append(mat, caption);
+  tile.setAttribute("aria-label",
+    "Plate " + plateNumber(entry) + ", " + (entry.shop || "untitled") + (entry.date ? ", " + formatDate(entry.date) : ""));
+  tile.addEventListener("click", (e) => openPlateFromArchive(id, tile, e.detail === 0));
+  return tile;
+}
+
+function renderArchive() {
+  const list = diaryList();
+  archiveCount.textContent = pad(list.length) + (list.length === 1 ? " PLATE" : " PLATES");
+  archiveGrid.replaceChildren(...list.map(makeArchiveTile));
+}
+
+function openPlateFromArchive(id, tile, fromKeyboard = false) {
+  archiveReturn = { id, scrollY: window.scrollY, fromKeyboard };
+  selectedPlateId = id;
+  setLast(id);
+  pendingReveal = true;
+  revealedId = id;
+
+  const land = () => {
+    goRoute("#/diary");
+    const plate = featuredBox.querySelector(".plate-photo");
+    if (plate) plate.style.viewTransitionName = FLIGHT;
+    window.scrollTo(0, 0);
+    diaryPanel.focus({ preventScroll: true });
+  };
+
+  if (!canAnimate()) { land(); clearFlight(); return; }
+  tile.style.viewTransitionName = FLIGHT;
+  startFlight(land);
+}
+
+function returnToArchive() {
+  if (!archiveReturn) return;
+  const { id: target, scrollY: y, fromKeyboard } = archiveReturn;
+  const plate = featuredBox.querySelector(".plate-photo");
+
+  const land = () => {
+    goRoute("#/archive");
+    window.scrollTo(0, y);
+    const tile = archiveGrid.querySelector('.archive-tile[data-id="' + CSS.escape(target) + '"]');
+    if (tile) {
+      tile.style.viewTransitionName = FLIGHT;
+      if (fromKeyboard) tile.focus({ preventScroll: true });
+    }
+    archiveReturn = null;
+  };
+
+  if (!canAnimate() || !plate) { land(); clearFlight(); return; }
+  plate.style.viewTransitionName = FLIGHT;
+  startFlight(land);
+}
+
 /* ---------- Entry detail ---------- */
 
 function makeMeta(entry) {
@@ -727,6 +853,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeSheet();
     if (map) map.closePopup();
+    if (archiveReturn && !diaryPanel.hidden) { returnToArchive(); return; }
     return;
   }
   const el = event.target;
@@ -834,7 +961,7 @@ function setFilter(label, rerender = true) {
     : "Showing " + dishLabel(label) + ". " + (shown === 1 ? "1 entry." : shown + " entries."));
 }
 
-const tabButtons = [["diary", "Diary"], ["map", "Map"]].map(([name, label]) => {
+const tabButtons = [["diary", "Diary"], ["archive", "Archive"], ["map", "Map"]].map(([name, label]) => {
   const b = document.createElement("button");
   b.className = "tab";
   b.type = "button";
@@ -848,7 +975,10 @@ const tabButtons = [["diary", "Diary"], ["map", "Map"]].map(([name, label]) => {
 });
 
 function parseRoute() {
-  return location.hash.replace(/^#\/?/, "") === "map" ? { view: "map" } : { view: "diary" };
+  const view = location.hash.replace(/^#\/?/, "");
+  if (view === "map") return { view: "map" };
+  if (view === "archive") return { view: "archive" };
+  return { view: "diary" };
 }
 
 function syncLayout() {
@@ -877,18 +1007,27 @@ function renderRoute() {
     b.setAttribute("aria-pressed", String(b.dataset.tab === route.view));
   });
   diaryPanel.hidden = route.view !== "diary";
+  archivePanel.hidden = route.view !== "archive";
   mapPanel.hidden = route.view !== "map";
   if (route.view !== "diary") document.body.classList.remove("diary-few");
+  archiveBack.hidden = route.view !== "diary" || !archiveReturn;
 
   if (route.view === "map") {
     renderShopList();
     ensureMap();
     announce("Map view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
+  } else if (route.view === "archive") {
+    if (!selectedPlateId) {
+      const first = diaryList()[0];
+      if (first) selectedPlateId = entryId(first.entry, first.index);
+    }
+    renderArchive();
+    announce("Archive view. " + (entries.length === 1 ? "1 plate." : entries.length + " plates."));
   } else {
     renderDiary();
     announce("Diary view. " + (entries.length === 1 ? "1 entry." : entries.length + " entries."));
   }
-  window.scrollTo(0, 0);
+  window.scrollTo(0, archiveReturn && route.view === "archive" ? archiveReturn.scrollY : 0);
 }
 
 listToggle.addEventListener("click", () => {
@@ -967,6 +1106,8 @@ stripBox.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("hashchange", renderRoute);
+window.addEventListener("popstate", renderRoute);
+archiveBack.addEventListener("click", returnToArchive);
 let resizeWasPhone = () => window.innerWidth <= 600;
 window.addEventListener("resize", () => {
   if (isPhone() !== resizeWasPhone()) { closeSheet(); if (map) map.closePopup(); }
